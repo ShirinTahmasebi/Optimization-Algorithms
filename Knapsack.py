@@ -13,6 +13,7 @@ class Knapsack:
                  items_price_lower_bound=1,
                  items_price_upper_bound=20,
                  knapsack_size=100,
+                 do_generate_items_random=False,
                  ):
         self.__items_count = items_count
         self.__items_weight_lower_bound = items_weight_lower_bound
@@ -21,18 +22,29 @@ class Knapsack:
         self.__items_price_upper_bound = items_price_upper_bound
         self.__knapsack_size = knapsack_size
         self.__items = []
-        self.__current_solution = []
-        self.__prev_solution = []
-        self.generate_items()
+        self.generate_items(do_generate_items_random)
         return
 
-    def generate_items(self):
-        for i in range(self.__items_count):
-            item = Item(
-                random.randrange(self.__items_weight_lower_bound, self.__items_weight_upper_bound),
-                random.randrange(self.__items_price_lower_bound, self.__items_price_upper_bound),
-            )
-            self.__items.append(item)
+    def generate_items(self, do_generate_items_random):
+        if do_generate_items_random:
+            for i in range(self.__items_count):
+                item = Item(
+                    random.randrange(self.__items_weight_lower_bound, self.__items_weight_upper_bound),
+                    random.randrange(self.__items_price_lower_bound, self.__items_price_upper_bound),
+                )
+                self.__items.append(item)
+        else:
+            self.__items.append(Item(5, 17))
+            self.__items.append(Item(97, 17))
+            self.__items.append(Item(88, 2))
+            self.__items.append(Item(65, 11))
+            self.__items.append(Item(1, 1))
+            self.__items.append(Item(56, 11))
+            self.__items.append(Item(85, 9))
+            self.__items.append(Item(34, 14))
+            self.__items.append(Item(91, 18))
+            self.__items.append(Item(84, 11))
+            self.__items_count = len(self.__items)
         return
 
     def print_items(self, items=None):
@@ -45,10 +57,10 @@ class Knapsack:
 
         return
 
-    def print_solution(self, solution=None):
+    def print_solution(self, solution):
         if solution is None:
-            solution = self.__current_solution.copy()
-
+            print("Solution is empty.")
+            return
         t_str = ""
         for i in range(self.__items_count):
             t_str += "#" + str(i + 1) + ":" + str(solution[i]) + ", "
@@ -59,31 +71,27 @@ class Knapsack:
     def generate_initial_solution(self):
         while True:
             selected_items_count = random.randrange(self.__items_count)
-            self.__current_solution = np.array([1] * selected_items_count +
-                                               [0] * (self.__items_count - selected_items_count))
-            np.random.shuffle(self.__current_solution)
-            if self.is_solution_valid():
+            solution = np.array([1] * selected_items_count +
+                                [0] * (self.__items_count - selected_items_count))
+            np.random.shuffle(solution)
+            if self.is_solution_valid(solution):
                 break
 
-        return self.__current_solution.copy()
+        return solution.copy()
 
-    def generate_neighbour(self):
-        self.__prev_solution = self.__current_solution.copy()
+    def generate_neighbour(self, solution):
         while True:
             flip_index = random.randrange(self.__items_count)
-            self.__current_solution[flip_index] ^= 1
-            if self.is_solution_valid():
+            solution[flip_index] ^= 1
+            if self.is_solution_valid(solution):
                 break
 
-        return self.__current_solution.copy()
+        return solution.copy()
 
-    def revert_solution(self):
-        self.__current_solution = self.__prev_solution.copy()
-        return self.__current_solution.copy()
-
-    def calculate_total_price(self, solution=None):
+    def calculate_total_price(self, solution):
         if solution is None:
-            solution = self.__current_solution.copy()
+            print("Solution is empty.")
+            return
         x = 0
         for i in range(self.__items_count):
             x += (self.__items[i]).get_price() if solution[i] else 0
@@ -91,14 +99,15 @@ class Knapsack:
 
     def calculate_total_weight(self, solution=None):
         if solution is None:
-            solution = self.__current_solution.copy()
+            print("Solution is empty.")
+            return
         x = 0
         for i in range(self.__items_count):
             x += (self.__items[i]).get_weight() if solution[i] else 0
         return x
 
-    def is_solution_valid(self):
-        if self.calculate_total_weight() < self.__knapsack_size:
+    def is_solution_valid(self, solution):
+        if self.calculate_total_weight(solution) < self.__knapsack_size:
             return True
         return False
 
@@ -106,6 +115,8 @@ class Knapsack:
 if __name__ == "__main__":
     knapsack = Knapsack()
     knapsack.print_items()
-    knapsack.print_solution(knapsack.generate_initial_solution())
-    knapsack.print_solution(knapsack.generate_neighbour())
-    print(knapsack.calculate_total_price())
+    solution = knapsack.generate_initial_solution()
+    knapsack.print_solution(solution)
+    neighbor_solution = knapsack.generate_neighbour(solution)
+    knapsack.print_solution(neighbor_solution)
+    print(knapsack.calculate_total_price(neighbor_solution))
