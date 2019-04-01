@@ -31,7 +31,6 @@ while temperature > temperature_final:
                 # Reverse Selection (Reject)
                 current_solution = previous_solution.copy()
         print("Current Solution Price: " + str(knapsack.calculate_total_price(current_solution)))
-        break
     temperature *= cooling_rate
 
 knapsack.print_items()
