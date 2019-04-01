@@ -88,7 +88,7 @@ class Knapsack:
 
         return solution.copy()
 
-    def calculate_total_price(self, solution):
+    def calculate_sa_total_price(self, solution):
         if solution is None:
             print("Solution is empty.")
             return
@@ -97,19 +97,51 @@ class Knapsack:
             x += (self.__items[i]).get_price() if solution[i] else 0
         return x
 
+    def calculate_qa_total_energy(self, solution_spin_variable, weight_spin_variables):
+        if solution_spin_variable is None or weight_spin_variables is None:
+            print("Solution is empty.")
+            return
+        (a, b) = self.calculate_hamiltonian_energy_parameters()
+        # Calculate potential hamiltonian (ha)
+        if len(np.nonzero(weight_spin_variables)[0]) > 0:
+            current_knapsack_weight = np.nonzero(weight_spin_variables)[0][0]
+        else:
+            current_knapsack_weight = 0
+        ha = a * (1 - sum(weight_spin_variables)) ** 2 + a * ((
+                                                                      current_knapsack_weight - self.calculate_total_weight(
+                                                                  solution_spin_variable)) ** 2)
+        # Calculate kinetic hamiltonian (hb)
+        hb = -1 * b * self.calculate_sa_total_price(solution_spin_variable)
+
+        hamiltonian = ha + hb
+        return hamiltonian
+
     def calculate_total_weight(self, solution=None):
         if solution is None:
             print("Solution is empty.")
             return
         x = 0
         for i in range(self.__items_count):
-            x += (self.__items[i]).get_weight() if solution[i] else 0
+            x += ((self.__items[i]).get_weight() * solution[i])
         return x
 
     def is_solution_valid(self, solution):
         if self.calculate_total_weight(solution) < self.__knapsack_size:
             return True
         return False
+
+    def get_knapsack_size(self):
+        return self.__knapsack_size
+
+    def calculate_hamiltonian_energy_parameters(self):
+        return self.get_max_price() + 1, 1
+
+    def get_max_price(self):
+        max_price = 0
+        for item in self.__items:
+            if max_price < item.get_price():
+                max_price = item.get_price()
+        return max_price
 
 
 if __name__ == "__main__":
@@ -119,4 +151,4 @@ if __name__ == "__main__":
     knapsack.print_solution(solution)
     neighbor_solution = knapsack.generate_neighbour(solution)
     knapsack.print_solution(neighbor_solution)
-    print(knapsack.calculate_total_price(neighbor_solution))
+    print(knapsack.calculate_sa_total_price(neighbor_solution))
