@@ -5,6 +5,7 @@ import quantum.anealing.graph.Graph;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 import quantum.anealing.dijkstra.DijkstraAlgorithm;
 
 public class QuantumAnealing {
@@ -63,7 +64,7 @@ public class QuantumAnealing {
             }
             controllerYSpinVariables.add(row);
         }
-        
+
         for (int i = 0; i < sinkYSpinVariables.size(); i++) {
             for (int j = 0; j < candidateSinks.size(); j++) {
                 sinkYSpinVariables.get(i).remove(j);
@@ -78,7 +79,7 @@ public class QuantumAnealing {
             }
         }
         // ---
-        
+
         printProblemSpecifications();
     }
 
@@ -130,7 +131,7 @@ public class QuantumAnealing {
     }
 
     void execute() {
-        int tempIterationsCount = 10;
+        int tempIterationsCount = 20;
 
         generateInitialTempSpinVariables();
 
@@ -192,11 +193,30 @@ public class QuantumAnealing {
         tempControllerXSpinVariables.stream().forEach((tempControllerXSpinVariable) -> {
             System.out.print(tempControllerXSpinVariable + ", ");
         });
+
+        System.out.println();
+        System.out.println();
         // ---
     }
 
     private void generateNeighbour() {
-//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Random random = new Random();
+        int randInt = random.nextInt(tempSinkXSpinVariables.size() + tempControllerXSpinVariables.size());
+
+        if (randInt < tempSinkXSpinVariables.size()) {
+            // Change randInt-th item in sink array
+            boolean prevValue = tempSinkXSpinVariables.get(randInt);
+            tempSinkXSpinVariables.remove(randInt);
+            tempSinkXSpinVariables.add(randInt, !prevValue);
+        } else {
+            int index = randInt - (tempSinkXSpinVariables.size() - 1) - 1;
+            // Change index-th item in controller array
+            boolean prevValue = tempControllerXSpinVariables.get(index);
+            tempControllerXSpinVariables.remove(index);
+            tempControllerXSpinVariables.add(index, !prevValue);
+        }
+        printGeneratedSolution();
+
     }
 
 }
