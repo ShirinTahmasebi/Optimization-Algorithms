@@ -14,6 +14,10 @@ public class TestQuantumAnnealingAlgorithm {
     private static final int SENSOR_CONTROLLER_MAX_DISTANCE = 2;        // LPrimeMax
     private static final int MAX_SINK_COVERAGE = 6;             // k
     private static final int MAX_CONTROLLER_COVERAGE = 6;       // kPrime
+    private static final int SINK_LOAD = 10;            // w
+    private static final int CONTROLLER_LOAD = 10;      // wPrime
+    private static final int SINK_MAX_LOAD = 30;            // W
+    private static final int CONTROLLER_MAX_LOAD = 30;      // WPrime
 
     private static final List<Vertex> nodes = new ArrayList<>();        // V
     private static final List<Edge> edges = new ArrayList<>();          // E
@@ -41,23 +45,23 @@ public class TestQuantumAnnealingAlgorithm {
     private Graph initialize() {
         Graph graph = initializeGraph();
         candidateSinks = Arrays.asList(
-                new Vertex("Node_1", "Node_1"),
-                new Vertex("Node_2", "Node_2"),
-                new Vertex("Node_3", "Node_3"),
-                new Vertex("Node_4", "Node_4"),
-                new Vertex("Node_5", "Node_5"),
-                new Vertex("Node_6", "Node_6")
+                graph.getVertexes().get(1),
+                graph.getVertexes().get(2),
+                graph.getVertexes().get(3),
+                graph.getVertexes().get(4),
+                graph.getVertexes().get(5),
+                graph.getVertexes().get(6)
         );
         candidateControllers = Arrays.asList(
-                new Vertex("Node_1", "Node_1"),
-                new Vertex("Node_2", "Node_2"),
-                new Vertex("Node_3", "Node_3"),
-                new Vertex("Node_4", "Node_4"),
-                new Vertex("Node_5", "Node_5"),
-                new Vertex("Node_6", "Node_6"),
-                new Vertex("Node_7", "Node_7"),
-                new Vertex("Node_8", "Node_8"),
-                new Vertex("Node_9", "Node_9")
+                graph.getVertexes().get(1),
+                graph.getVertexes().get(2),
+                graph.getVertexes().get(3),
+                graph.getVertexes().get(4),
+                graph.getVertexes().get(5),
+                graph.getVertexes().get(6),
+                graph.getVertexes().get(7),
+                graph.getVertexes().get(8),
+                graph.getVertexes().get(9)
         );
         return graph;
     }
@@ -65,7 +69,7 @@ public class TestQuantumAnnealingAlgorithm {
     private Graph initializeGraph() {
 
         for (int i = 0; i < VERTICES_COUNT + 1; i++) {
-            Vertex location = new Vertex("Node_" + i, "Node_" + i);
+            Vertex location = new Vertex("Node_" + i, "Node_" + i, SINK_LOAD, CONTROLLER_LOAD);
             nodes.add(location);
         }
 

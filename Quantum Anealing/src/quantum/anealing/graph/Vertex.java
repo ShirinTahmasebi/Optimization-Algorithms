@@ -1,20 +1,33 @@
 package quantum.anealing.graph;
 
 public class Vertex {
+
     final private String id;
     final private String name;
+    final private int sinkLoad;
+    final private int controllerLoad;
 
-
-    public Vertex(String id, String name) {
+    public Vertex(String id, String name, int sinkLoad, int controllerLoad) {
         this.id = id;
         this.name = name;
+        this.sinkLoad = sinkLoad;
+        this.controllerLoad = controllerLoad;
     }
+
     public String getId() {
         return id;
     }
 
     public String getName() {
         return name;
+    }
+
+    public int getSinkLoad() {
+        return sinkLoad;
+    }
+    
+    public int getControllerLoad() {
+        return controllerLoad;
     }
 
     @Override
@@ -27,18 +40,23 @@ public class Vertex {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         Vertex other = (Vertex) obj;
         if (id == null) {
-            if (other.id != null)
+            if (other.id != null) {
                 return false;
-        } else if (!id.equals(other.id))
+            }
+        } else if (!id.equals(other.id)) {
             return false;
+        }
         return true;
     }
 

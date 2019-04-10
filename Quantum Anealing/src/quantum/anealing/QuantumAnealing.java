@@ -202,20 +202,6 @@ public class QuantumAnealing {
     }
 
     private int calculateEnergy() {
-        for (int i = 0; i < graph.getVertexes().size(); i++) {
-            int k = coveredSinksCountByNode(i);
-            System.out.println(k + " k for node " + i);
-        }
-
-        System.out.println("TOTAL: " + totalCoverSinksScore());
-
-        for (int i = 0; i < graph.getVertexes().size(); i++) {
-            int kPrime = coveredControllersCountByNode(i);
-            System.out.println(kPrime + " k prime for node " + i);
-        }
-
-        System.out.println("TOTAL: " + totalCoverControllersScore());
-
         int kineticEnergy = getKineticEnergy();
         int reliabilityEnergy = getReliabilityEnergy();
         int loadBalancingEnergy = getLoadBalancingEnergy();
@@ -240,6 +226,7 @@ public class QuantumAnealing {
 
     private int getLoadBalancingEnergy() {
         // TODO: Calculate Load Balancing Energy
+        
         return 0;
     }
 

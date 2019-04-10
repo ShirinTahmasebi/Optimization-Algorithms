@@ -23,7 +23,7 @@ public class TestDijkstraAlgorithm {
         testDijkstraAlgorithm.nodes = new ArrayList<>();
         testDijkstraAlgorithm.edges = new ArrayList<>();
         for (int i = 0; i < 11; i++) {
-            Vertex location = new Vertex("Node_" + i, "Node_" + i);
+            Vertex location = new Vertex("Node_" + i, "Node_" + i, i, i);
             testDijkstraAlgorithm.nodes.add(location);
         }
 
@@ -58,7 +58,7 @@ public class TestDijkstraAlgorithm {
         Edge lane2 = new Edge(laneId, nodes.get(destLocNo), nodes.get(sourceLocNo), 1);
         edges.add(lane2);
     }
-    
+
     private void addLane(String laneId, int sourceLocNo, int destLocNo,
             int duration) {
         Edge lane = new Edge(laneId, nodes.get(sourceLocNo), nodes.get(destLocNo), duration);
