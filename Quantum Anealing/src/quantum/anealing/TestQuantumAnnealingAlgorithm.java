@@ -4,17 +4,20 @@ import quantum.anealing.graph.Vertex;
 import quantum.anealing.graph.Graph;
 import quantum.anealing.graph.Edge;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class TestQuantumAnnealingAlgorithm {
 
     private static final int VERTICES_COUNT = 10;
     private static final int SENSOR_SINK_MAX_DISTANCE = 3;              // Lmax
-    private static final int SENSOR_CONTROLLER_MAX_DISTANCE = 3;        // LPrimeMax
+    private static final int SENSOR_CONTROLLER_MAX_DISTANCE = 2;        // LPrimeMax
+    private static final int MAX_SINK_COVERAGE = 6;             // k
+    private static final int MAX_CONTROLLER_COVERAGE = 6;       // kPrime
 
     private static final List<Vertex> nodes = new ArrayList<>();        // V
     private static final List<Edge> edges = new ArrayList<>();          // E
-    
+
     private List<Vertex> candidateSinks = new ArrayList<>();            // AS
     private List<Vertex> candidateControllers = new ArrayList<>();      //AC
 
@@ -27,19 +30,38 @@ public class TestQuantumAnnealingAlgorithm {
                 qaTest.candidateSinks,
                 qaTest.candidateControllers,
                 SENSOR_SINK_MAX_DISTANCE,
-                SENSOR_CONTROLLER_MAX_DISTANCE
+                SENSOR_CONTROLLER_MAX_DISTANCE,
+                MAX_SINK_COVERAGE,
+                MAX_CONTROLLER_COVERAGE
         );
-        
+
         qa.execute();
     }
 
     private Graph initialize() {
         Graph graph = initializeGraph();
-        candidateSinks = graph.getVertexes();
-        candidateControllers = graph.getVertexes();
+        candidateSinks = Arrays.asList(
+                new Vertex("Node_1", "Node_1"),
+                new Vertex("Node_2", "Node_2"),
+                new Vertex("Node_3", "Node_3"),
+                new Vertex("Node_4", "Node_4"),
+                new Vertex("Node_5", "Node_5"),
+                new Vertex("Node_6", "Node_6")
+        );
+        candidateControllers = Arrays.asList(
+                new Vertex("Node_1", "Node_1"),
+                new Vertex("Node_2", "Node_2"),
+                new Vertex("Node_3", "Node_3"),
+                new Vertex("Node_4", "Node_4"),
+                new Vertex("Node_5", "Node_5"),
+                new Vertex("Node_6", "Node_6"),
+                new Vertex("Node_7", "Node_7"),
+                new Vertex("Node_8", "Node_8"),
+                new Vertex("Node_9", "Node_9")
+        );
         return graph;
     }
-    
+
     private Graph initializeGraph() {
 
         for (int i = 0; i < VERTICES_COUNT + 1; i++) {
