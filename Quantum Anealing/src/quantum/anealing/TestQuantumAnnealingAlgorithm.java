@@ -9,11 +9,12 @@ import java.util.List;
 public class TestQuantumAnnealingAlgorithm {
 
     private static final int VERTICES_COUNT = 10;
-    private static final int SENSOR_SINK_MAX_DISTANCE = 5;              // Lmax
-    private static final int SENSOR_CONTROLLER_MAX_DISTANCE = 5;        // LPrimeMax
+    private static final int SENSOR_SINK_MAX_DISTANCE = 3;              // Lmax
+    private static final int SENSOR_CONTROLLER_MAX_DISTANCE = 3;        // LPrimeMax
 
     private static final List<Vertex> nodes = new ArrayList<>();        // V
     private static final List<Edge> edges = new ArrayList<>();          // E
+    
     private List<Vertex> candidateSinks = new ArrayList<>();            // AS
     private List<Vertex> candidateControllers = new ArrayList<>();      //AC
 
@@ -28,6 +29,8 @@ public class TestQuantumAnnealingAlgorithm {
                 SENSOR_SINK_MAX_DISTANCE,
                 SENSOR_CONTROLLER_MAX_DISTANCE
         );
+        
+        qa.execute();
     }
 
     private Graph initialize() {
