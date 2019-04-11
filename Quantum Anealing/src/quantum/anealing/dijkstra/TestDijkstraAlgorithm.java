@@ -5,7 +5,6 @@
  */
 package quantum.anealing.dijkstra;
 
-import quantum.anealing.dijkstra.DijkstraAlgorithm;
 import quantum.anealing.graph.Vertex;
 import quantum.anealing.graph.Graph;
 import quantum.anealing.graph.Edge;

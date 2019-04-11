@@ -9,6 +9,7 @@ import quantum.anealing.dijkstra.DijkstraAlgorithm;
 
 public class QuantumAnealing {
 
+    // Problem Specifications
     private final Graph graph;
 
     private final List<Vertex> candidateSinks;            // AS
@@ -17,13 +18,16 @@ public class QuantumAnealing {
     private final int sensorSinkMaxDistance;              // Lmax
     private final int sensorControllerMaxDistance;        // LPrimeMax
 
-    // Solution Spin Variables
-    private final boolean[] sinkXSpinVariables;             // SX (X Spin Variable)
-    private final boolean[] controllerXSpinVariables;       // SXPrime (X Spin Variable)
     private final boolean[][] sinkYSpinVariables;           // SY (Y Spin Variable)
     private final boolean[][] controllerYSpinVariables;     // SYPrime (Y Spin Variable)
 
-    // Test Spin Variables
+    // Solution Spin Variables
+    private final boolean[] sinkXSpinVariables;             // SX (X Spin Variable)
+    private final boolean[] controllerXSpinVariables;       // SXPrime (X Spin Variable)
+    private final boolean[][] replicasOfSinkXSpinVariables;
+    private final boolean[][] replicasOfControllerXSpinVariables;
+
+    // Temp Spin Variables
     private final boolean[] tempSinkXSpinVariables;           // SX (X Spin Variable)           
     private final boolean[] tempControllerXSpinVariables;     // SXPrime (X Spin Variable)
 
@@ -31,11 +35,15 @@ public class QuantumAnealing {
     private final int maxControllerCoverage;    // KPrime
     private final int maxSinkLoad;          // W
     private final int maxControllerLoad;    // WPrime
-    private final int minCostSink;
-    private final int maxCostSink;
-    private final int minCostController;
-    private final int maxCostController;
+    private final int costSink;
+    private final int costController;
     private final float costReductionFactor;
+    private final int trotterReplicas;   // P
+    private final int temperature;       // T
+    private final int monteCarloSteps;
+    private final float tunnlingFiledInitial;
+    private final float tunnlingFiledFinal;
+    private final float tunnlingFiledEvaporation;
 
     public QuantumAnealing(
             Graph graph,
@@ -47,11 +55,15 @@ public class QuantumAnealing {
             int maxControllerCoverage,
             int maxSinkLoad,
             int maxControllerLoad,
-            int minCostSink,
-            int maxCostSink,
-            int minCostController,
-            int maxCostController,
-            float costReductionFactor
+            int costSink,
+            int costController,
+            float costReductionFactor,
+            int trotterReplicas,
+            int temperature,
+            int monteCarloSteps,
+            float tunnlingFieldInitial,
+            float tunnlingFieldFinal,
+            float tunnlingFieldEvaporation
     ) {
         this.controllerYSpinVariables = new boolean[graph.getVertexes().size()][candidateControllers.size()];
         this.sinkYSpinVariables = new boolean[graph.getVertexes().size()][candidateSinks.size()];
@@ -59,6 +71,8 @@ public class QuantumAnealing {
         this.tempSinkXSpinVariables = new boolean[candidateSinks.size()];
         this.sinkXSpinVariables = new boolean[candidateSinks.size()];
         this.controllerXSpinVariables = new boolean[candidateControllers.size()];
+        this.replicasOfSinkXSpinVariables = new boolean[trotterReplicas][candidateSinks.size()];
+        this.replicasOfControllerXSpinVariables = new boolean[trotterReplicas][candidateControllers.size()];
 
         this.graph = graph;
         this.candidateSinks = candidateSinks;
@@ -70,11 +84,15 @@ public class QuantumAnealing {
         this.maxControllerCoverage = maxControllerCoverage;
         this.maxSinkLoad = maxSinkLoad;
         this.maxControllerLoad = maxControllerLoad;
-        this.minCostSink = minCostSink;
-        this.maxCostSink = maxCostSink;
-        this.minCostController = minCostController;
-        this.maxCostController = maxCostController;
+        this.costSink = costSink;
+        this.costController = costController;
         this.costReductionFactor = costReductionFactor;
+        this.trotterReplicas = trotterReplicas;
+        this.temperature = temperature;
+        this.monteCarloSteps = monteCarloSteps;
+        this.tunnlingFiledInitial = tunnlingFieldInitial;
+        this.tunnlingFiledFinal = tunnlingFieldFinal;
+        this.tunnlingFiledEvaporation = tunnlingFieldEvaporation;
 
         initializeSpinVariables();
 
@@ -136,6 +154,20 @@ public class QuantumAnealing {
     }
 
     void execute() {
+        // Genreate replicas (Fill replicasOfSinkXSpinVariables, replicasOfControllerXSpinVariables )
+
+        // -- Do while tunnlig field is favorable
+        // ---- For each replica
+        // ------ For each montecarlo step
+        // -------- Generate neighbor
+        // -------- Calculate energy of temp solution
+        // -------- If energy has decreased: accept solution
+        // -------- Else with given probability decide to accept or not
+        // ------ End of for
+        // ---- End of for
+        // ---- Update tunnling field
+        // -- End of do while 
+        // Final solution is in: sinkXSpinVariables and controllerXSpinVariables
         int tempIterationsCount = 10;
         float energy;
         generateInitialTempSpinVariables();
@@ -144,8 +176,6 @@ public class QuantumAnealing {
             tempIterationsCount--;
             generateNeighbour();
             energy = calculateEnergy();
-            System.out.println("Reliability: " + getReliabilityEnergy());
-            System.out.println("Load Balancing: " + getLoadBalancingEnergy());
         }
     }
 
@@ -203,30 +233,7 @@ public class QuantumAnealing {
         }
 
         System.out.println();
-        System.out.println("Sink Coverage: ");
-        for (int i = 0; i < graph.getVertexes().size(); i++) {
-            System.out.println(i + " - Covered Sink: " + coveredSinksCountByNode(i)
-                    + ", Covered Controller: " + coveredControllersCountByNode(i));
-        }
-
         System.out.println();
-
-        System.out.println("Total Sink Score: " + totalCoverSinksScore());
-        System.out.println("Total Controller Score: " + totalCoverControllersScore());
-        System.out.println();
-
-        for (int i = 0; i < candidateSinks.size(); i++) {
-            System.out.println("i: " + i + " Load to i-th sink is: " + calculateLoadToJthSink(i));
-        }
-
-        System.out.println();
-
-        for (int i = 0; i < candidateControllers.size(); i++) {
-            System.out.println("i: " + i + " Load to i-th controller is: " + calculateLoadToJthController(i));
-        }
-
-        System.out.println("Total Sink Load Energy:" + getSinksLoadBalancingEnergy());
-        System.out.println("Total Controller Load Energy:" + getControllersLoadBalancingEnergy());
         // ---
 
     }
@@ -249,8 +256,18 @@ public class QuantumAnealing {
     }
 
     private float calculateEnergy() {
-        float potentialEnergy = getReliabilityEnergy() + getLoadBalancingEnergy() + getCostEnergy();
+        int reliabilityEnergy = getReliabilityEnergy();
+        float loadBalancingEnergy = getLoadBalancingEnergy();
+        float costEnergy = getCostEnergy();
+        float potentialEnergy = reliabilityEnergy + loadBalancingEnergy + costEnergy;
         float energy = getKineticEnergy() + potentialEnergy;
+
+        System.out.println("Reliability: " + reliabilityEnergy);
+        System.out.println("Load Balancing: " + loadBalancingEnergy);
+        System.out.println("Cost: " + costEnergy);
+        System.out.println("Potential Cost: " + potentialEnergy);
+        System.out.println("Energy Cost: " + energy);
+
         return energy;
     }
 
@@ -272,18 +289,15 @@ public class QuantumAnealing {
     }
 
     private float getCostEnergy() {
-        Random random = new Random();
         for (int i = 0; i < candidateSinks.size(); i++) {
             for (int j = 0; j < candidateControllers.size(); j++) {
                 if (tempSinkXSpinVariables[i] && tempControllerXSpinVariables[j]) {
-                    int sinkCost = random.nextInt(maxCostSink - minCostSink) + minCostSink;
-                    int controllerCost = random.nextInt(maxCostController - minCostController) + minCostController;
-                    float cost = (sinkCost + controllerCost) * costReductionFactor;
+                    float cost = (costSink + costController) * costReductionFactor;
                     return cost;
                 } else if (tempSinkXSpinVariables[i]) {
-                    return random.nextInt(maxCostSink - minCostSink) + minCostSink;
+                    return costSink;
                 } else if (tempControllerXSpinVariables[j]) {
-                    return random.nextInt(maxCostController - minCostController) + minCostController;
+                    return costController;
                 }
             }
         }
