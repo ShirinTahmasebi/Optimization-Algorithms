@@ -16,8 +16,8 @@ public class TestQuantumAnnealingAlgorithm {
     private static final int MAX_CONTROLLER_COVERAGE = 6;       // kPrime
     private static final int SINK_LOAD = 10;            // w
     private static final int CONTROLLER_LOAD = 10;      // wPrime
-    private static final int SINK_MAX_LOAD = 30;            // W
-    private static final int CONTROLLER_MAX_LOAD = 30;      // WPrime
+    private static final int MAX_SINK_LOAD = 30;        // W
+    private static final int MAX_CONTROLLER_LOAD = 30;  // WPrime
 
     private static final List<Vertex> nodes = new ArrayList<>();        // V
     private static final List<Edge> edges = new ArrayList<>();          // E
@@ -36,7 +36,9 @@ public class TestQuantumAnnealingAlgorithm {
                 SENSOR_SINK_MAX_DISTANCE,
                 SENSOR_CONTROLLER_MAX_DISTANCE,
                 MAX_SINK_COVERAGE,
-                MAX_CONTROLLER_COVERAGE
+                MAX_CONTROLLER_COVERAGE,
+                MAX_SINK_LOAD,
+                MAX_CONTROLLER_LOAD
         );
 
         qa.execute();

@@ -29,6 +29,8 @@ public class QuantumAnealing {
 
     private final int maxSinkCoverage;          // K
     private final int maxControllerCoverage;    // KPrime
+    private final int maxSinkLoad;          // W
+    private final int maxControllerLoad;    // WPrime
 
     public QuantumAnealing(
             Graph graph,
@@ -37,7 +39,9 @@ public class QuantumAnealing {
             int sensorSinkMaxDistance,
             int sensorControllerMaxDistance,
             int maxSinkCovrage,
-            int maxControllerCoverage
+            int maxControllerCoverage,
+            int maxSinkLoad,
+            int maxControllerLoad
     ) {
         this.controllerYSpinVariables = new boolean[graph.getVertexes().size()][candidateControllers.size()];
         this.sinkYSpinVariables = new boolean[graph.getVertexes().size()][candidateSinks.size()];
@@ -54,6 +58,9 @@ public class QuantumAnealing {
 
         this.maxSinkCoverage = maxSinkCovrage;
         this.maxControllerCoverage = maxControllerCoverage;
+        this.maxSinkLoad = maxSinkLoad;
+        this.maxControllerLoad = maxControllerLoad;
+
         initializeSpinVariables();
 
         printProblemSpecifications();
@@ -115,13 +122,15 @@ public class QuantumAnealing {
 
     void execute() {
         int tempIterationsCount = 10;
-        int energy;
+        float energy;
         generateInitialTempSpinVariables();
 
         while (tempIterationsCount != 0) {
             tempIterationsCount--;
             generateNeighbour();
             energy = calculateEnergy();
+            System.out.println("Reliability: " + getReliabilityEnergy());
+            System.out.println("Load Balancing: " + getLoadBalancingEnergy());
         }
     }
 
@@ -179,8 +188,32 @@ public class QuantumAnealing {
         }
 
         System.out.println();
+        System.out.println("Sink Coverage: ");
+        for (int i = 0; i < graph.getVertexes().size(); i++) {
+            System.out.println(i + " - Covered Sink: " + coveredSinksCountByNode(i)
+                    + ", Covered Controller: " + coveredControllersCountByNode(i));
+        }
+
         System.out.println();
+
+        System.out.println("Total Sink Score: " + totalCoverSinksScore());
+        System.out.println("Total Controller Score: " + totalCoverControllersScore());
+        System.out.println();
+
+        for (int i = 0; i < candidateSinks.size(); i++) {
+            System.out.println("i: " + i + " Load to i-th sink is: " + calculateLoadToJthSink(i));
+        }
+
+        System.out.println();
+
+        for (int i = 0; i < candidateControllers.size(); i++) {
+            System.out.println("i: " + i + " Load to i-th controller is: " + calculateLoadToJthController(i));
+        }
+
+        System.out.println("Total Sink Load Energy:" + getSinksLoadBalancingEnergy());
+        System.out.println("Total Controller Load Energy:" + getControllersLoadBalancingEnergy());
         // ---
+
     }
 
     private void generateNeighbour() {
@@ -198,18 +231,17 @@ public class QuantumAnealing {
             tempControllerXSpinVariables[index] = !prevValue;
         }
         printGeneratedSolution();
-
     }
 
-    private int calculateEnergy() {
-        int kineticEnergy = getKineticEnergy();
-        int reliabilityEnergy = getReliabilityEnergy();
-        int loadBalancingEnergy = getLoadBalancingEnergy();
-        int costEnergy = getCostEnergy();
-        int potentialEnergy;
+    private float calculateEnergy() {
+        float kineticEnergy = getKineticEnergy();
+        float reliabilityEnergy = getReliabilityEnergy();
+        float loadBalancingEnergy = getLoadBalancingEnergy();
+        float costEnergy = getCostEnergy();
+        float potentialEnergy;
 
         potentialEnergy = reliabilityEnergy + loadBalancingEnergy + costEnergy;
-        int energy = kineticEnergy + potentialEnergy;
+        float energy = kineticEnergy + potentialEnergy;
         return energy;
     }
 
@@ -224,10 +256,10 @@ public class QuantumAnealing {
                 + (maxControllerCoverage * sensorNumbers - totalCoverControllersScore());
     }
 
-    private int getLoadBalancingEnergy() {
-        // TODO: Calculate Load Balancing Energy
-        
-        return 0;
+    private float getLoadBalancingEnergy() {
+        float sinksLoadBalancingEnergy = getSinksLoadBalancingEnergy();
+        float controllersLoadBalancingEnergy = getControllersLoadBalancingEnergy();
+        return sinksLoadBalancingEnergy + controllersLoadBalancingEnergy;
     }
 
     private int getCostEnergy() {
@@ -271,6 +303,23 @@ public class QuantumAnealing {
             coveredSinks += (sinkYSpinVariables[nodeIndex][j] && tempSinkXSpinVariables[j]) ? 1 : 0;
         }
         return coveredSinks;
+    }
+
+    private int coveredNodesCountBySink(int sinkIndex) {
+        int coveredSinks = 0;
+        for (int j = 0; j < graph.getVertexes().size(); j++) {
+            coveredSinks += (sinkYSpinVariables[j][sinkIndex] && tempSinkXSpinVariables[sinkIndex]) ? 1 : 0;
+        }
+        return coveredSinks;
+    }
+
+    private int coveredNodesCountByController(int controllerIndex) {
+        int coveredControllers = 0;
+        for (int j = 0; j < graph.getVertexes().size(); j++) {
+            coveredControllers += (controllerYSpinVariables[j][controllerIndex]
+                    && tempControllerXSpinVariables[controllerIndex]) ? 1 : 0;
+        }
+        return coveredControllers;
     }
 
     private int coveredControllersCountByNode(int nodeIndex) {
@@ -339,4 +388,61 @@ public class QuantumAnealing {
         return isSinkOrController;
     }
 
+    private float getSinksLoadBalancingEnergy() {
+        float totalSinkLoadEnergy = 0;
+        for (int j = 0; j < candidateSinks.size(); j++) {
+            float totalLoadToJthSink = calculateLoadToJthSink(j);
+            float bestSinkLoad = maxSinkLoad / (maxSinkCoverage - 1);
+            totalSinkLoadEnergy += Math.max(0, totalLoadToJthSink - bestSinkLoad);
+            System.out.println(j + " totalLoadToJthSink = " + totalLoadToJthSink);
+            System.out.println(j + " bestSinkLoad = " + bestSinkLoad);
+            System.out.println(j + " Max = " + Math.max(0, totalLoadToJthSink - bestSinkLoad));
+            System.out.println(j + " totalSinkLoadEnergy = " + totalSinkLoadEnergy);
+        }
+        return totalSinkLoadEnergy;
+    }
+
+    private float getControllersLoadBalancingEnergy() {
+        float totalControllerLoadEnergy = 0;
+        for (int j = 0; j < candidateControllers.size(); j++) {
+            float totalLoadToJthController = calculateLoadToJthController(j);
+            float bestControllerLoad = maxControllerLoad / (maxControllerCoverage - 1);
+            totalControllerLoadEnergy += Math.max(0, totalLoadToJthController - bestControllerLoad);
+            System.out.println(j + " totalLoadToJthController = " + totalLoadToJthController);
+            System.out.println(j + " bestControllerLoad = " + bestControllerLoad);
+            System.out.println(j + " Max = " + Math.max(0, totalLoadToJthController - bestControllerLoad));
+            System.out.println(j + " totalControllerLoadEnergy = " + totalControllerLoadEnergy);
+        }
+        return totalControllerLoadEnergy;
+    }
+
+    // j is sink's index in candidateSinks (Not graph node index)
+    private float calculateLoadToJthSink(int j) {
+        float totalLoadToJthSink = 0;
+        for (int i = 0; i < graph.getVertexes().size(); i++) {
+            Vertex graphNode = graph.getVertexes().get(i);
+            if (!isNodeSelectedAsSinkOrController(graphNode.getId())) {
+                boolean condition = sinkYSpinVariables[i][j] && tempSinkXSpinVariables[j];
+                if (condition) {
+                    totalLoadToJthSink += (float) graphNode.getSinkLoad() / coveredSinksCountByNode(i);
+                }
+            }
+        }
+        return totalLoadToJthSink;
+    }
+
+    // j is controller's index in candidateControllers (Not graph node index)
+    private float calculateLoadToJthController(int j) {
+        float totalLoadToJthController = 0;
+        for (int i = 0; i < graph.getVertexes().size(); i++) {
+            Vertex graphNode = graph.getVertexes().get(i);
+            if (!isNodeSelectedAsSinkOrController(graphNode.getId())) {
+                boolean condition = controllerYSpinVariables[i][j] && tempControllerXSpinVariables[j];
+                if (condition) {
+                    totalLoadToJthController += (float) graphNode.getControllerLoad() / coveredControllersCountByNode(i);
+                }
+            }
+        }
+        return totalLoadToJthController;
+    }
 }
