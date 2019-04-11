@@ -160,7 +160,7 @@ public class QuantumAnealing {
         // Genreate replicas (Fill replicasOfSinkXSpinVariables, replicasOfControllerXSpinVariables )
         generateReplicasOfSolutions();
         generateInitialSpinVariablesAndEnergy();
-
+        
         int counter = 0;
         double minEnergy = 10000;
         // Do while tunnlig field is favorable
@@ -195,6 +195,7 @@ public class QuantumAnealing {
                             controllerXSpinVariables = tempControllerXSpinVariables.clone();
                         }
                     }
+                    LineChartEx.addToSelectedEnergy(counter, prevEnergy, energy, minEnergy);
                     System.out.println("counter " + counter);
                     System.out.println("Selected Energy is " + prevEnergy);
                 } // End of for
@@ -209,6 +210,7 @@ public class QuantumAnealing {
         System.out.println("Accepted Energy: " + prevEnergy);
         System.out.println("Min Energy: " + minEnergy);
         System.out.println("Final Temperature: " + temperature);
+        LineChartEx.drawChart();
     }
 
     private void generateInitialSpinVariablesAndEnergy() {
