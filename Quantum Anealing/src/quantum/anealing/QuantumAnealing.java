@@ -31,6 +31,11 @@ public class QuantumAnealing {
     private final int maxControllerCoverage;    // KPrime
     private final int maxSinkLoad;          // W
     private final int maxControllerLoad;    // WPrime
+    private final int minCostSink;
+    private final int maxCostSink;
+    private final int minCostController;
+    private final int maxCostController;
+    private final float costReductionFactor;
 
     public QuantumAnealing(
             Graph graph,
@@ -41,7 +46,12 @@ public class QuantumAnealing {
             int maxSinkCovrage,
             int maxControllerCoverage,
             int maxSinkLoad,
-            int maxControllerLoad
+            int maxControllerLoad,
+            int minCostSink,
+            int maxCostSink,
+            int minCostController,
+            int maxCostController,
+            float costReductionFactor
     ) {
         this.controllerYSpinVariables = new boolean[graph.getVertexes().size()][candidateControllers.size()];
         this.sinkYSpinVariables = new boolean[graph.getVertexes().size()][candidateSinks.size()];
@@ -60,6 +70,11 @@ public class QuantumAnealing {
         this.maxControllerCoverage = maxControllerCoverage;
         this.maxSinkLoad = maxSinkLoad;
         this.maxControllerLoad = maxControllerLoad;
+        this.minCostSink = minCostSink;
+        this.maxCostSink = maxCostSink;
+        this.minCostController = minCostController;
+        this.maxCostController = maxCostController;
+        this.costReductionFactor = costReductionFactor;
 
         initializeSpinVariables();
 
@@ -234,14 +249,8 @@ public class QuantumAnealing {
     }
 
     private float calculateEnergy() {
-        float kineticEnergy = getKineticEnergy();
-        float reliabilityEnergy = getReliabilityEnergy();
-        float loadBalancingEnergy = getLoadBalancingEnergy();
-        float costEnergy = getCostEnergy();
-        float potentialEnergy;
-
-        potentialEnergy = reliabilityEnergy + loadBalancingEnergy + costEnergy;
-        float energy = kineticEnergy + potentialEnergy;
+        float potentialEnergy = getReliabilityEnergy() + getLoadBalancingEnergy() + getCostEnergy();
+        float energy = getKineticEnergy() + potentialEnergy;
         return energy;
     }
 
@@ -262,8 +271,22 @@ public class QuantumAnealing {
         return sinksLoadBalancingEnergy + controllersLoadBalancingEnergy;
     }
 
-    private int getCostEnergy() {
-        // TODO: Calculate Cost Energy
+    private float getCostEnergy() {
+        Random random = new Random();
+        for (int i = 0; i < candidateSinks.size(); i++) {
+            for (int j = 0; j < candidateControllers.size(); j++) {
+                if (tempSinkXSpinVariables[i] && tempControllerXSpinVariables[j]) {
+                    int sinkCost = random.nextInt(maxCostSink - minCostSink) + minCostSink;
+                    int controllerCost = random.nextInt(maxCostController - minCostController) + minCostController;
+                    float cost = (sinkCost + controllerCost) * costReductionFactor;
+                    return cost;
+                } else if (tempSinkXSpinVariables[i]) {
+                    return random.nextInt(maxCostSink - minCostSink) + minCostSink;
+                } else if (tempControllerXSpinVariables[j]) {
+                    return random.nextInt(maxCostController - minCostController) + minCostController;
+                }
+            }
+        }
         return 0;
     }
 
@@ -394,10 +417,6 @@ public class QuantumAnealing {
             float totalLoadToJthSink = calculateLoadToJthSink(j);
             float bestSinkLoad = maxSinkLoad / (maxSinkCoverage - 1);
             totalSinkLoadEnergy += Math.max(0, totalLoadToJthSink - bestSinkLoad);
-            System.out.println(j + " totalLoadToJthSink = " + totalLoadToJthSink);
-            System.out.println(j + " bestSinkLoad = " + bestSinkLoad);
-            System.out.println(j + " Max = " + Math.max(0, totalLoadToJthSink - bestSinkLoad));
-            System.out.println(j + " totalSinkLoadEnergy = " + totalSinkLoadEnergy);
         }
         return totalSinkLoadEnergy;
     }
@@ -408,10 +427,6 @@ public class QuantumAnealing {
             float totalLoadToJthController = calculateLoadToJthController(j);
             float bestControllerLoad = maxControllerLoad / (maxControllerCoverage - 1);
             totalControllerLoadEnergy += Math.max(0, totalLoadToJthController - bestControllerLoad);
-            System.out.println(j + " totalLoadToJthController = " + totalLoadToJthController);
-            System.out.println(j + " bestControllerLoad = " + bestControllerLoad);
-            System.out.println(j + " Max = " + Math.max(0, totalLoadToJthController - bestControllerLoad));
-            System.out.println(j + " totalControllerLoadEnergy = " + totalControllerLoadEnergy);
         }
         return totalControllerLoadEnergy;
     }

@@ -18,6 +18,13 @@ public class TestQuantumAnnealingAlgorithm {
     private static final int CONTROLLER_LOAD = 10;      // wPrime
     private static final int MAX_SINK_LOAD = 30;        // W
     private static final int MAX_CONTROLLER_LOAD = 30;  // WPrime
+    private static final int MIN_COST_SINK = 1;
+    private static final int MAX_COST_SINK = 6;
+    private static final int MIN_COST_CONTROLLER = 3;
+    private static final int MAX_COST_CONTROLLER = 10;
+    private static final float COST_REDUCTION_FACTOR = 0.75f;
+    private static final int MONTE_CARLO_REPLICAS = 100;     // P
+    private static final int TEMPERATURE = 850;              // T
 
     private static final List<Vertex> nodes = new ArrayList<>();        // V
     private static final List<Edge> edges = new ArrayList<>();          // E
@@ -38,7 +45,14 @@ public class TestQuantumAnnealingAlgorithm {
                 MAX_SINK_COVERAGE,
                 MAX_CONTROLLER_COVERAGE,
                 MAX_SINK_LOAD,
-                MAX_CONTROLLER_LOAD
+                MAX_CONTROLLER_LOAD,
+                MIN_COST_SINK,
+                MAX_COST_SINK,
+                MIN_COST_CONTROLLER,
+                MAX_COST_CONTROLLER,
+                COST_REDUCTION_FACTOR,
+                MONTE_CARLO_REPLICAS,
+                TEMPERATURE
         );
 
         qa.execute();
