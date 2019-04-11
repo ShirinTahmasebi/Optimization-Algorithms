@@ -22,11 +22,11 @@ public class TestQuantumAnnealingAlgorithm {
     private static final int COST_CONTROLLER = 3;
     private static final float COST_REDUCTION_FACTOR = 0.75f;
     private static final int TROTTER_REPLICAS = 50;     // P
-    private static final int TEMPERATURE = 850;         // T
-    private static final int MONTE_CARLO_STEP = 100;   // M
+    private static final float TEMPERATURE = 50f;         // T
+    private static final int MONTE_CARLO_STEP = 50;   // M
     private static final float TUNNLING_FIELD_INITIAL = 1f;
     private static final float TUNNLING_FIELD_FINAL = .5f;
-    private static final float TUNNLING_FIELD_EVAPORATION = .99f;
+    private static final float TUNNLING_FIELD_EVAPORATION = .9f;
 
     private static final List<Vertex> nodes = new ArrayList<>();        // V
     private static final List<Edge> edges = new ArrayList<>();          // E

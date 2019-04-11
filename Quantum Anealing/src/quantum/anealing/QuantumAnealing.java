@@ -22,14 +22,14 @@ public class QuantumAnealing {
     private final boolean[][] controllerYSpinVariables;     // SYPrime (Y Spin Variable)
 
     // Solution Spin Variables
-    private final boolean[] sinkXSpinVariables;             // SX (X Spin Variable)
-    private final boolean[] controllerXSpinVariables;       // SXPrime (X Spin Variable)
+    private boolean[] sinkXSpinVariables;             // SX (X Spin Variable)
+    private boolean[] controllerXSpinVariables;       // SXPrime (X Spin Variable)
     private final boolean[][] replicasOfSinkXSpinVariables;
     private final boolean[][] replicasOfControllerXSpinVariables;
 
     // Temp Spin Variables
-    private final boolean[] tempSinkXSpinVariables;           // SX (X Spin Variable)           
-    private final boolean[] tempControllerXSpinVariables;     // SXPrime (X Spin Variable)
+    private boolean[] tempSinkXSpinVariables;           // SX (X Spin Variable)           
+    private boolean[] tempControllerXSpinVariables;     // SXPrime (X Spin Variable)
 
     private final int maxSinkCoverage;          // K
     private final int maxControllerCoverage;    // KPrime
@@ -39,11 +39,14 @@ public class QuantumAnealing {
     private final int costController;
     private final float costReductionFactor;
     private final int trotterReplicas;   // P
-    private final int temperature;       // T
+    private float temperature;       // T
     private final int monteCarloSteps;
-    private final float tunnlingFiledInitial;
+    private float tunnlingField;
     private final float tunnlingFiledFinal;
     private final float tunnlingFiledEvaporation;
+    private final float coolingRate = 1;
+
+    private double prevEnergy;
 
     public QuantumAnealing(
             Graph graph,
@@ -59,7 +62,7 @@ public class QuantumAnealing {
             int costController,
             float costReductionFactor,
             int trotterReplicas,
-            int temperature,
+            float temperature,
             int monteCarloSteps,
             float tunnlingFieldInitial,
             float tunnlingFieldFinal,
@@ -90,7 +93,7 @@ public class QuantumAnealing {
         this.trotterReplicas = trotterReplicas;
         this.temperature = temperature;
         this.monteCarloSteps = monteCarloSteps;
-        this.tunnlingFiledInitial = tunnlingFieldInitial;
+        this.tunnlingField = tunnlingFieldInitial;
         this.tunnlingFiledFinal = tunnlingFieldFinal;
         this.tunnlingFiledEvaporation = tunnlingFieldEvaporation;
 
@@ -155,56 +158,73 @@ public class QuantumAnealing {
 
     void execute() {
         // Genreate replicas (Fill replicasOfSinkXSpinVariables, replicasOfControllerXSpinVariables )
+        generateReplicasOfSolutions();
+        generateInitialSpinVariablesAndEnergy();
 
-        // -- Do while tunnlig field is favorable
-        // ---- For each replica
-        // ------ For each montecarlo step
-        // -------- Generate neighbor
-        // -------- Calculate energy of temp solution
-        // -------- If energy has decreased: accept solution
-        // -------- Else with given probability decide to accept or not
-        // ------ End of for
-        // ---- End of for
-        // ---- Update tunnling field
-        // -- End of do while 
+        int counter = 0;
+        double minEnergy = 10000;
+        // Do while tunnlig field is favorable
+        do {
+            // For each replica
+            for (int ro = 0; ro < trotterReplicas; ro++) {
+                tempSinkXSpinVariables = replicasOfSinkXSpinVariables[ro].clone();
+                tempControllerXSpinVariables = replicasOfControllerXSpinVariables[ro].clone();
+                //  For each montecarlo step
+                for (int step = 0; step < monteCarloSteps; step++) {
+                    counter++;
+                    // Generate neighbor
+                    generateNeighbour();
+                    // Calculate energy of temp solution
+                    double energy = calculateEnergy(ro);
+                    if (energy < minEnergy) {
+                        minEnergy = energy;
+                    }
+                    if (energy < prevEnergy) {
+                        // If energy has decreased: accept solution
+                        prevEnergy = energy;
+                        sinkXSpinVariables = tempSinkXSpinVariables.clone();
+                        controllerXSpinVariables = tempControllerXSpinVariables.clone();
+                    } else {
+                        // Else with given probability decide to accept or not   
+                        double baseProb = Math.exp((prevEnergy - energy) / temperature);
+                        System.out.println("BaseProp " + baseProb);
+                        double rand = Math.random();
+                        if (rand < baseProb) {
+                            prevEnergy = energy;
+                            sinkXSpinVariables = tempSinkXSpinVariables.clone();
+                            controllerXSpinVariables = tempControllerXSpinVariables.clone();
+                        }
+                    }
+                    System.out.println("counter " + counter);
+                    System.out.println("Selected Energy is " + prevEnergy);
+                } // End of for
+            } // End of for
+            // Update tunnling field
+            tunnlingField *= tunnlingFiledEvaporation;
+            temperature *= coolingRate;
+        } while (tunnlingField > tunnlingFiledFinal); // End of do while 
+
         // Final solution is in: sinkXSpinVariables and controllerXSpinVariables
-        int tempIterationsCount = 10;
-        float energy;
-        generateInitialTempSpinVariables();
-
-        while (tempIterationsCount != 0) {
-            tempIterationsCount--;
-            generateNeighbour();
-            energy = calculateEnergy();
-        }
+        System.out.println("Counter: " + counter);
+        System.out.println("Accepted Energy: " + prevEnergy);
+        System.out.println("Min Energy: " + minEnergy);
+        System.out.println("Final Temperature: " + temperature);
     }
 
-    private void generateInitialTempSpinVariables() {
+    private void generateInitialSpinVariablesAndEnergy() {
         // --- Initialize temp lists to false
         for (int i = 0; i < candidateControllers.size(); i++) {
             controllerXSpinVariables[i] = false;
-            tempControllerXSpinVariables[i] = false;
         }
 
         for (int i = 0; i < candidateSinks.size(); i++) {
             sinkXSpinVariables[i] = false;
-            tempSinkXSpinVariables[i] = false;
-        }
-        // ---
-
-        // --- Select random configuration for temp lists
-        for (int i = 0; i < sinkXSpinVariables.length; i++) {
-            double probabilityOfOne = Math.random();
-            sinkXSpinVariables[i] = probabilityOfOne < .5;
         }
 
-        for (int i = 0; i < controllerXSpinVariables.length; i++) {
-            double probabilityOfOne = Math.random();
-            controllerXSpinVariables[i] = probabilityOfOne < .5;
-        }
-        // ---
+        tempControllerXSpinVariables = controllerXSpinVariables.clone();
+        tempSinkXSpinVariables = sinkXSpinVariables.clone();
 
-        printGeneratedSolution();
+        prevEnergy = calculateEnergy(-1);
     }
 
     private int getDistance(int firstNodeIndex, int secondeNodeIndex) {
@@ -255,12 +275,12 @@ public class QuantumAnealing {
         printGeneratedSolution();
     }
 
-    private float calculateEnergy() {
+    private double calculateEnergy(int currentReplicaNum) {
         int reliabilityEnergy = getReliabilityEnergy();
         float loadBalancingEnergy = getLoadBalancingEnergy();
         float costEnergy = getCostEnergy();
         float potentialEnergy = reliabilityEnergy + loadBalancingEnergy + costEnergy;
-        float energy = getKineticEnergy() + potentialEnergy;
+        double energy = getKineticEnergy(currentReplicaNum) + potentialEnergy;
 
         System.out.println("Reliability: " + reliabilityEnergy);
         System.out.println("Load Balancing: " + loadBalancingEnergy);
@@ -271,9 +291,34 @@ public class QuantumAnealing {
         return energy;
     }
 
-    private int getKineticEnergy() {
-        // TODO: Calculate Kinetic Energy
-        return 0;
+    private double getKineticEnergy(int currentReplicaNum) {
+        if (currentReplicaNum + 1 >= trotterReplicas || currentReplicaNum < 0) {
+            return 0;
+        }
+
+        // Calculate coupling among replicas
+        float halfTemperature = temperature / 2;
+        float angle = tunnlingField / (trotterReplicas * temperature);
+
+        double coupling = -halfTemperature * Math.log(Math.tanh(angle));
+
+        int sinkReplicaCoupling = 0;
+        int controllerReplicaCoupling = 0;
+
+        for (int i = 0; i < candidateSinks.size(); i++) {
+            boolean areSpinVariablesTheSame = (replicasOfSinkXSpinVariables[currentReplicaNum][i] && replicasOfSinkXSpinVariables[currentReplicaNum + 1][i]);
+            sinkReplicaCoupling = areSpinVariablesTheSame ? 1 : -1;
+        }
+
+        for (int i = 0; i < candidateControllers.size(); i++) {
+            boolean areSpinVariablesTheSame
+                    = (replicasOfControllerXSpinVariables[currentReplicaNum][i]
+                    && replicasOfControllerXSpinVariables[currentReplicaNum + 1][i]);
+            controllerReplicaCoupling = areSpinVariablesTheSame ? 1 : -1;
+        }
+
+        // Multiply sum of two final results with coupling
+        return coupling * (sinkReplicaCoupling + controllerReplicaCoupling);
     }
 
     private int getReliabilityEnergy() {
@@ -473,5 +518,19 @@ public class QuantumAnealing {
             }
         }
         return totalLoadToJthController;
+    }
+
+    private void generateReplicasOfSolutions() {
+        for (int i = 0; i < trotterReplicas; i++) {
+            // --- Select random configuration for replicas
+            for (int j = 0; j < candidateSinks.size(); j++) {
+                double probabilityOfOne = Math.random();
+                replicasOfSinkXSpinVariables[i][j] = probabilityOfOne < .5;
+            }
+            for (int j = 0; j < candidateSinks.size(); j++) {
+                double probabilityOfOne = Math.random();
+                replicasOfControllerXSpinVariables[i][j] = probabilityOfOne < .5;
+            }
+        }
     }
 }
