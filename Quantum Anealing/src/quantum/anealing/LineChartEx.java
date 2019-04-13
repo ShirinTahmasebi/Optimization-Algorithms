@@ -10,7 +10,6 @@ import javax.swing.SwingUtilities;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
-import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.block.BlockBorder;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
@@ -26,7 +25,8 @@ public class LineChartEx extends JFrame {
     static XYSeries visitedSeries = new XYSeries("Visited Energy");
     static XYSeries minimumSeries = new XYSeries("Minimum Energy");
 
-    public static void addToSelectedEnergy(int iterationNumber, double selectedEnergy, double visitedEnergy, double minEnergy) {
+    public static void addToSelectedEnergy(int iterationNumber,
+            double selectedEnergy, double visitedEnergy, double minEnergy, double minTotalEnergy) {
         selectedSeries.add(iterationNumber, selectedEnergy);
         visitedSeries.add(iterationNumber, visitedEnergy);
         minimumSeries.add(iterationNumber, minEnergy);

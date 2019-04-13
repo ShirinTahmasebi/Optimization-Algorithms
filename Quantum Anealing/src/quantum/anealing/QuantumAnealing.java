@@ -5,6 +5,7 @@ import quantum.anealing.graph.Graph;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
+import javafx.util.Pair;
 import quantum.anealing.dijkstra.DijkstraAlgorithm;
 
 public class QuantumAnealing {
@@ -46,7 +47,7 @@ public class QuantumAnealing {
     private final float tunnlingFiledEvaporation;
     private final float coolingRate = 1;
 
-    private double prevEnergy;
+    private Pair<Double, Double> prevEnergyPair;
 
     public QuantumAnealing(
             Graph graph,
@@ -160,9 +161,9 @@ public class QuantumAnealing {
         // Genreate replicas (Fill replicasOfSinkXSpinVariables, replicasOfControllerXSpinVariables )
         generateReplicasOfSolutions();
         generateInitialSpinVariablesAndEnergy();
-        
+
         int counter = 0;
-        double minEnergy = 10000;
+        Pair<Double, Double> minEnergyPair = new Pair<>(Double.MAX_VALUE, Double.MAX_VALUE);
         // Do while tunnlig field is favorable
         do {
             // For each replica
@@ -175,13 +176,16 @@ public class QuantumAnealing {
                     // Generate neighbor
                     generateNeighbour();
                     // Calculate energy of temp solution
-                    double energy = calculateEnergy(ro);
+                    Pair<Double, Double> energyPair = calculateEnergy(ro);
+                    double energy = calculateEnergyFromPair(energyPair);
+                    double prevEnergy = calculateEnergyFromPair(prevEnergyPair);
+                    double minEnergy = calculateEnergyFromPair(minEnergyPair);
                     if (energy < minEnergy) {
-                        minEnergy = energy;
+                        minEnergyPair = energyPair;
                     }
                     if (energy < prevEnergy) {
                         // If energy has decreased: accept solution
-                        prevEnergy = energy;
+                        prevEnergyPair = energyPair;
                         sinkXSpinVariables = tempSinkXSpinVariables.clone();
                         controllerXSpinVariables = tempControllerXSpinVariables.clone();
                     } else {
@@ -190,14 +194,20 @@ public class QuantumAnealing {
                         System.out.println("BaseProp " + baseProb);
                         double rand = Math.random();
                         if (rand < baseProb) {
-                            prevEnergy = energy;
+                            prevEnergyPair = energyPair;
                             sinkXSpinVariables = tempSinkXSpinVariables.clone();
                             controllerXSpinVariables = tempControllerXSpinVariables.clone();
                         }
                     }
-                    LineChartEx.addToSelectedEnergy(counter, prevEnergy, energy, minEnergy);
+                    LineChartEx.addToSelectedEnergy(
+                            counter,
+                            calculateEnergyFromPair(prevEnergyPair),
+                            energy,
+                            calculateEnergyFromPair(minEnergyPair),
+                            4
+                    );
                     System.out.println("counter " + counter);
-                    System.out.println("Selected Energy is " + prevEnergy);
+                    System.out.println("Selected Energy is " + calculateEnergyFromPair(prevEnergyPair));
                 } // End of for
             } // End of for
             // Update tunnling field
@@ -207,8 +217,8 @@ public class QuantumAnealing {
 
         // Final solution is in: sinkXSpinVariables and controllerXSpinVariables
         System.out.println("Counter: " + counter);
-        System.out.println("Accepted Energy: " + prevEnergy);
-        System.out.println("Min Energy: " + minEnergy);
+        System.out.println("Accepted Energy: " + calculateEnergyFromPair(prevEnergyPair));
+        System.out.println("Min Energy: " + calculateEnergyFromPair(minEnergyPair));
         System.out.println("Final Temperature: " + temperature);
         LineChartEx.drawChart();
     }
@@ -225,8 +235,8 @@ public class QuantumAnealing {
 
         tempControllerXSpinVariables = controllerXSpinVariables.clone();
         tempSinkXSpinVariables = sinkXSpinVariables.clone();
-
-        prevEnergy = calculateEnergy(-1);
+        Pair<Double, Double> energyPair = calculateEnergy(-1);
+        prevEnergyPair = energyPair;
     }
 
     private int getDistance(int firstNodeIndex, int secondeNodeIndex) {
@@ -277,12 +287,13 @@ public class QuantumAnealing {
         printGeneratedSolution();
     }
 
-    private double calculateEnergy(int currentReplicaNum) {
+    private Pair<Double, Double> calculateEnergy(int currentReplicaNum) {
         int reliabilityEnergy = getReliabilityEnergy();
-        float loadBalancingEnergy = getLoadBalancingEnergy();
-        float costEnergy = getCostEnergy();
-        float potentialEnergy = reliabilityEnergy + loadBalancingEnergy + costEnergy;
-        double energy = getKineticEnergy(currentReplicaNum) + potentialEnergy;
+        double loadBalancingEnergy = getLoadBalancingEnergy();
+        double costEnergy = getCostEnergy();
+        double potentialEnergy = reliabilityEnergy + loadBalancingEnergy + costEnergy;
+        double kineticEnergy = getKineticEnergy(currentReplicaNum);
+        double energy = kineticEnergy + potentialEnergy;
 
         System.out.println("Reliability: " + reliabilityEnergy);
         System.out.println("Load Balancing: " + loadBalancingEnergy);
@@ -290,7 +301,7 @@ public class QuantumAnealing {
         System.out.println("Potential Cost: " + potentialEnergy);
         System.out.println("Energy Cost: " + energy);
 
-        return energy;
+        return new Pair<>(potentialEnergy, kineticEnergy);
     }
 
     private double getKineticEnergy(int currentReplicaNum) {
@@ -534,5 +545,9 @@ public class QuantumAnealing {
                 replicasOfControllerXSpinVariables[i][j] = probabilityOfOne < .5;
             }
         }
+    }
+
+    private double calculateEnergyFromPair(Pair<Double, Double> energyPair) {
+        return energyPair.getKey() + energyPair.getValue();
     }
 }

@@ -3,11 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package simulated.anealing;
+package main;
 
 /**
  *
  * @author shirin
  */
-public class SimulatedAnealing {
+public class Utils {
+    
 }

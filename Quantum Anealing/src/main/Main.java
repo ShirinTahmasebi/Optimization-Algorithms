@@ -1,29 +1,28 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package main;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import javafx.util.Pair;
-import quantum.anealing.QuantumAnealing;
 import quantum.anealing.TestQuantumAnnealingAlgorithm;
 import quantum.anealing.graph.Edge;
 import quantum.anealing.graph.Graph;
 import quantum.anealing.graph.Vertex;
+import simulated.anealing.TestSimulatedAnnealingAlgorithm;
 
-/**
- *
- * @author shirin
- */
 public class Main {
 
     private static final int SINK_LOAD = 10;            // w
     private static final int CONTROLLER_LOAD = 10;      // wPrime
-
+    private static final int SENSOR_SINK_MAX_DISTANCE = 3;              // Lmax
+    private static final int SENSOR_CONTROLLER_MAX_DISTANCE = 2;        // LPrimeMax
+    private static final int MAX_SINK_COVERAGE = 6;             // k
+    private static final int MAX_CONTROLLER_COVERAGE = 6;       // kPrime
+    private static final int MAX_SINK_LOAD = 30;        // W
+    private static final int MAX_CONTROLLER_LOAD = 30;  // WPrime
+    private static final int COST_SINK = 1;
+    private static final int COST_CONTROLLER = 3;
+    
     private static final List<Vertex> nodes = new ArrayList<>();        // V
     private static final List<Edge> edges = new ArrayList<>();          // E
     private List<Vertex> candidateSinks = new ArrayList<>();            // AS
@@ -34,7 +33,36 @@ public class Main {
         Graph graph = m.initialize();
         
         TestQuantumAnnealingAlgorithm qaTest = new TestQuantumAnnealingAlgorithm();
-        qaTest.execute(graph, m.candidateSinks, m.candidateControllers);
+        qaTest.execute(
+                graph,
+                m.candidateSinks,
+                m.candidateControllers,
+                SENSOR_SINK_MAX_DISTANCE,
+                SENSOR_CONTROLLER_MAX_DISTANCE,
+                MAX_SINK_COVERAGE,
+                MAX_CONTROLLER_COVERAGE,
+                MAX_SINK_LOAD,
+                MAX_CONTROLLER_LOAD,
+                COST_SINK,
+                COST_CONTROLLER
+                
+        );
+        
+        TestSimulatedAnnealingAlgorithm saTest = new TestSimulatedAnnealingAlgorithm();
+        saTest.execute(
+                graph,
+                m.candidateSinks,
+                m.candidateControllers,
+                SENSOR_SINK_MAX_DISTANCE,
+                SENSOR_CONTROLLER_MAX_DISTANCE,
+                MAX_SINK_COVERAGE,
+                MAX_CONTROLLER_COVERAGE,
+                MAX_SINK_LOAD,
+                MAX_CONTROLLER_LOAD,
+                COST_SINK,
+                COST_CONTROLLER
+                
+        );
     }
 
     public Graph initializeGraph(int graphSize) {
