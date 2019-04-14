@@ -160,7 +160,21 @@ public class SimulatedAnealing {
     }
 
     void execute() {
-        // Genreate replicas (Fill replicasOfSinkXSpinVariables, replicasOfControllerXSpinVariables )
+        // Generate Initial Solution
+
+        // -- Do while temperature is favorable
+        // ---- For each montecarlo step
+        // ------ Generate neighbor
+        // ------ Calculate potential energy of temp solution
+        // ------ If energy has decreased: accept solution
+        // ------ Else with given probability decide to accept or not
+        // ---- End of for
+        // ---- Update temperature
+        // -- End of do while
+        
+        // Final solution is in: sinkXSpinVariables and controllerXSpinVariables
+        
+        
         generateReplicasOfSolutions();
         generateInitialSpinVariablesAndEnergy();
 
