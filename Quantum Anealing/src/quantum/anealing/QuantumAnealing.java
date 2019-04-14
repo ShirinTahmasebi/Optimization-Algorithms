@@ -220,6 +220,7 @@ public class QuantumAnealing {
         // Final solution is in: sinkXSpinVariables and controllerXSpinVariables
         System.out.println("Counter: " + counter);
         System.out.println("Accepted Energy: " + calculateEnergyFromPair(prevEnergyPair));
+        System.out.println("Accepted Potential Energy: " + prevEnergyPair.getKey());
         System.out.println("Min Energy: " + calculateEnergyFromPair(minEnergyPair));
         System.out.println("Final Temperature: " + temperature);
         LineChartEx.drawChart();
