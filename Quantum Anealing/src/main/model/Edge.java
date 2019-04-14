@@ -1,4 +1,4 @@
-package quantum.anealing.graph;
+package main.model;
 
 public class Edge {
 

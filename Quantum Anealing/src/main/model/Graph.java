@@ -1,4 +1,4 @@
-package quantum.anealing.graph;
+package main.model;
 
 import java.util.List;
 

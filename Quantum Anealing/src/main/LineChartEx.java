@@ -1,4 +1,4 @@
-package quantum.anealing;
+package main;
 
 
 import java.awt.BasicStroke;

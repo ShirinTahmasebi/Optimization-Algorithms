@@ -5,9 +5,9 @@
  */
 package quantum.anealing.dijkstra;
 
-import quantum.anealing.graph.Vertex;
-import quantum.anealing.graph.Graph;
-import quantum.anealing.graph.Edge;
+import main.model.Vertex;
+import main.model.Graph;
+import main.model.Edge;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;

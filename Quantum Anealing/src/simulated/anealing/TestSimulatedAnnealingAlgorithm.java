@@ -1,7 +1,7 @@
 package simulated.anealing;
 
-import quantum.anealing.graph.Vertex;
-import quantum.anealing.graph.Graph;
+import main.model.Vertex;
+import main.model.Graph;
 import java.util.List;
 
 public class TestSimulatedAnnealingAlgorithm {

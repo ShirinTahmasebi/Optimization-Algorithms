@@ -1,7 +1,8 @@
 package quantum.anealing;
 
-import quantum.anealing.graph.Vertex;
-import quantum.anealing.graph.Graph;
+import main.LineChartEx;
+import main.model.Vertex;
+import main.model.Graph;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;

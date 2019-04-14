@@ -5,9 +5,9 @@ import java.util.Arrays;
 import java.util.List;
 import javafx.util.Pair;
 import quantum.anealing.TestQuantumAnnealingAlgorithm;
-import quantum.anealing.graph.Edge;
-import quantum.anealing.graph.Graph;
-import quantum.anealing.graph.Vertex;
+import main.model.Edge;
+import main.model.Graph;
+import main.model.Vertex;
 import simulated.anealing.TestSimulatedAnnealingAlgorithm;
 
 public class Main {

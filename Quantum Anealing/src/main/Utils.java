@@ -1,8 +1,8 @@
 package main;
 
 import java.util.List;
-import quantum.anealing.graph.Graph;
-import quantum.anealing.graph.Vertex;
+import main.model.Graph;
+import main.model.Vertex;
 
 public class Utils {
 
