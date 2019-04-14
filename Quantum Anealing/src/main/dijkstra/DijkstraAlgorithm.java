@@ -1,4 +1,4 @@
-package quantum.anealing.dijkstra;
+package main.dijkstra;
 
 import main.model.Vertex;
 import main.model.Graph;

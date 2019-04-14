@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Random;
 import javafx.util.Pair;
 import main.Utils;
-import quantum.anealing.dijkstra.DijkstraAlgorithm;
+import main.dijkstra.DijkstraAlgorithm;
 
 public class QuantumAnealing {
 

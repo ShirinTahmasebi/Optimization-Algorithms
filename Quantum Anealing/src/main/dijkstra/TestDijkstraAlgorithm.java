@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package quantum.anealing.dijkstra;
+package main.dijkstra;
 
 import main.model.Vertex;
 import main.model.Graph;
