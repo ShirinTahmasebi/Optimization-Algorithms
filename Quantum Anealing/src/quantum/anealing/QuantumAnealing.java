@@ -40,12 +40,13 @@ public class QuantumAnealing {
     private final int costController;
     private final float costReductionFactor;
     private final int trotterReplicas;   // P
-    private float temperature;       // T
+    private final float temperatureQuantum;    // TQ
+    private float temperature;           // T
     private final int monteCarloSteps;
     private float tunnlingField;
     private final float tunnlingFiledFinal;
     private final float tunnlingFiledEvaporation;
-    private final float coolingRate = 1f;
+    private final float coolingRate = .7f;
 
     private Pair<Double, Double> prevEnergyPair;
 
@@ -94,6 +95,7 @@ public class QuantumAnealing {
         this.costController = costController;
         this.costReductionFactor = costReductionFactor;
         this.trotterReplicas = trotterReplicas;
+        this.temperatureQuantum = temperature;
         this.temperature = temperature;
         this.monteCarloSteps = monteCarloSteps;
         this.tunnlingField = tunnlingFieldInitial;
@@ -134,7 +136,7 @@ public class QuantumAnealing {
                     if (energy < minEnergy) {
                         minEnergyPair = energyPair;
                     }
-                    if (energy < prevEnergy) {
+                    if (energyPair.getKey() < prevEnergyPair.getKey() || energy < prevEnergy) {
                         // If energy has decreased: accept solution
                         prevEnergyPair = energyPair;
                         sinkXSpinVariables = tempSinkXSpinVariables.clone();
@@ -236,9 +238,37 @@ public class QuantumAnealing {
 
         double potentialEnergy = reliabilityEnergy + loadBalancingEnergy + costEnergy;
         double kineticEnergy = getKineticEnergy(currentReplicaNum);
-        double energy = kineticEnergy + potentialEnergy;
+        double energy;
+        energy = kineticEnergy + potentialEnergy;
 
         return new Pair<>(potentialEnergy, kineticEnergy);
+    }
+
+    private double calculatePotentialEnergy(int currentReplicaNum) {
+        int reliabilityEnergy = Utils.getReliabilityEnergy(
+                graph,
+                sinkYSpinVariables, controllerYSpinVariables,
+                candidateSinks, tempSinkXSpinVariables,
+                candidateControllers, tempControllerXSpinVariables,
+                maxSinkCoverage, maxControllerCoverage
+        );
+
+        double loadBalancingEnergy = Utils.getLoadBalancingEnergy(
+                graph,
+                sinkYSpinVariables, controllerYSpinVariables,
+                candidateSinks, tempSinkXSpinVariables,
+                candidateControllers, tempControllerXSpinVariables,
+                maxSinkLoad, maxSinkCoverage,
+                maxControllerLoad, maxControllerCoverage
+        );
+
+        double costEnergy = Utils.getCostEnergy(
+                candidateSinks, tempSinkXSpinVariables,
+                candidateControllers, tempControllerXSpinVariables,
+                costSink, costController, costReductionFactor
+        );
+
+        return reliabilityEnergy + loadBalancingEnergy + costEnergy;
     }
 
     private double getKineticEnergy(int currentReplicaNum) {
@@ -247,10 +277,10 @@ public class QuantumAnealing {
         }
 
         // Calculate coupling among replicas
-        float halfTemperature = temperature / 2;
-        float angle = tunnlingField / (trotterReplicas * temperature);
+        float halfTemperatureQuantum = temperatureQuantum / 2;
+        float angle = tunnlingField / (trotterReplicas * temperatureQuantum);
 
-        double coupling = -halfTemperature * Math.log(Math.tanh(angle));
+        double coupling = -halfTemperatureQuantum * Math.log(Math.tanh(angle));
 
         int sinkReplicaCoupling = 0;
         int controllerReplicaCoupling = 0;
