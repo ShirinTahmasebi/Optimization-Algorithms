@@ -7,12 +7,10 @@ import java.util.List;
 public class TestSimulatedAnnealingAlgorithm {
 
     private static final float COST_REDUCTION_FACTOR = 0.75f;
-    private static final int TROTTER_REPLICAS = 50;     // P
-    private static final float TEMPERATURE = 50f;         // T
-    private static final int MONTE_CARLO_STEP = 50;   // M
-    private static final float TUNNLING_FIELD_INITIAL = 1f;
-    private static final float TUNNLING_FIELD_FINAL = .5f;
-    private static final float TUNNLING_FIELD_EVAPORATION = .9f;
+    private static final float TEMPERATURE_INITIAL = 100;              // T Initial
+    private static final float TEMPERATURE_FINAL = 1;                // T Final
+    private static final float TEMPERATURE_COOLING_RATE = .95f;         // T Cooling Rate
+    private static final int MONTE_CARLO_STEP = 100;   // M
 
     public void execute(
             Graph graph,
@@ -27,6 +25,26 @@ public class TestSimulatedAnnealingAlgorithm {
             int costSink,
             int costController) {
 
+        SimulatedAnealing sa = new SimulatedAnealing(
+                graph,
+                candidateSinks,
+                candidateControllers,
+                sensorSinkMaxDistance,
+                sensorControllerMaxDistance,
+                maxSinkCoverage,
+                maxControllerCoverage,
+                maxSinkLoad,
+                maxControllerLoad,
+                costSink,
+                costController,
+                COST_REDUCTION_FACTOR,
+                TEMPERATURE_INITIAL,
+                TEMPERATURE_FINAL,
+                TEMPERATURE_COOLING_RATE,
+                MONTE_CARLO_STEP
+        );
+
+        sa.execute();
 
     }
 }

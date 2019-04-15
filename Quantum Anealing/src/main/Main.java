@@ -12,6 +12,8 @@ import simulated.anealing.TestSimulatedAnnealingAlgorithm;
 
 public class Main {
 
+    public static final boolean DO_PRINT_STEPS = false;
+    
     private static final int SINK_LOAD = 10;            // w
     private static final int CONTROLLER_LOAD = 10;      // wPrime
     private static final int SENSOR_SINK_MAX_DISTANCE = 3;              // Lmax

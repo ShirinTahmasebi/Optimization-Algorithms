@@ -3,12 +3,10 @@ package quantum.anealing;
 import main.LineChartEx;
 import main.model.Vertex;
 import main.model.Graph;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 import javafx.util.Pair;
 import main.Utils;
-import main.dijkstra.DijkstraAlgorithm;
 
 public class QuantumAnealing {
 
@@ -47,9 +45,11 @@ public class QuantumAnealing {
     private float tunnlingField;
     private final float tunnlingFiledFinal;
     private final float tunnlingFiledEvaporation;
-    private final float coolingRate = 1;
+    private final float coolingRate = 1f;
 
     private Pair<Double, Double> prevEnergyPair;
+
+    private final LineChartEx lineChartEx;
 
     public QuantumAnealing(
             Graph graph,
@@ -100,62 +100,11 @@ public class QuantumAnealing {
         this.tunnlingFiledFinal = tunnlingFieldFinal;
         this.tunnlingFiledEvaporation = tunnlingFieldEvaporation;
 
+        lineChartEx = new LineChartEx();
         initializeSpinVariables();
 
-        printProblemSpecifications();
-    }
-
-    private void printProblemSpecifications() {
-        // Print graph
-        graph.getVertexes().stream().forEach((vertex) -> {
-            System.out.println("Vertex: " + vertex.toString());
-        });
-
-        System.out.println();
-
-        graph.getEdges().stream().forEach((edge) -> {
-            System.out.println("Edge: " + edge.toString());
-        });
-
-        System.out.println();
-
-        // Print candidate sinks
-        System.out.print("Candidate sink vertexes are: ");
-        candidateSinks.stream().forEach((candidateSinkVertex) -> {
-            System.out.print(candidateSinkVertex.toString() + ", ");
-        });
-
-        System.out.println();
-        System.out.println();
-
-        // Print candidate controllers
-        System.out.print("Candidate controller vertexes are: ");
-        candidateControllers.stream().forEach((candidateControllerVertex) -> {
-            System.out.print(candidateControllerVertex.toString() + ", ");
-        });
-
-        System.out.println();
-        System.out.println();
-
-        System.out.println("Sink Y: ");
-
-        for (int i = 0; i < graph.getVertexes().size(); i++) {
-            for (int j = 0; j < candidateSinks.size(); j++) {
-                System.out.print(sinkYSpinVariables[i][j] + ", ");
-            }
-            System.out.println();
-        }
-
-        System.out.println();
-        System.out.println();
-
-        System.out.println("Controller Y: ");
-
-        for (int i = 0; i < graph.getVertexes().size(); i++) {
-            for (int j = 0; j < candidateControllers.size(); j++) {
-                System.out.print(controllerYSpinVariables[i][j] + ", ");
-            }
-            System.out.println();
+        if (main.Main.DO_PRINT_STEPS) {
+            Utils.printProblemSpecifications(graph, candidateSinks, sinkYSpinVariables, candidateControllers, controllerYSpinVariables);
         }
     }
 
@@ -193,7 +142,9 @@ public class QuantumAnealing {
                     } else {
                         // Else with given probability decide to accept or not   
                         double baseProb = Math.exp((prevEnergy - energy) / temperature);
-                        System.out.println("BaseProp " + baseProb);
+                        if (main.Main.DO_PRINT_STEPS) {
+                            System.out.println("BaseProp " + baseProb);
+                        }
                         double rand = Math.random();
                         if (rand < baseProb) {
                             prevEnergyPair = energyPair;
@@ -201,15 +152,13 @@ public class QuantumAnealing {
                             controllerXSpinVariables = tempControllerXSpinVariables.clone();
                         }
                     }
-                    LineChartEx.addToSelectedEnergy(
+                    lineChartEx.addToSelectedEnergy(
                             counter,
                             calculateEnergyFromPair(prevEnergyPair),
                             energy,
                             calculateEnergyFromPair(minEnergyPair),
                             4
                     );
-                    System.out.println("counter " + counter);
-                    System.out.println("Selected Energy is " + calculateEnergyFromPair(prevEnergyPair));
                 } // End of for
             } // End of for
             // Update tunnling field
@@ -223,7 +172,7 @@ public class QuantumAnealing {
         System.out.println("Accepted Potential Energy: " + prevEnergyPair.getKey());
         System.out.println("Min Energy: " + calculateEnergyFromPair(minEnergyPair));
         System.out.println("Final Temperature: " + temperature);
-        LineChartEx.drawChart();
+        lineChartEx.drawChart();
     }
 
     private void generateInitialSpinVariablesAndEnergy() {
@@ -242,37 +191,6 @@ public class QuantumAnealing {
         prevEnergyPair = energyPair;
     }
 
-    private int getDistance(int firstNodeIndex, int secondeNodeIndex) {
-        DijkstraAlgorithm dijkstra = new DijkstraAlgorithm(graph);
-        dijkstra.execute(graph.getVertexes().get(firstNodeIndex));
-        LinkedList<Vertex> path = dijkstra.getPath(graph.getVertexes().get(secondeNodeIndex));
-        return (path == null) ? 0 : path.size() - 1;
-    }
-
-    private boolean isDistanceFavorable(int firstNodeIndex, int secondNodeIndex, int maxDistance) {
-        return getDistance(firstNodeIndex, secondNodeIndex) <= maxDistance;
-    }
-
-    private void printGeneratedSolution() {
-        // --- Print temp lists
-        System.out.println();
-        System.out.println("Temp Sink X: ");
-        for (int i = 0; i < tempSinkXSpinVariables.length; i++) {
-            System.out.print(tempSinkXSpinVariables[i] + ", ");
-        }
-
-        System.out.println();
-        System.out.println("Temp Controller X: ");
-        for (int i = 0; i < tempControllerXSpinVariables.length; i++) {
-            System.out.print(tempControllerXSpinVariables[i] + ", ");
-        }
-
-        System.out.println();
-        System.out.println();
-        // ---
-
-    }
-
     private void generateNeighbour() {
         Random random = new Random();
         int randInt = random.nextInt(tempSinkXSpinVariables.length + tempControllerXSpinVariables.length);
@@ -287,7 +205,9 @@ public class QuantumAnealing {
             boolean prevValue = tempControllerXSpinVariables[index];
             tempControllerXSpinVariables[index] = !prevValue;
         }
-        printGeneratedSolution();
+        if (main.Main.DO_PRINT_STEPS) {
+            Utils.printGeneratedSolution(tempSinkXSpinVariables, tempControllerXSpinVariables);
+        }
     }
 
     private Pair<Double, Double> calculateEnergy(int currentReplicaNum) {
@@ -313,16 +233,10 @@ public class QuantumAnealing {
                 candidateControllers, tempControllerXSpinVariables,
                 costSink, costController, costReductionFactor
         );
-        
+
         double potentialEnergy = reliabilityEnergy + loadBalancingEnergy + costEnergy;
         double kineticEnergy = getKineticEnergy(currentReplicaNum);
         double energy = kineticEnergy + potentialEnergy;
-
-        System.out.println("Reliability: " + reliabilityEnergy);
-        System.out.println("Load Balancing: " + loadBalancingEnergy);
-        System.out.println("Cost: " + costEnergy);
-        System.out.println("Potential Cost: " + potentialEnergy);
-        System.out.println("Energy Cost: " + energy);
 
         return new Pair<>(potentialEnergy, kineticEnergy);
     }
@@ -376,7 +290,7 @@ public class QuantumAnealing {
                 // The following line can be replaced with vertexIndex = i - but I prefered to write this in the following way for more readability
                 int vertexIndex1 = graph.getVertexIndexById(graph.getVertexes().get(i).getId());
                 int vertexIndex2 = graph.getVertexIndexById(((Vertex) candidateSinks.get(j)).getId());
-                sinkYSpinVariables[i][j] = isDistanceFavorable(vertexIndex1, vertexIndex2, sensorSinkMaxDistance);
+                sinkYSpinVariables[i][j] = Utils.isDistanceFavorable(graph, vertexIndex1, vertexIndex2, sensorSinkMaxDistance);
             }
         }
 
@@ -385,7 +299,7 @@ public class QuantumAnealing {
                 // The following line can be replaced with vertexIndex = i - but I prefered to write this in the following way for more readability
                 int vertexIndex1 = graph.getVertexIndexById(graph.getVertexes().get(i).getId());
                 int vertexIndex2 = graph.getVertexIndexById(((Vertex) candidateControllers.get(j)).getId());
-                controllerYSpinVariables[i][j] = isDistanceFavorable(vertexIndex1, vertexIndex2, sensorControllerMaxDistance);
+                controllerYSpinVariables[i][j] = Utils.isDistanceFavorable(graph, vertexIndex1, vertexIndex2, sensorControllerMaxDistance);
             }
         }
         // ---

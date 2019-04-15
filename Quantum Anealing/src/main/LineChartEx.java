@@ -1,6 +1,5 @@
 package main;
 
-
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
@@ -21,21 +20,20 @@ import org.jfree.data.xy.XYSeriesCollection;
 
 public class LineChartEx extends JFrame {
 
-    static XYSeries selectedSeries = new XYSeries("Selected Energy");
-    static XYSeries visitedSeries = new XYSeries("Visited Energy");
-    static XYSeries minimumSeries = new XYSeries("Minimum Energy");
+    private final XYSeries selectedSeries = new XYSeries("Selected Energy");
+    private final XYSeries visitedSeries = new XYSeries("Visited Energy");
+    private final XYSeries minimumSeries = new XYSeries("Minimum Energy");
 
-    public static void addToSelectedEnergy(int iterationNumber,
+    public void addToSelectedEnergy(int iterationNumber,
             double selectedEnergy, double visitedEnergy, double minEnergy, double minTotalEnergy) {
         selectedSeries.add(iterationNumber, selectedEnergy);
         visitedSeries.add(iterationNumber, visitedEnergy);
         minimumSeries.add(iterationNumber, minEnergy);
     }
 
-    public static void drawChart() {
+    public void drawChart() {
         SwingUtilities.invokeLater(() -> {
-            LineChartEx ex = new LineChartEx();
-            ex.setVisible(true);
+            this.setVisible(true);
         });
     }
 
@@ -59,7 +57,7 @@ public class LineChartEx extends JFrame {
 
     private XYDataset createDataset() {
         XYSeriesCollection dataset = new XYSeriesCollection();
-        
+
         dataset.addSeries(selectedSeries);
         dataset.addSeries(visitedSeries);
         dataset.addSeries(minimumSeries);
@@ -86,7 +84,7 @@ public class LineChartEx extends JFrame {
         renderer.setSeriesPaint(0, Color.RED);
         renderer.setSeriesPaint(1, Color.BLUE);
         renderer.setSeriesPaint(2, Color.GREEN);
-        
+
         renderer.setSeriesStroke(0, new BasicStroke(2.0f));
         renderer.setSeriesStroke(1, new BasicStroke(2.0f));
         renderer.setSeriesStroke(2, new BasicStroke(2.0f));
@@ -112,6 +110,16 @@ public class LineChartEx extends JFrame {
     }
 
     public static void main(String[] args) {
-        drawChart();
+        LineChartEx chartEx = new LineChartEx();
+        chartEx.addToSelectedEnergy(1, 1, 1, 1, 1);
+        chartEx.addToSelectedEnergy(5, 5, 5, 5, 5);
+        chartEx.drawChart();
+
+        LineChartEx chartEx1 = new LineChartEx();
+        chartEx1.addToSelectedEnergy(1, 1, 1, 1, 1);
+        chartEx1.addToSelectedEnergy(5, 5, 5, 5, 5);
+        chartEx1.addToSelectedEnergy(10, 1, 1, 1, 1);
+        chartEx1.addToSelectedEnergy(11, 0, 0, 0, 0);
+        chartEx1.drawChart();
     }
 }
