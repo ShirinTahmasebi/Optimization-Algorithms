@@ -9,10 +9,10 @@ public class TestSimulatedAnnealingAlgorithm {
     private static final float COST_REDUCTION_FACTOR = 0.75f;
     private static final float TEMPERATURE_INITIAL = 100;              // T Initial
     private static final float TEMPERATURE_FINAL = 1;                // T Final
-    private static final float TEMPERATURE_COOLING_RATE = .95f;         // T Cooling Rate
-    private static final int MONTE_CARLO_STEP = 100;   // M
+    private static final float TEMPERATURE_COOLING_RATE = .75f;         // T Cooling Rate
+    private static final int MONTE_CARLO_STEP = 50;   // M
 
-    public void execute(
+    public double execute(
             Graph graph,
             List<Vertex> candidateSinks,
             List<Vertex> candidateControllers,
@@ -44,7 +44,6 @@ public class TestSimulatedAnnealingAlgorithm {
                 MONTE_CARLO_STEP
         );
 
-        sa.execute();
-
+        return sa.execute();
     }
 }

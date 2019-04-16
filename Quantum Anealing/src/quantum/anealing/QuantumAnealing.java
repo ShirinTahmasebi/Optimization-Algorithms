@@ -110,7 +110,7 @@ public class QuantumAnealing {
         }
     }
 
-    void execute() {
+    double execute() {
         // Genreate replicas (Fill replicasOfSinkXSpinVariables, replicasOfControllerXSpinVariables )
         generateReplicasOfSolutions();
         generateInitialSpinVariablesAndEnergy();
@@ -154,7 +154,7 @@ public class QuantumAnealing {
                             controllerXSpinVariables = tempControllerXSpinVariables.clone();
                         }
                     }
-                    lineChartEx.addToSelectedEnergy(
+                    lineChartEx.addToEnergySeries(
                             counter,
                             calculateEnergyFromPair(prevEnergyPair),
                             energy,
@@ -168,13 +168,17 @@ public class QuantumAnealing {
             temperature *= coolingRate;
         } while (tunnlingField > tunnlingFiledFinal); // End of do while 
 
-        // Final solution is in: sinkXSpinVariables and controllerXSpinVariables
-        System.out.println("Counter: " + counter);
-        System.out.println("Accepted Energy: " + calculateEnergyFromPair(prevEnergyPair));
-        System.out.println("Accepted Potential Energy: " + prevEnergyPair.getKey());
-        System.out.println("Min Energy: " + calculateEnergyFromPair(minEnergyPair));
-        System.out.println("Final Temperature: " + temperature);
-        lineChartEx.drawChart();
+        if (main.Main.DO_PRINT_INSTANCES) {
+            // Final solution is in: sinkXSpinVariables and controllerXSpinVariables
+            System.out.println("Counter: " + counter);
+            System.out.println("Accepted Energy: " + calculateEnergyFromPair(prevEnergyPair));
+            System.out.println("Accepted Potential Energy: " + prevEnergyPair.getKey());
+            System.out.println("Min Energy: " + calculateEnergyFromPair(minEnergyPair));
+            System.out.println("Final Temperature: " + temperature);
+            lineChartEx.drawChart();
+        }
+
+        return prevEnergyPair.getKey();
     }
 
     private void generateInitialSpinVariablesAndEnergy() {

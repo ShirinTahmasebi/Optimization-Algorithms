@@ -96,7 +96,7 @@ public class SimulatedAnealing {
         }
     }
 
-    void execute() {
+    double execute() {
         // Generate Initial Solution
         generateInitialSpinVariablesAndEnergy();
 
@@ -133,7 +133,7 @@ public class SimulatedAnealing {
                         controllerXSpinVariables = tempControllerXSpinVariables.clone();
                     }
                 }
-                lineChartEx.addToSelectedEnergy(
+                lineChartEx.addToEnergySeries(
                         counter,
                         prevEnergy,
                         energy,
@@ -145,12 +145,16 @@ public class SimulatedAnealing {
             temperature *= temperatureCoolingRate;
         } while (temperature > temperatureFinal); // -- End of do while 
 
-        // Final solution is in: sinkXSpinVariables and controllerXSpinVariables
-        System.out.println("Counter: " + counter);
-        System.out.println("Accepted Energy: " + prevEnergy);
-        System.out.println("Min Energy: " + minEnergy);
-        System.out.println("Final Temperature: " + temperature);
-        lineChartEx.drawChart();
+        if (main.Main.DO_PRINT_INSTANCES) {
+            // Final solution is in: sinkXSpinVariables and controllerXSpinVariables
+            System.out.println("Counter: " + counter);
+            System.out.println("Accepted Energy: " + prevEnergy);
+            System.out.println("Min Energy: " + minEnergy);
+            System.out.println("Final Temperature: " + temperature);
+            lineChartEx.drawChart();
+        }
+
+        return prevEnergy;
     }
 
     private void generateInitialSpinVariablesAndEnergy() {

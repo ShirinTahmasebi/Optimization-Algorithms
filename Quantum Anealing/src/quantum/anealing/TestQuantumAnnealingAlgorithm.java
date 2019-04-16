@@ -12,9 +12,9 @@ public class TestQuantumAnnealingAlgorithm {
     private static final int MONTE_CARLO_STEP = 100;   // M
     private static final float TUNNLING_FIELD_INITIAL = 1f;
     private static final float TUNNLING_FIELD_FINAL = .5f;
-    private static final float TUNNLING_FIELD_EVAPORATION = .9f;
+    private static final float TUNNLING_FIELD_EVAPORATION = .95f;
 
-    public void execute(
+    public double execute(
             Graph graph,
             List<Vertex> candidateSinks,
             List<Vertex> candidateControllers,
@@ -48,6 +48,6 @@ public class TestQuantumAnnealingAlgorithm {
                 TUNNLING_FIELD_EVAPORATION
         );
 
-        qa.execute();
+        return qa.execute();
     }
 }

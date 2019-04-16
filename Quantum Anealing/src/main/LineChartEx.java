@@ -24,11 +24,22 @@ public class LineChartEx extends JFrame {
     private final XYSeries visitedSeries = new XYSeries("Visited Energy");
     private final XYSeries minimumSeries = new XYSeries("Minimum Energy");
 
-    public void addToSelectedEnergy(int iterationNumber,
+    private final XYSeries totalQASeries = new XYSeries("QA Potential Energy");
+    private final XYSeries totalSASeries = new XYSeries("SA Potential Energy");
+
+    public void addToEnergySeries(int iterationNumber,
             double selectedEnergy, double visitedEnergy, double minEnergy, double minTotalEnergy) {
         selectedSeries.add(iterationNumber, selectedEnergy);
         visitedSeries.add(iterationNumber, visitedEnergy);
         minimumSeries.add(iterationNumber, minEnergy);
+    }
+
+    public void addToQASeries(int iterationNumber, double energy) {
+        totalQASeries.add(iterationNumber, energy);
+    }
+
+    public void addToSASeries(int iterationNumber, double energy) {
+        totalSASeries.add(iterationNumber, energy);
     }
 
     public void drawChart() {
@@ -38,11 +49,11 @@ public class LineChartEx extends JFrame {
     }
 
     public LineChartEx() {
-        initUI();
+//        initUI(createTotalEnergyDataset());
+        initUI(createComparativePotEnergyDataset());
     }
 
-    private void initUI() {
-        XYDataset dataset = createDataset();
+    private void initUI(XYDataset dataset) {
         JFreeChart chart = createChart(dataset);
         ChartPanel chartPanel = new ChartPanel(chart);
         chartPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
@@ -55,12 +66,21 @@ public class LineChartEx extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
-    private XYDataset createDataset() {
+    private XYDataset createTotalEnergyDataset() {
         XYSeriesCollection dataset = new XYSeriesCollection();
 
         dataset.addSeries(selectedSeries);
         dataset.addSeries(visitedSeries);
         dataset.addSeries(minimumSeries);
+
+        return dataset;
+    }
+
+    private XYDataset createComparativePotEnergyDataset() {
+        XYSeriesCollection dataset = new XYSeriesCollection();
+
+        dataset.addSeries(totalQASeries);
+        dataset.addSeries(totalSASeries);
 
         return dataset;
     }
@@ -111,15 +131,15 @@ public class LineChartEx extends JFrame {
 
     public static void main(String[] args) {
         LineChartEx chartEx = new LineChartEx();
-        chartEx.addToSelectedEnergy(1, 1, 1, 1, 1);
-        chartEx.addToSelectedEnergy(5, 5, 5, 5, 5);
+        chartEx.addToEnergySeries(1, 1, 1, 1, 1);
+        chartEx.addToEnergySeries(5, 5, 5, 5, 5);
         chartEx.drawChart();
 
         LineChartEx chartEx1 = new LineChartEx();
-        chartEx1.addToSelectedEnergy(1, 1, 1, 1, 1);
-        chartEx1.addToSelectedEnergy(5, 5, 5, 5, 5);
-        chartEx1.addToSelectedEnergy(10, 1, 1, 1, 1);
-        chartEx1.addToSelectedEnergy(11, 0, 0, 0, 0);
+        chartEx1.addToEnergySeries(1, 1, 1, 1, 1);
+        chartEx1.addToEnergySeries(5, 5, 5, 5, 5);
+        chartEx1.addToEnergySeries(10, 1, 1, 1, 1);
+        chartEx1.addToEnergySeries(11, 0, 0, 0, 0);
         chartEx1.drawChart();
     }
 }

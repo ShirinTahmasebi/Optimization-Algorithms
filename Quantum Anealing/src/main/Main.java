@@ -12,8 +12,9 @@ import simulated.anealing.TestSimulatedAnnealingAlgorithm;
 
 public class Main {
 
+    public static final boolean DO_PRINT_INSTANCES = false;
     public static final boolean DO_PRINT_STEPS = false;
-    
+
     private static final int SINK_LOAD = 10;            // w
     private static final int CONTROLLER_LOAD = 10;      // wPrime
     private static final int SENSOR_SINK_MAX_DISTANCE = 3;              // Lmax
@@ -24,47 +25,63 @@ public class Main {
     private static final int MAX_CONTROLLER_LOAD = 30;  // WPrime
     private static final int COST_SINK = 1;
     private static final int COST_CONTROLLER = 3;
-    
+
     private static final List<Vertex> nodes = new ArrayList<>();        // V
     private static final List<Edge> edges = new ArrayList<>();          // E
     private List<Vertex> candidateSinks = new ArrayList<>();            // AS
-    private List<Vertex> candidateControllers = new ArrayList<>();      //AC
+    private List<Vertex> candidateControllers = new ArrayList<>();      // AC
 
     public static void main(String[] args) {
         Main m = new Main();
         Graph graph = m.initialize();
-        
-        TestQuantumAnnealingAlgorithm qaTest = new TestQuantumAnnealingAlgorithm();
-        qaTest.execute(
-                graph,
-                m.candidateSinks,
-                m.candidateControllers,
-                SENSOR_SINK_MAX_DISTANCE,
-                SENSOR_CONTROLLER_MAX_DISTANCE,
-                MAX_SINK_COVERAGE,
-                MAX_CONTROLLER_COVERAGE,
-                MAX_SINK_LOAD,
-                MAX_CONTROLLER_LOAD,
-                COST_SINK,
-                COST_CONTROLLER
-                
-        );
-        
-        TestSimulatedAnnealingAlgorithm saTest = new TestSimulatedAnnealingAlgorithm();
-        saTest.execute(
-                graph,
-                m.candidateSinks,
-                m.candidateControllers,
-                SENSOR_SINK_MAX_DISTANCE,
-                SENSOR_CONTROLLER_MAX_DISTANCE,
-                MAX_SINK_COVERAGE,
-                MAX_CONTROLLER_COVERAGE,
-                MAX_SINK_LOAD,
-                MAX_CONTROLLER_LOAD,
-                COST_SINK,
-                COST_CONTROLLER
-                
-        );
+        LineChartEx chartEx = new LineChartEx();
+        double qaEnergySum = 0;
+        double saEnergySum = 0;
+
+        for (int i = 0; i < 20; i++) {
+            TestQuantumAnnealingAlgorithm qaTest = new TestQuantumAnnealingAlgorithm();
+            double qaPotentialEnergy = qaTest.execute(
+                    graph,
+                    m.candidateSinks,
+                    m.candidateControllers,
+                    SENSOR_SINK_MAX_DISTANCE,
+                    SENSOR_CONTROLLER_MAX_DISTANCE,
+                    MAX_SINK_COVERAGE,
+                    MAX_CONTROLLER_COVERAGE,
+                    MAX_SINK_LOAD,
+                    MAX_CONTROLLER_LOAD,
+                    COST_SINK,
+                    COST_CONTROLLER
+            );
+            chartEx.addToQASeries(i + 1, qaPotentialEnergy);
+            qaEnergySum += qaPotentialEnergy;
+            System.out.println("QA Energy: " + qaPotentialEnergy);
+        }
+
+        for (int i = 0; i < 20; i++) {
+            TestSimulatedAnnealingAlgorithm saTest = new TestSimulatedAnnealingAlgorithm();
+            double saPotentialEnergy = saTest.execute(
+                    graph,
+                    m.candidateSinks,
+                    m.candidateControllers,
+                    SENSOR_SINK_MAX_DISTANCE,
+                    SENSOR_CONTROLLER_MAX_DISTANCE,
+                    MAX_SINK_COVERAGE,
+                    MAX_CONTROLLER_COVERAGE,
+                    MAX_SINK_LOAD,
+                    MAX_CONTROLLER_LOAD,
+                    COST_SINK,
+                    COST_CONTROLLER
+            );
+
+            chartEx.addToSASeries(i + 1, saPotentialEnergy);
+            saEnergySum += saPotentialEnergy;
+            System.out.println("SA Energy: " + saPotentialEnergy);
+        }
+
+        chartEx.drawChart();
+        System.out.println("QA average potential energy is: " + qaEnergySum / 20);
+        System.out.println("SA average potential energy is: " + saEnergySum / 20);
     }
 
     public Graph initializeGraph(int graphSize) {
