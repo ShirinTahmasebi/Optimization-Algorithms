@@ -1,8 +1,10 @@
 package main;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Random;
+import java.util.Set;
 import javafx.util.Pair;
 import quantum.anealing.TestQuantumAnnealingAlgorithm;
 import main.model.Edge;
@@ -15,7 +17,8 @@ public class Main {
     public static final boolean DO_PRINT_INSTANCES = false;
     public static final boolean DO_PRINT_STEPS = false;
 
-    private static final int SINK_LOAD = 10;            // w
+    private static final int SIMULATIONS_COUNT = 20;
+    private static final int SINK_LOAD = 10;   // w
     private static final int CONTROLLER_LOAD = 10;      // wPrime
     private static final int SENSOR_SINK_MAX_DISTANCE = 3;              // Lmax
     private static final int SENSOR_CONTROLLER_MAX_DISTANCE = 2;        // LPrimeMax
@@ -28,111 +31,118 @@ public class Main {
 
     private static final List<Vertex> nodes = new ArrayList<>();        // V
     private static final List<Edge> edges = new ArrayList<>();          // E
-    private List<Vertex> candidateSinks = new ArrayList<>();            // AS
-    private List<Vertex> candidateControllers = new ArrayList<>();      // AC
+    private final List<Vertex> candidateSinks = new ArrayList<>();            // AS
+    private final List<Vertex> candidateControllers = new ArrayList<>();      // AC
 
     public static void main(String[] args) {
+        System.out.println("---------- Graph Size = 1 ----------");
+        execute(1);
+        System.out.println("---------- Graph Size = 2 ----------");
+        execute(2);
+        System.out.println("---------- Graph Size = 3 ----------");
+        execute(3);
+        System.out.println("---------- Graph Size = 4 ----------");
+        execute(4);
+    }
+
+    private static Pair<Double, Double> execute(int graphSize) {
+
         Main m = new Main();
-        Graph graph = m.initialize();
+        Graph graph = m.initialize(graphSize);
         LineChartEx chartEx = new LineChartEx();
         double qaEnergySum = 0;
         double saEnergySum = 0;
 
-        for (int i = 0; i < 20; i++) {
-            TestQuantumAnnealingAlgorithm qaTest = new TestQuantumAnnealingAlgorithm();
-            double qaPotentialEnergy = qaTest.execute(
-                    graph,
-                    m.candidateSinks,
-                    m.candidateControllers,
-                    SENSOR_SINK_MAX_DISTANCE,
-                    SENSOR_CONTROLLER_MAX_DISTANCE,
-                    MAX_SINK_COVERAGE,
-                    MAX_CONTROLLER_COVERAGE,
-                    MAX_SINK_LOAD,
-                    MAX_CONTROLLER_LOAD,
-                    COST_SINK,
-                    COST_CONTROLLER
-            );
+        TestQuantumAnnealingAlgorithm qaTest = new TestQuantumAnnealingAlgorithm(
+                graph,
+                m.candidateSinks,
+                m.candidateControllers,
+                SENSOR_SINK_MAX_DISTANCE,
+                SENSOR_CONTROLLER_MAX_DISTANCE,
+                MAX_SINK_COVERAGE,
+                MAX_CONTROLLER_COVERAGE,
+                MAX_SINK_LOAD,
+                MAX_CONTROLLER_LOAD,
+                COST_SINK,
+                COST_CONTROLLER);
+
+        for (int i = 0; i < SIMULATIONS_COUNT; i++) {
+            double qaPotentialEnergy = qaTest.execute();
             chartEx.addToQASeries(i + 1, qaPotentialEnergy);
             qaEnergySum += qaPotentialEnergy;
             System.out.println("QA Energy: " + qaPotentialEnergy);
         }
 
-        for (int i = 0; i < 20; i++) {
-            TestSimulatedAnnealingAlgorithm saTest = new TestSimulatedAnnealingAlgorithm();
-            double saPotentialEnergy = saTest.execute(
-                    graph,
-                    m.candidateSinks,
-                    m.candidateControllers,
-                    SENSOR_SINK_MAX_DISTANCE,
-                    SENSOR_CONTROLLER_MAX_DISTANCE,
-                    MAX_SINK_COVERAGE,
-                    MAX_CONTROLLER_COVERAGE,
-                    MAX_SINK_LOAD,
-                    MAX_CONTROLLER_LOAD,
-                    COST_SINK,
-                    COST_CONTROLLER
-            );
+        TestSimulatedAnnealingAlgorithm saTest = new TestSimulatedAnnealingAlgorithm(
+                graph,
+                m.candidateSinks,
+                m.candidateControllers,
+                SENSOR_SINK_MAX_DISTANCE,
+                SENSOR_CONTROLLER_MAX_DISTANCE,
+                MAX_SINK_COVERAGE,
+                MAX_CONTROLLER_COVERAGE,
+                MAX_SINK_LOAD,
+                MAX_CONTROLLER_LOAD,
+                COST_SINK,
+                COST_CONTROLLER);
 
+        for (int i = 0; i < SIMULATIONS_COUNT; i++) {
+            double saPotentialEnergy = saTest.execute();
             chartEx.addToSASeries(i + 1, saPotentialEnergy);
             saEnergySum += saPotentialEnergy;
             System.out.println("SA Energy: " + saPotentialEnergy);
         }
 
         chartEx.drawChart();
-        System.out.println("QA average potential energy is: " + qaEnergySum / 20);
-        System.out.println("SA average potential energy is: " + saEnergySum / 20);
+        double finalQAResult = qaEnergySum / SIMULATIONS_COUNT;
+        double finalSAResult = saEnergySum / SIMULATIONS_COUNT;
+
+        System.out.println("QA average potential energy is: " + finalQAResult);
+        System.out.println("SA average potential energy is: " + finalSAResult);
+
+        return new Pair<>(finalQAResult, finalSAResult);
     }
 
     public Graph initializeGraph(int graphSize) {
-
         int vertexCount = 0;
+        int candidateSinksNumber;
+        int candidateControllersNumber;
         ArrayList<Pair<String, Pair<Integer, Integer>>> edgesPairList = new ArrayList<>();
         if (graphSize == 1) {
-            vertexCount = 11;
-            edgesPairList.add(new Pair<>("Edge_0", new Pair<>(0, 1)));
-            edgesPairList.add(new Pair<>("Edge_1", new Pair<>(0, 2)));
-            edgesPairList.add(new Pair<>("Edge_2", new Pair<>(0, 4)));
-            edgesPairList.add(new Pair<>("Edge_3", new Pair<>(2, 6)));
-            edgesPairList.add(new Pair<>("Edge_4", new Pair<>(2, 7)));
-            edgesPairList.add(new Pair<>("Edge_5", new Pair<>(3, 7)));
-            edgesPairList.add(new Pair<>("Edge_6", new Pair<>(5, 8)));
-            edgesPairList.add(new Pair<>("Edge_7", new Pair<>(8, 9)));
-            edgesPairList.add(new Pair<>("Edge_8", new Pair<>(7, 9)));
-            edgesPairList.add(new Pair<>("Edge_9", new Pair<>(4, 9)));
-            edgesPairList.add(new Pair<>("Edge_10", new Pair<>(9, 10)));
-            edgesPairList.add(new Pair<>("Edge_11", new Pair<>(1, 10)));
+            // Candidate Sink = 4 (20/5)
+            // Candidate Controller = 2 (2/10)
+            vertexCount = 20;
         } else if (graphSize == 2) {
-            vertexCount = 21;
-            edgesPairList.add(new Pair<>("Edge_0", new Pair<>(0, 1)));
-            edgesPairList.add(new Pair<>("Edge_1", new Pair<>(0, 2)));
-            edgesPairList.add(new Pair<>("Edge_2", new Pair<>(0, 4)));
-            edgesPairList.add(new Pair<>("Edge_3", new Pair<>(2, 6)));
-            edgesPairList.add(new Pair<>("Edge_4", new Pair<>(2, 7)));
-            edgesPairList.add(new Pair<>("Edge_5", new Pair<>(3, 7)));
-            edgesPairList.add(new Pair<>("Edge_6", new Pair<>(5, 8)));
-            edgesPairList.add(new Pair<>("Edge_7", new Pair<>(8, 9)));
-            edgesPairList.add(new Pair<>("Edge_8", new Pair<>(7, 9)));
-            edgesPairList.add(new Pair<>("Edge_9", new Pair<>(4, 9)));
-            edgesPairList.add(new Pair<>("Edge_10", new Pair<>(9, 10)));
-            edgesPairList.add(new Pair<>("Edge_11", new Pair<>(1, 10)));
-            edgesPairList.add(new Pair<>("Edge_12", new Pair<>(10, 11)));
-            edgesPairList.add(new Pair<>("Edge_13", new Pair<>(10, 12)));
-            edgesPairList.add(new Pair<>("Edge_14", new Pair<>(10, 14)));
-            edgesPairList.add(new Pair<>("Edge_15", new Pair<>(12, 16)));
-            edgesPairList.add(new Pair<>("Edge_16", new Pair<>(12, 17)));
-            edgesPairList.add(new Pair<>("Edge_17", new Pair<>(13, 17)));
-            edgesPairList.add(new Pair<>("Edge_18", new Pair<>(15, 18)));
-            edgesPairList.add(new Pair<>("Edge_19", new Pair<>(18, 19)));
-            edgesPairList.add(new Pair<>("Edge_20", new Pair<>(17, 19)));
-            edgesPairList.add(new Pair<>("Edge_21", new Pair<>(14, 19)));
-            edgesPairList.add(new Pair<>("Edge_22", new Pair<>(19, 20)));
-            edgesPairList.add(new Pair<>("Edge_23", new Pair<>(11, 20)));
-            edgesPairList.add(new Pair<>("Edge_24", new Pair<>(11, 18)));
-            edgesPairList.add(new Pair<>("Edge_25", new Pair<>(17, 20)));
-            edgesPairList.add(new Pair<>("Edge_26", new Pair<>(10, 4)));
-            edgesPairList.add(new Pair<>("Edge_27", new Pair<>(10, 5)));
+            // Candidate Sink = 8 (40/5)
+            // Candidate Controller = 4 (40/10)
+            vertexCount = 40;
+        } else if (graphSize == 3) {
+            // Candidate Sink = 16 (80/5)
+            // Candidate Controller = 8 (80/10)
+            vertexCount = 80;
+        } else if (graphSize == 4) {
+            // Candidate Sink = 32 (160/5)
+            // Candidate Controller = 16 (160/10)
+            vertexCount = 160;
+        }
 
+        candidateSinksNumber = vertexCount / 5;
+        candidateControllersNumber = vertexCount / 5;
+
+        for (int i = 0; i < vertexCount; i++) {
+            int ithNodeNeighborsCount = vertexCount / 2;
+            Set<Integer> neighborsNumberSet = new HashSet<>();
+
+            while (neighborsNumberSet.size() < ithNodeNeighborsCount) {
+                int nextInt = new Random().nextInt(vertexCount);
+                if (nextInt != i) {
+                    neighborsNumberSet.add(nextInt);
+                }
+            }
+
+            for (int neighborNumber : neighborsNumberSet) {
+                edgesPairList.add(new Pair<>("Edge_" + i + "_To_" + neighborNumber, new Pair<>(i, neighborNumber)));
+            }
         }
 
         for (int i = 0; i < vertexCount; i++) {
@@ -142,6 +152,27 @@ public class Main {
 
         edgesPairList.stream().forEach((edge) -> {
             addLane(edge.getKey(), edge.getValue().getKey(), edge.getValue().getValue());
+        });
+
+        Set<Integer> candidateSinksNumberSet = new HashSet<>();
+        Set<Integer> candidateControllerNumberSet = new HashSet<>();
+
+        while (candidateSinksNumberSet.size() < candidateSinksNumber) {
+            int nextInt = new Random().nextInt(vertexCount);
+            candidateSinksNumberSet.add(nextInt);
+        }
+
+        while (candidateControllerNumberSet.size() < candidateControllersNumber) {
+            int nextInt = new Random().nextInt(vertexCount);
+            candidateControllerNumberSet.add(nextInt);
+        }
+
+        candidateControllerNumberSet.stream().forEach((candidateControllerNumber) -> {
+            candidateControllers.add(nodes.get(candidateControllerNumber));
+        });
+
+        candidateSinksNumberSet.stream().forEach((candidateSinkNumber) -> {
+            candidateSinks.add(nodes.get(candidateSinkNumber));
         });
 
         Graph graph = new Graph(nodes, edges);
@@ -160,28 +191,8 @@ public class Main {
         edges.add(lane);
     }
 
-    private Graph initialize() {
-        Main m = new Main();
-        Graph graph = m.initializeGraph(2);
-        candidateSinks = Arrays.asList(
-                graph.getVertexes().get(1),
-                graph.getVertexes().get(2),
-                graph.getVertexes().get(3),
-                graph.getVertexes().get(4),
-                graph.getVertexes().get(5),
-                graph.getVertexes().get(6)
-        );
-        candidateControllers = Arrays.asList(
-                graph.getVertexes().get(1),
-                graph.getVertexes().get(2),
-                graph.getVertexes().get(3),
-                graph.getVertexes().get(4),
-                graph.getVertexes().get(5),
-                graph.getVertexes().get(6),
-                graph.getVertexes().get(7),
-                graph.getVertexes().get(8),
-                graph.getVertexes().get(9)
-        );
+    private Graph initialize(int graphSize) {
+        Graph graph = initializeGraph(graphSize);
         return graph;
     }
 }

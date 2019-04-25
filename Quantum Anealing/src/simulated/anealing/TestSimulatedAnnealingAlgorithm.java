@@ -11,9 +11,9 @@ public class TestSimulatedAnnealingAlgorithm {
     private static final float TEMPERATURE_FINAL = 1;                // T Final
     private static final float TEMPERATURE_COOLING_RATE = .75f;         // T Cooling Rate
     private static final int MONTE_CARLO_STEP = 50;   // M
+    SimulatedAnealing sa;
 
-    public double execute(
-            Graph graph,
+    public TestSimulatedAnnealingAlgorithm(Graph graph,
             List<Vertex> candidateSinks,
             List<Vertex> candidateControllers,
             int sensorSinkMaxDistance,
@@ -24,8 +24,7 @@ public class TestSimulatedAnnealingAlgorithm {
             int maxControllerLoad,
             int costSink,
             int costController) {
-
-        SimulatedAnealing sa = new SimulatedAnealing(
+        sa = new SimulatedAnealing(
                 graph,
                 candidateSinks,
                 candidateControllers,
@@ -43,7 +42,9 @@ public class TestSimulatedAnnealingAlgorithm {
                 TEMPERATURE_COOLING_RATE,
                 MONTE_CARLO_STEP
         );
+    }
 
+    public double execute() {
         return sa.execute();
     }
 }

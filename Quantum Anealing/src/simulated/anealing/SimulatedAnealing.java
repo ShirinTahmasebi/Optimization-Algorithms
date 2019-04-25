@@ -36,6 +36,7 @@ public class SimulatedAnealing {
     private final int costSink;
     private final int costController;
     private final float costReductionFactor;
+    private final float temperatureInitial;       // T0
     private float temperature;                    // T0
     private final float temperatureFinal;         // T1
     private final float temperatureCoolingRate;
@@ -83,6 +84,7 @@ public class SimulatedAnealing {
         this.costController = costController;
         this.costReductionFactor = costReductionFactor;
         this.temperature = temperatureInitial;
+        this.temperatureInitial = temperatureInitial;
         this.temperatureFinal = temperatureFinal;
         this.temperatureCoolingRate = temperatureCoolingRate;
         this.monteCarloSteps = monteCarloSteps;
@@ -97,6 +99,8 @@ public class SimulatedAnealing {
     }
 
     double execute() {
+        // Reset Temperature
+        temperature = temperatureInitial;        
         // Generate Initial Solution
         generateInitialSpinVariablesAndEnergy();
 
@@ -227,28 +231,27 @@ public class SimulatedAnealing {
                 sinkYSpinVariables[i][j] = false;
             }
         }
-
         for (int i = 0; i < graph.getVertexes().size(); i++) {
             for (int j = 0; j < candidateControllers.size(); j++) {
                 controllerYSpinVariables[i][j] = false;
             }
         }
 
+        int jUpperBound = Math.max(candidateSinks.size(), candidateControllers.size());
         for (int i = 0; i < graph.getVertexes().size(); i++) {
-            for (int j = 0; j < candidateSinks.size(); j++) {
-                // The following line can be replaced with vertexIndex = i - but I prefered to write this in the following way for more readability
-                int vertexIndex1 = graph.getVertexIndexById(graph.getVertexes().get(i).getId());
-                int vertexIndex2 = graph.getVertexIndexById(((Vertex) candidateSinks.get(j)).getId());
-                sinkYSpinVariables[i][j] = Utils.isDistanceFavorable(graph, vertexIndex1, vertexIndex2, sensorSinkMaxDistance);
-            }
-        }
-
-        for (int i = 0; i < graph.getVertexes().size(); i++) {
-            for (int j = 0; j < candidateControllers.size(); j++) {
-                // The following line can be replaced with vertexIndex = i - but I prefered to write this in the following way for more readability
-                int vertexIndex1 = graph.getVertexIndexById(graph.getVertexes().get(i).getId());
-                int vertexIndex2 = graph.getVertexIndexById(((Vertex) candidateControllers.get(j)).getId());
-                controllerYSpinVariables[i][j] = Utils.isDistanceFavorable(graph, vertexIndex1, vertexIndex2, sensorControllerMaxDistance);
+            for (int j = 0; j < jUpperBound; j++) {
+                if (j < candidateSinks.size()) {
+                    // The following line can be replaced with vertexIndex = i - but I prefered to write this in the following way for more readability
+                    int spinVertexIndex1 = graph.getVertexIndexById(graph.getVertexes().get(i).getId());
+                    int spinVertexIndex2 = graph.getVertexIndexById(((Vertex) candidateSinks.get(j)).getId());
+                    sinkYSpinVariables[i][j] = Utils.isDistanceFavorable(graph, spinVertexIndex1, spinVertexIndex2, sensorSinkMaxDistance);
+                }
+                if (j < candidateControllers.size()) {
+                    // The following line can be replaced with vertexIndex = i - but I prefered to write this in the following way for more readability
+                    int vertexIndex1 = graph.getVertexIndexById(graph.getVertexes().get(i).getId());
+                    int vertexIndex2 = graph.getVertexIndexById(((Vertex) candidateControllers.get(j)).getId());
+                    controllerYSpinVariables[i][j] = Utils.isDistanceFavorable(graph, vertexIndex1, vertexIndex2, sensorControllerMaxDistance);
+                }
             }
         }
         // ---
