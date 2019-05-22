@@ -19,7 +19,6 @@ class Graph:
 
         return None
 
-
     def get_vertex_index_by_id(self, id):
         if not id:
             return -1
