@@ -1,3 +1,4 @@
+from copy import deepcopy
 import random
 import sys
 
@@ -27,9 +28,9 @@ class QuantumAnnealing:
             trotter_replicas,
             temperature,
             monte_carlo_steps,
-            tunnling_field_initial,
-            tunnling_field_final,
-            tunnling_field_evaporation
+            tunneling_field_initial,
+            tunneling_field_final,
+            tunneling_field_evaporation
     ):
         if isinstance(graph, Graph):
             self.__graph = graph
@@ -61,10 +62,10 @@ class QuantumAnnealing:
             self.__temperature_quantum = temperature
             self.__temperature = temperature
             self.__monte_carlo_steps = monte_carlo_steps
-            self.__tunnling_field = tunnling_field_initial
-            self.__tunnling_field_initial = tunnling_field_initial
-            self.__tunnling_field_final = tunnling_field_final
-            self.__tunnling_field_evaporation = tunnling_field_evaporation
+            self.__tunneling_field = tunneling_field_initial
+            self.__tunnling_field_initial = tunneling_field_initial
+            self.__tunnling_field_final = tunneling_field_final
+            self.__tunnling_field_evaporation = tunneling_field_evaporation
             self.__cooling_rate = .7
             self.__prev_energy_tuple = ()
             # lineChartEx = new LineChartEx();
@@ -74,8 +75,8 @@ class QuantumAnnealing:
                                              candidate_controllers_list, self.__controller_Y_spin_variables_2d_arr)
 
     def execute(self):
-        # Reset Temperature and Tunnling Field
-        self.__tunnling_field = self.__tunnling_field_initial
+        # Reset Temperature and Tunneling Field
+        self.__tunneling_field = self.__tunnling_field_initial
         self.__temperature = self.__temperature_quantum
 
         # Generate replicas (Fill replicasOfSinkXSpinVariables, replicasOfControllerXSpinVariables )
@@ -90,16 +91,15 @@ class QuantumAnnealing:
         while True:
             # For each replica
             for ro in range(self.__trotter_replicas):
-                self.__temp_sink_X_spin_variables_list = self.__replicas_of_sink_X_spin_variables_2d_arr[ro].copy()
-                self.__temp_controller_X_spin_variables_list = self.__replicas_of_controller_X_spin_variables_2d_arr[
-                    ro].copy()
+                self.__temp_sink_X_spin_variables_list = deepcopy(self.__replicas_of_sink_X_spin_variables_2d_arr[ro])
+                self.__temp_controller_X_spin_variables_list = deepcopy(
+                    self.__replicas_of_controller_X_spin_variables_2d_arr[ro])
                 # For each montecarlo step
                 for step in range(self.__monte_carlo_steps):
                     counter += 1
                     # Generate Neighbors
                     self.generateNeighbor()
                     # Calculate energy of temp solution
-                    energy_tuple = ()
                     energy_tuple = self.calculateEnergy(ro)
                     energy = self.calculate_energy_from_pair(energy_tuple)
                     prev_energy = self.calculate_energy_from_pair(self.__prev_energy_tuple)
@@ -110,28 +110,29 @@ class QuantumAnnealing:
 
                     if energy_tuple[0] < self.__prev_energy_tuple[0] or energy < prev_energy:
                         # If energy has decreased: accept solution
-                        self.__prev_energy_tuple = energy_tuple.copy()
-                        self.__sink_X_spin_variables_list = self.__temp_sink_X_spin_variables_list.copy()
-                        self.__controller_X_spin_variables_list = self.__temp_controller_X_spin_variables_list.copy()
+                        self.__prev_energy_tuple = deepcopy(energy_tuple)
+                        self.__sink_X_spin_variables_list = deepcopy(self.__temp_sink_X_spin_variables_list)
+                        self.__controller_X_spin_variables_list = deepcopy(self.__temp_controller_X_spin_variables_list)
                     else:
                         # Else with given probability decide to accept or not
                         baseProp = math.exp(-float(prev_energy - energy) / self.__temperature)
 
                         if DO_PRINT_STEPS:
-                            print("BaseProp " + baseProp)
+                            print("BaseProp " + str(baseProp))
 
                         rand = random.random()
 
                         if rand < baseProp:
                             self.__prev_energy_tuple = energy_tuple
-                            self.__sink_X_spin_variables_list = self.__temp_sink_X_spin_variables_list.copy()
-                            self.__controller_X_spin_variables_list = self.__temp_controller_X_spin_variables_list.copy()
+                            self.__sink_X_spin_variables_list = deepcopy(self.__temp_sink_X_spin_variables_list)
+                            self.__controller_X_spin_variables_list = deepcopy(
+                                self.__temp_controller_X_spin_variables_list)
 
             # Update tunnling field
-            self.__tunnling_field *= self.__tunnling_field_evaporation
+            self.__tunneling_field *= self.__tunnling_field_evaporation
             self.__temperature *= self.__cooling_rate
 
-            if self.__tunnling_field > self.__tunnling_field_final:
+            if self.__tunneling_field > self.__tunnling_field_final:
                 break
 
         if DO_PRINT_INSTANCES:
@@ -151,8 +152,8 @@ class QuantumAnnealing:
         for i in range(len(self.__candidate_sinks_list)):
             self.__sink_X_spin_variables_list[i] = False
 
-        self.__temp_controller_X_spin_variables_list = self.__controller_X_spin_variables_list.copy()
-        self.__temp_sink_X_spin_variables_list = self.__sink_X_spin_variables_list.copy()
+        self.__temp_controller_X_spin_variables_list = deepcopy(self.__controller_X_spin_variables_list)
+        self.__temp_sink_X_spin_variables_list = deepcopy(self.__sink_X_spin_variables_list)
 
         energy_pair = self.calculateEnergy(-1)
         self.__prev_energy_tuple = energy_pair
@@ -236,7 +237,7 @@ class QuantumAnnealing:
 
         # Calculate coupling among replicas
         half_temperature_quantum = self.__temperature_quantum / 2
-        angle = self.__tunnling_field / (self.__trotter_replicas * self.__temperature_quantum)
+        angle = self.__tunneling_field / (self.__trotter_replicas * self.__temperature_quantum)
         coupling = - half_temperature_quantum * math.log((math.tanh(angle)))
 
         sink_replica_coupling = 0
@@ -253,7 +254,8 @@ class QuantumAnnealing:
         for i in range(len(self.__candidate_controllers_list)):
             are_spin_variables_the_same = self.__replicas_of_controller_X_spin_variables_2d_arr[current_replica_num][
                                               i] and \
-                                          self.__replicas_of_controller_X_spin_variables_2d_arr[current_replica_num + 1][
+                                          self.__replicas_of_controller_X_spin_variables_2d_arr[
+                                              current_replica_num + 1][
                                               i]
 
             if are_spin_variables_the_same:

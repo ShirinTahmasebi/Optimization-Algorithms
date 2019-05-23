@@ -1,7 +1,8 @@
 from dijkstra.dijkstra_algorithm import DijkstraAlgorithm
 
 
-def print_problem_specifications():
+def print_problem_specifications(graph, candidate_sinks_list, sink_Y_spin_variables_2d_arr, candidate_controllers_list,
+                                 controller_Y_spin_variables_2d_arr):
     pass
 
 
