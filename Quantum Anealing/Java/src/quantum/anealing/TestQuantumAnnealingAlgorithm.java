@@ -13,12 +13,15 @@ public class TestQuantumAnnealingAlgorithm {
     private static final float TUNNLING_FIELD_INITIAL = 1f;
     private static final float TUNNLING_FIELD_FINAL = .5f;
     private static final float TUNNLING_FIELD_EVAPORATION = .95f;
+
     QuantumAnealing qa;
 
     public TestQuantumAnnealingAlgorithm(
             Graph graph,
             List<Vertex> candidateSinks,
             List<Vertex> candidateControllers,
+            boolean[][] sinkYSpinVariables,
+            boolean[][] controllerYSpinVariables,
             int sensorSinkMaxDistance,
             int sensorControllerMaxDistance,
             int maxSinkCoverage,
@@ -31,6 +34,8 @@ public class TestQuantumAnnealingAlgorithm {
                 graph,
                 candidateSinks,
                 candidateControllers,
+                sinkYSpinVariables,
+                controllerYSpinVariables,
                 sensorSinkMaxDistance,
                 sensorControllerMaxDistance,
                 maxSinkCoverage,
@@ -47,7 +52,6 @@ public class TestQuantumAnnealingAlgorithm {
                 TUNNLING_FIELD_FINAL,
                 TUNNLING_FIELD_EVAPORATION
         );
-
     }
 
     public double execute() {

@@ -373,4 +373,30 @@ public class Utils {
     public static boolean isDistanceFavorable(Graph graph, int firstNodeIndex, int secondNodeIndex, int maxDistance) {
         return getDistance(graph, firstNodeIndex, secondNodeIndex) <= maxDistance;
     }
+
+    public static void initializeSpinVariables(
+            Graph graph,
+            List<Vertex> candidateSinks,
+            List<Vertex> candidateControllers,
+            int sensorSinkMaxDistance,
+            int sensorControllerMaxDistance,
+            boolean[][] sinkYSpinVariables,
+            boolean[][] controllerYSpinVariables) {
+        // --- Initialize Y and YPrime Spin Variables
+        for (int i = 0; i < graph.getVertexes().size(); i++) {
+            for (int j = 0; j < candidateSinks.size(); j++) {
+                // The following line can be replaced with vertexIndex = i - but I prefered to write this in the following way for more readability
+                int vertexIndex1 = graph.getVertexIndexById(graph.getVertexes().get(i).getId());
+                int vertexIndex2 = graph.getVertexIndexById(((Vertex) candidateSinks.get(j)).getId());
+                sinkYSpinVariables[i][j] = Utils.isDistanceFavorable(graph, vertexIndex1, vertexIndex2, sensorSinkMaxDistance);
+            }
+            for (int j = 0; j < candidateControllers.size(); j++) {
+                // The following line can be replaced with vertexIndex = i - but I prefered to write this in the following way for more readability
+                int vertexIndex1 = graph.getVertexIndexById(graph.getVertexes().get(i).getId());
+                int vertexIndex2 = graph.getVertexIndexById(((Vertex) candidateControllers.get(j)).getId());
+                controllerYSpinVariables[i][j] = Utils.isDistanceFavorable(graph, vertexIndex1, vertexIndex2, sensorControllerMaxDistance);
+            }
+        }
+        // ---
+    }
 }

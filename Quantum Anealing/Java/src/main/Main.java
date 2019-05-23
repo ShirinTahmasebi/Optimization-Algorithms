@@ -17,8 +17,8 @@ public class Main {
     public static final boolean DO_PRINT_INSTANCES = false;
     public static final boolean DO_PRINT_STEPS = false;
 
-    private static final int SIMULATIONS_COUNT = 20;
-    private static final int SINK_LOAD = 10;   // w
+    private static final int SIMULATION_COUNT = 20;
+    private static final int SINK_LOAD = 10;            // w
     private static final int CONTROLLER_LOAD = 10;      // wPrime
     private static final int SENSOR_SINK_MAX_DISTANCE = 3;              // Lmax
     private static final int SENSOR_CONTROLLER_MAX_DISTANCE = 2;        // LPrimeMax
@@ -34,21 +34,12 @@ public class Main {
     private final List<Vertex> candidateSinks = new ArrayList<>();            // AS
     private final List<Vertex> candidateControllers = new ArrayList<>();      // AC
 
+    private boolean[][] sinkYSpinVariables;           // SY (Y Spin Variable)
+    private boolean[][] controllerYSpinVariables;     // SYPrime (Y Spin Variable)
+
     public static void main(String[] args) {
-        System.out.println("---------- Graph Size = 1 ----------");
-        execute(1);
-        System.out.println("---------- Graph Size = 2 ----------");
-        execute(2);
-        System.out.println("---------- Graph Size = 3 ----------");
-        execute(3);
-        System.out.println("---------- Graph Size = 4 ----------");
-        execute(4);
-    }
-
-    private static Pair<Double, Double> execute(int graphSize) {
-
         Main m = new Main();
-        Graph graph = m.initialize(graphSize);
+        Graph graph = m.initialize();
         LineChartEx chartEx = new LineChartEx();
         double qaEnergySum = 0;
         double saEnergySum = 0;
@@ -57,6 +48,8 @@ public class Main {
                 graph,
                 m.candidateSinks,
                 m.candidateControllers,
+                m.sinkYSpinVariables,
+                m.controllerYSpinVariables,
                 SENSOR_SINK_MAX_DISTANCE,
                 SENSOR_CONTROLLER_MAX_DISTANCE,
                 MAX_SINK_COVERAGE,
@@ -64,9 +57,10 @@ public class Main {
                 MAX_SINK_LOAD,
                 MAX_CONTROLLER_LOAD,
                 COST_SINK,
-                COST_CONTROLLER);
+                COST_CONTROLLER
+        );
 
-        for (int i = 0; i < SIMULATIONS_COUNT; i++) {
+        for (int i = 0; i < SIMULATION_COUNT; i++) {
             double qaPotentialEnergy = qaTest.execute();
             chartEx.addToQASeries(i + 1, qaPotentialEnergy);
             qaEnergySum += qaPotentialEnergy;
@@ -77,6 +71,8 @@ public class Main {
                 graph,
                 m.candidateSinks,
                 m.candidateControllers,
+                m.sinkYSpinVariables,
+                m.controllerYSpinVariables,
                 SENSOR_SINK_MAX_DISTANCE,
                 SENSOR_CONTROLLER_MAX_DISTANCE,
                 MAX_SINK_COVERAGE,
@@ -86,7 +82,7 @@ public class Main {
                 COST_SINK,
                 COST_CONTROLLER);
 
-        for (int i = 0; i < SIMULATIONS_COUNT; i++) {
+        for (int i = 0; i < SIMULATION_COUNT; i++) {
             double saPotentialEnergy = saTest.execute();
             chartEx.addToSASeries(i + 1, saPotentialEnergy);
             saEnergySum += saPotentialEnergy;
@@ -94,40 +90,40 @@ public class Main {
         }
 
         chartEx.drawChart();
-        double finalQAResult = qaEnergySum / SIMULATIONS_COUNT;
-        double finalSAResult = saEnergySum / SIMULATIONS_COUNT;
-
-        System.out.println("QA average potential energy is: " + finalQAResult);
-        System.out.println("SA average potential energy is: " + finalSAResult);
-
-        return new Pair<>(finalQAResult, finalSAResult);
+        System.out.println("QA average potential energy is: " + qaEnergySum / SIMULATION_COUNT);
+        System.out.println("SA average potential energy is: " + saEnergySum / SIMULATION_COUNT);
     }
 
     public Graph initializeGraph(int graphSize) {
         int vertexCount = 0;
-        int candidateSinksNumber;
-        int candidateControllersNumber;
+        int candidateSinksNumber = 0;
+        int candidateControllersNumber = 0;
         ArrayList<Pair<String, Pair<Integer, Integer>>> edgesPairList = new ArrayList<>();
         if (graphSize == 1) {
             // Candidate Sink = 4 (20/5)
-            // Candidate Controller = 2 (2/10)
+            // Candidate Controller = 2 (20/10)
             vertexCount = 20;
+            candidateSinksNumber = 6;
+            candidateControllersNumber = 9;
         } else if (graphSize == 2) {
             // Candidate Sink = 8 (40/5)
             // Candidate Controller = 4 (40/10)
             vertexCount = 40;
+            candidateSinksNumber = vertexCount / 5;
+            candidateControllersNumber = vertexCount / 10;
         } else if (graphSize == 3) {
             // Candidate Sink = 16 (80/5)
             // Candidate Controller = 8 (80/10)
             vertexCount = 80;
+            candidateSinksNumber = vertexCount / 5;
+            candidateControllersNumber = vertexCount / 10;
         } else if (graphSize == 4) {
             // Candidate Sink = 32 (160/5)
             // Candidate Controller = 16 (160/10)
-            vertexCount = 160;
+            vertexCount = 150;
+            candidateSinksNumber = 50;
+            candidateControllersNumber = 40;
         }
-
-        candidateSinksNumber = vertexCount / 5;
-        candidateControllersNumber = vertexCount / 5;
 
         for (int i = 0; i < vertexCount; i++) {
             int ithNodeNeighborsCount = vertexCount / 2;
@@ -191,8 +187,22 @@ public class Main {
         edges.add(lane);
     }
 
-    private Graph initialize(int graphSize) {
-        Graph graph = initializeGraph(graphSize);
+    private Graph initialize() {
+        Graph graph = initializeGraph(1);
+
+        this.controllerYSpinVariables = new boolean[graph.getVertexes().size()][candidateControllers.size()];
+        this.sinkYSpinVariables = new boolean[graph.getVertexes().size()][candidateSinks.size()];
+
+        Utils.initializeSpinVariables(
+                graph,
+                candidateSinks,
+                candidateControllers,
+                SENSOR_SINK_MAX_DISTANCE,
+                SENSOR_CONTROLLER_MAX_DISTANCE,
+                sinkYSpinVariables,
+                controllerYSpinVariables
+        );
+
         return graph;
     }
 }

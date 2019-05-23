@@ -25,8 +25,8 @@ public class QuantumAnealing {
     // Solution Spin Variables
     private boolean[] sinkXSpinVariables;             // SX (X Spin Variable)
     private boolean[] controllerXSpinVariables;       // SXPrime (X Spin Variable)
-    private final boolean[][] replicasOfSinkXSpinVariables;
-    private final boolean[][] replicasOfControllerXSpinVariables;
+    private boolean[][] replicasOfSinkXSpinVariables;
+    private boolean[][] replicasOfControllerXSpinVariables;
 
     // Temp Spin Variables
     private boolean[] tempSinkXSpinVariables;           // SX (X Spin Variable)           
@@ -41,11 +41,12 @@ public class QuantumAnealing {
     private final float costReductionFactor;
     private final int trotterReplicas;   // P
     private final float temperatureQuantum;    // TQ
-    private float temperature;           // T
+    private float temperature;                        // T
+    private final float temperatureInitial;           // T
     private final int monteCarloSteps;
     private float tunnlingField;
     private final float tunnlingFieldInitial;
-    private final float tunnlingFieldFinal;
+    private final float tunnlingFiledFinal;
     private final float tunnlingFiledEvaporation;
     private final float coolingRate = .7f;
 
@@ -57,6 +58,8 @@ public class QuantumAnealing {
             Graph graph,
             List candidateSinks,
             List candidateControllers,
+            boolean[][] sinkYSpinVariables,
+            boolean[][] controllerYSpinVariables,
             int sensorSinkMaxDistance,
             int sensorControllerMaxDistance,
             int maxSinkCovrage,
@@ -73,8 +76,8 @@ public class QuantumAnealing {
             float tunnlingFieldFinal,
             float tunnlingFieldEvaporation
     ) {
-        this.controllerYSpinVariables = new boolean[graph.getVertexes().size()][candidateControllers.size()];
-        this.sinkYSpinVariables = new boolean[graph.getVertexes().size()][candidateSinks.size()];
+        this.controllerYSpinVariables = controllerYSpinVariables;
+        this.sinkYSpinVariables = sinkYSpinVariables;
         this.tempControllerXSpinVariables = new boolean[candidateControllers.size()];
         this.tempSinkXSpinVariables = new boolean[candidateSinks.size()];
         this.sinkXSpinVariables = new boolean[candidateSinks.size()];
@@ -98,10 +101,11 @@ public class QuantumAnealing {
         this.trotterReplicas = trotterReplicas;
         this.temperatureQuantum = temperature;
         this.temperature = temperature;
+        this.temperatureInitial = temperature;
         this.monteCarloSteps = monteCarloSteps;
         this.tunnlingField = tunnlingFieldInitial;
-        this.tunnlingFieldInitial= tunnlingFieldInitial;
-        this.tunnlingFieldFinal = tunnlingFieldFinal;
+        this.tunnlingFieldInitial = tunnlingFieldInitial;
+        this.tunnlingFiledFinal = tunnlingFieldFinal;
         this.tunnlingFiledEvaporation = tunnlingFieldEvaporation;
 
         lineChartEx = new LineChartEx();
@@ -113,10 +117,16 @@ public class QuantumAnealing {
     }
 
     double execute() {
-        // Reset Temperature and Tunnling Field
+        // Reset Dynamic Values
+        temperature = temperatureInitial;
         tunnlingField = tunnlingFieldInitial;
-        temperature = temperatureQuantum;
-        
+        this.tempControllerXSpinVariables = new boolean[candidateControllers.size()];
+        this.tempSinkXSpinVariables = new boolean[candidateSinks.size()];
+        this.sinkXSpinVariables = new boolean[candidateSinks.size()];
+        this.controllerXSpinVariables = new boolean[candidateControllers.size()];
+        this.replicasOfSinkXSpinVariables = new boolean[trotterReplicas][candidateSinks.size()];
+        this.replicasOfControllerXSpinVariables = new boolean[trotterReplicas][candidateControllers.size()];
+
         // Genreate replicas (Fill replicasOfSinkXSpinVariables, replicasOfControllerXSpinVariables )
         generateReplicasOfSolutions();
         generateInitialSpinVariablesAndEnergy();
@@ -172,7 +182,7 @@ public class QuantumAnealing {
             // Update tunnling field
             tunnlingField *= tunnlingFiledEvaporation;
             temperature *= coolingRate;
-        } while (tunnlingField > tunnlingFieldFinal); // End of do while 
+        } while (tunnlingField > tunnlingFiledFinal); // End of do while 
 
         if (main.Main.DO_PRINT_INSTANCES) {
             // Final solution is in: sinkXSpinVariables and controllerXSpinVariables
@@ -184,6 +194,7 @@ public class QuantumAnealing {
             lineChartEx.drawChart();
         }
 
+        Utils.printGeneratedSolution(tempSinkXSpinVariables, tempControllerXSpinVariables);
         return prevEnergyPair.getKey();
     }
 
@@ -311,40 +322,6 @@ public class QuantumAnealing {
         return coupling * (sinkReplicaCoupling + controllerReplicaCoupling);
     }
 
-    private void initializeSpinVariables() {
-        // --- Initialize Y and YPrime Spin Variables
-        for (int i = 0; i < graph.getVertexes().size(); i++) {
-            for (int j = 0; j < candidateSinks.size(); j++) {
-                sinkYSpinVariables[i][j] = false;
-            }
-        }
-
-        for (int i = 0; i < graph.getVertexes().size(); i++) {
-            for (int j = 0; j < candidateControllers.size(); j++) {
-                controllerYSpinVariables[i][j] = false;
-            }
-        }
-
-        int jUpperBound = Math.max(candidateSinks.size(), candidateControllers.size());
-        for (int i = 0; i < graph.getVertexes().size(); i++) {
-            for (int j = 0; j < jUpperBound; j++) {
-                if (j < candidateSinks.size()) {
-                    // The following line can be replaced with vertexIndex = i - but I prefered to write this in the following way for more readability
-                    int spinVertexIndex1 = graph.getVertexIndexById(graph.getVertexes().get(i).getId());
-                    int spinVertexIndex2 = graph.getVertexIndexById(((Vertex) candidateSinks.get(j)).getId());
-                    sinkYSpinVariables[i][j] = Utils.isDistanceFavorable(graph, spinVertexIndex1, spinVertexIndex2, sensorSinkMaxDistance);
-                }
-                if (j < candidateControllers.size()) {
-                    // The following line can be replaced with vertexIndex = i - but I prefered to write this in the following way for more readability
-                    int vertexIndex1 = graph.getVertexIndexById(graph.getVertexes().get(i).getId());
-                    int vertexIndex2 = graph.getVertexIndexById(((Vertex) candidateControllers.get(j)).getId());
-                    controllerYSpinVariables[i][j] = Utils.isDistanceFavorable(graph, vertexIndex1, vertexIndex2, sensorControllerMaxDistance);
-                }
-            }
-        }
-        // ---
-    }
-
     private void generateReplicasOfSolutions() {
         for (int i = 0; i < trotterReplicas; i++) {
             // --- Select random configuration for replicas
@@ -352,7 +329,7 @@ public class QuantumAnealing {
                 double probabilityOfOne = Math.random();
                 replicasOfSinkXSpinVariables[i][j] = probabilityOfOne < .5;
             }
-            for (int j = 0; j < candidateSinks.size(); j++) {
+            for (int j = 0; j < candidateControllers.size(); j++) {
                 double probabilityOfOne = Math.random();
                 replicasOfControllerXSpinVariables[i][j] = probabilityOfOne < .5;
             }
@@ -361,5 +338,11 @@ public class QuantumAnealing {
 
     private double calculateEnergyFromPair(Pair<Double, Double> energyPair) {
         return energyPair.getKey() + energyPair.getValue();
+    }
+    
+    private void initializeSpinVariables() {
+        // --- Initialize Y and YPrime Spin Variables
+        // Extracted to Utils Class
+        // ---
     }
 }

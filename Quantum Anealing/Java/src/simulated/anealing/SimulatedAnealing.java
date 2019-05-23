@@ -36,8 +36,8 @@ public class SimulatedAnealing {
     private final int costSink;
     private final int costController;
     private final float costReductionFactor;
-    private final float temperatureInitial;       // T0
     private float temperature;                    // T0
+    private final float temperatureInitial;         // T1
     private final float temperatureFinal;         // T1
     private final float temperatureCoolingRate;
     private final int monteCarloSteps;
@@ -49,6 +49,8 @@ public class SimulatedAnealing {
             Graph graph,
             List candidateSinks,
             List candidateControllers,
+            boolean[][] sinkYSpinVariables,
+            boolean[][] controllerYSpinVariables,
             int sensorSinkMaxDistance,
             int sensorControllerMaxDistance,
             int maxSinkCovrage,
@@ -63,8 +65,8 @@ public class SimulatedAnealing {
             float temperatureCoolingRate,
             int monteCarloSteps
     ) {
-        this.controllerYSpinVariables = new boolean[graph.getVertexes().size()][candidateControllers.size()];
-        this.sinkYSpinVariables = new boolean[graph.getVertexes().size()][candidateSinks.size()];
+        this.controllerYSpinVariables = controllerYSpinVariables;
+        this.sinkYSpinVariables = sinkYSpinVariables;
         this.tempControllerXSpinVariables = new boolean[candidateControllers.size()];
         this.tempSinkXSpinVariables = new boolean[candidateSinks.size()];
         this.sinkXSpinVariables = new boolean[candidateSinks.size()];
@@ -99,8 +101,14 @@ public class SimulatedAnealing {
     }
 
     double execute() {
-        // Reset Temperature
-        temperature = temperatureInitial;        
+        // Reset Dynamic Variables
+        temperature = temperatureInitial;
+        prevEnergy = 0;
+        this.tempControllerXSpinVariables = new boolean[candidateControllers.size()];
+        this.tempSinkXSpinVariables = new boolean[candidateSinks.size()];
+        this.sinkXSpinVariables = new boolean[candidateSinks.size()];
+        this.controllerXSpinVariables = new boolean[candidateControllers.size()];
+
         // Generate Initial Solution
         generateInitialSpinVariablesAndEnergy();
 
@@ -158,6 +166,7 @@ public class SimulatedAnealing {
             lineChartEx.drawChart();
         }
 
+        Utils.printGeneratedSolution(tempSinkXSpinVariables, tempControllerXSpinVariables);
         return prevEnergy;
     }
 
@@ -223,37 +232,10 @@ public class SimulatedAnealing {
 
         return potentialEnergy;
     }
-
+    
     private void initializeSpinVariables() {
         // --- Initialize Y and YPrime Spin Variables
-        for (int i = 0; i < graph.getVertexes().size(); i++) {
-            for (int j = 0; j < candidateSinks.size(); j++) {
-                sinkYSpinVariables[i][j] = false;
-            }
-        }
-        for (int i = 0; i < graph.getVertexes().size(); i++) {
-            for (int j = 0; j < candidateControllers.size(); j++) {
-                controllerYSpinVariables[i][j] = false;
-            }
-        }
-
-        int jUpperBound = Math.max(candidateSinks.size(), candidateControllers.size());
-        for (int i = 0; i < graph.getVertexes().size(); i++) {
-            for (int j = 0; j < jUpperBound; j++) {
-                if (j < candidateSinks.size()) {
-                    // The following line can be replaced with vertexIndex = i - but I prefered to write this in the following way for more readability
-                    int spinVertexIndex1 = graph.getVertexIndexById(graph.getVertexes().get(i).getId());
-                    int spinVertexIndex2 = graph.getVertexIndexById(((Vertex) candidateSinks.get(j)).getId());
-                    sinkYSpinVariables[i][j] = Utils.isDistanceFavorable(graph, spinVertexIndex1, spinVertexIndex2, sensorSinkMaxDistance);
-                }
-                if (j < candidateControllers.size()) {
-                    // The following line can be replaced with vertexIndex = i - but I prefered to write this in the following way for more readability
-                    int vertexIndex1 = graph.getVertexIndexById(graph.getVertexes().get(i).getId());
-                    int vertexIndex2 = graph.getVertexIndexById(((Vertex) candidateControllers.get(j)).getId());
-                    controllerYSpinVariables[i][j] = Utils.isDistanceFavorable(graph, vertexIndex1, vertexIndex2, sensorControllerMaxDistance);
-                }
-            }
-        }
+        // Extracted to Utils Class
         // ---
     }
 }

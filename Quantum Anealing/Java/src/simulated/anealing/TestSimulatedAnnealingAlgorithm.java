@@ -11,11 +11,15 @@ public class TestSimulatedAnnealingAlgorithm {
     private static final float TEMPERATURE_FINAL = 1;                // T Final
     private static final float TEMPERATURE_COOLING_RATE = .75f;         // T Cooling Rate
     private static final int MONTE_CARLO_STEP = 50;   // M
+
     SimulatedAnealing sa;
 
-    public TestSimulatedAnnealingAlgorithm(Graph graph,
+    public TestSimulatedAnnealingAlgorithm(
+            Graph graph,
             List<Vertex> candidateSinks,
             List<Vertex> candidateControllers,
+            boolean[][] sinkYSpinVariables,
+            boolean[][] controllerYSpinVariables,
             int sensorSinkMaxDistance,
             int sensorControllerMaxDistance,
             int maxSinkCoverage,
@@ -28,6 +32,8 @@ public class TestSimulatedAnnealingAlgorithm {
                 graph,
                 candidateSinks,
                 candidateControllers,
+                sinkYSpinVariables,
+                controllerYSpinVariables,
                 sensorSinkMaxDistance,
                 sensorControllerMaxDistance,
                 maxSinkCoverage,
