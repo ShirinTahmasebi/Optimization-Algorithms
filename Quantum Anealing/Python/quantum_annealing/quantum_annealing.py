@@ -1,19 +1,22 @@
-from copy import deepcopy
+import math
 import random
 import sys
+from copy import deepcopy
 
-import math
-
-from main.main import DO_PRINT_STEPS, DO_PRINT_INSTANCES
-from main.utils import print_problem_specifications, print_generated_solution, get_reliability_energy, \
-    get_load_balancing_energy, get_cost_energy, is_distance_favorable
+from base.utils import print_problem_specifications, print_generated_solution, get_reliability_energy, \
+    get_load_balancing_energy, get_cost_energy
 from model.graph import Graph
+
+DO_PRINT_INSTANCES = False
+DO_PRINT_STEPS = False
 
 
 class QuantumAnnealing:
     def __init__(
             self,
             graph,
+            sink_y_spin_variables,
+            controller_y_spin_variables,
             candidate_sinks_list,
             candidate_controllers_list,
             sensor_sink_max_distance,
@@ -39,8 +42,8 @@ class QuantumAnnealing:
             self.__sensor_sink_max_distance = sensor_sink_max_distance
             self.__sensor_controller_max_distance = sensor_controller_max_distance
 
-            self.__sink_Y_spin_variables_2d_arr = [[]]
-            self.__controller_Y_spin_variables_2d_arr = [[]]
+            self.__sink_Y_spin_variables_2d_arr = sink_y_spin_variables
+            self.__controller_Y_spin_variables_2d_arr = controller_y_spin_variables
 
             self.__sink_X_spin_variables_list = []
             self.__controller_X_spin_variables_list = []
@@ -61,23 +64,25 @@ class QuantumAnnealing:
             self.__trotter_replicas = trotter_replicas
             self.__temperature_quantum = temperature
             self.__temperature = temperature
+            self.__temperature_initial = temperature
             self.__monte_carlo_steps = monte_carlo_steps
             self.__tunneling_field = tunneling_field_initial
-            self.__tunnling_field_initial = tunneling_field_initial
-            self.__tunnling_field_final = tunneling_field_final
-            self.__tunnling_field_evaporation = tunneling_field_evaporation
+            self.__tunneling_field_initial = tunneling_field_initial
+            self.__tunneling_field_final = tunneling_field_final
+            self.__tunneling_field_evaporation = tunneling_field_evaporation
             self.__cooling_rate = .7
             self.__prev_energy_tuple = ()
-            # lineChartEx = new LineChartEx();
-            self.initialize_spin_variables()
+
+            # self.initialize_spin_variables()
+
             if DO_PRINT_STEPS:
                 print_problem_specifications(graph, candidate_sinks_list, self.__sink_Y_spin_variables_2d_arr,
                                              candidate_controllers_list, self.__controller_Y_spin_variables_2d_arr)
 
     def execute(self):
         # Reset Temperature and Tunneling Field
-        self.__tunneling_field = self.__tunnling_field_initial
-        self.__temperature = self.__temperature_quantum
+        self.__temperature = self.__temperature_initial
+        self.__tunneling_field = self.__tunneling_field_initial
 
         # Generate replicas (Fill replicasOfSinkXSpinVariables, replicasOfControllerXSpinVariables )
         self.generate_replicas_of_solution()
@@ -87,7 +92,7 @@ class QuantumAnnealing:
 
         min_energy_tuple = (sys.maxsize, sys.maxsize)
 
-        # Do while tunnlig field is favorable
+        # Do while tunneling field is favorable
         while True:
             # For each replica
             for ro in range(self.__trotter_replicas):
@@ -98,9 +103,9 @@ class QuantumAnnealing:
                 for step in range(self.__monte_carlo_steps):
                     counter += 1
                     # Generate Neighbors
-                    self.generateNeighbor()
+                    self.generate_neighbour()
                     # Calculate energy of temp solution
-                    energy_tuple = self.calculateEnergy(ro)
+                    energy_tuple = self.calculate_energy(ro)
                     energy = self.calculate_energy_from_pair(energy_tuple)
                     prev_energy = self.calculate_energy_from_pair(self.__prev_energy_tuple)
                     min_energy = self.calculate_energy_from_pair(min_energy_tuple)
@@ -115,34 +120,35 @@ class QuantumAnnealing:
                         self.__controller_X_spin_variables_list = deepcopy(self.__temp_controller_X_spin_variables_list)
                     else:
                         # Else with given probability decide to accept or not
-                        baseProp = math.exp(-float(prev_energy - energy) / self.__temperature)
+                        base_prop = math.exp(-float(prev_energy - energy) / self.__temperature)
 
                         if DO_PRINT_STEPS:
-                            print("BaseProp " + str(baseProp))
+                            print("BaseProp " + str(base_prop))
 
                         rand = random.random()
 
-                        if rand < baseProp:
+                        if rand < base_prop:
                             self.__prev_energy_tuple = energy_tuple
                             self.__sink_X_spin_variables_list = deepcopy(self.__temp_sink_X_spin_variables_list)
                             self.__controller_X_spin_variables_list = deepcopy(
                                 self.__temp_controller_X_spin_variables_list)
 
             # Update tunnling field
-            self.__tunneling_field *= self.__tunnling_field_evaporation
+            self.__tunneling_field *= self.__tunneling_field_evaporation
             self.__temperature *= self.__cooling_rate
 
-            if self.__tunneling_field > self.__tunnling_field_final:
+            if self.__tunneling_field > self.__tunneling_field_final:
                 break
 
         if DO_PRINT_INSTANCES:
             # Final solution is in: sinkXSpinVariables and controllerXSpinVariables
-            print("Counter: " + counter)
-            print("Accepted Energy: " + self.calculate_energy_from_pair(self.__prev_energy_tuple))
-            print("Accepted Potential Energy: " + self.__prev_energy_tuple[0])
-            print("Min Energy: " + self.calculate_energy_from_pair(min_energy_tuple))
-            print("Final Temperature: " + self.__temperature)
+            print("Counter: " + str(counter))
+            print("Accepted Energy: " + str(self.calculate_energy_from_pair(self.__prev_energy_tuple)))
+            print("Accepted Potential Energy: " + str(self.__prev_energy_tuple[0]))
+            print("Min Energy: " + str(self.calculate_energy_from_pair(min_energy_tuple)))
+            print("Final Temperature: " + str(self.__temperature))
 
+        print_generated_solution(self.__temp_sink_X_spin_variables_list, self.__temp_controller_X_spin_variables_list)
         return self.__prev_energy_tuple[0]
 
     def generate_initial_spin_variables_and_energy(self):
@@ -155,7 +161,7 @@ class QuantumAnnealing:
         self.__temp_controller_X_spin_variables_list = deepcopy(self.__controller_X_spin_variables_list)
         self.__temp_sink_X_spin_variables_list = deepcopy(self.__sink_X_spin_variables_list)
 
-        energy_pair = self.calculateEnergy(-1)
+        energy_pair = self.calculate_energy(-1)
         self.__prev_energy_tuple = energy_pair
 
     def generate_neighbour(self):
@@ -176,14 +182,14 @@ class QuantumAnnealing:
             print_generated_solution(self.__temp_sink_X_spin_variables_list,
                                      self.__temp_controller_X_spin_variables_list)
 
-    def calculateEnergy(self, currentReplicaNum):
-        reliability_energy = get_reliability_energy(self.__graph,
-                                                    self.__sink_Y_spin_variables_2d_arr,
-                                                    self.__controller_Y_spin_variables_2d_arr,
-                                                    self.__candidate_sinks_list, self.__temp_sink_X_spin_variables_list,
-                                                    self.__candidate_controllers_list,
-                                                    self.__temp_controller_X_spin_variables_list,
-                                                    self.__max_sink_coverage, self.__max_controller_coverage)
+    def calculate_energy(self, current_replica_num):
+        reliability_energy = get_reliability_energy(
+            self.__graph,
+            self.__sink_Y_spin_variables_2d_arr,
+            self.__controller_Y_spin_variables_2d_arr,
+            self.__candidate_sinks_list, self.__temp_sink_X_spin_variables_list,
+            self.__candidate_controllers_list, self.__temp_controller_X_spin_variables_list,
+            self.__max_sink_coverage, self.__max_controller_coverage)
 
         load_balancing_energy = get_load_balancing_energy(
             self.__graph,
@@ -201,12 +207,11 @@ class QuantumAnnealing:
         )
 
         potential_energy = reliability_energy + load_balancing_energy + cost_energy
-        kinetic_energy = self.get_kinetic_energy(currentReplicaNum)
-        energy = kinetic_energy + potential_energy
+        kinetic_energy = self.get_kinetic_energy(current_replica_num)
 
         return potential_energy, kinetic_energy
 
-    def calculatePotentialEnergy(self, currentReplicaNum):
+    def calculate_potential_energy(self):
         reliability_energy = get_reliability_energy(
             self.__graph,
             self.__sink_Y_spin_variables_2d_arr, self.__controller_Y_spin_variables_2d_arr,
@@ -264,37 +269,6 @@ class QuantumAnnealing:
                 controller_replica_coupling = -1
 
         return coupling * (sink_replica_coupling + controller_replica_coupling)
-
-    def initialize_spin_variables(self):
-        for i in range(len(self.__graph.get_vertexes())):
-            for j in range(len(self.__candidate_sinks_list)):
-                self.__sink_Y_spin_variables_2d_arr[i][j] = False
-
-        for i in range(len(self.__graph.get_vertexes())):
-            for j in range(len(self.__candidate_controllers_list)):
-                self.__controller_Y_spin_variables_2d_arr[i][j] = False
-
-        j_upper_bound = max(len(self.__candidate_sinks_list), len(self.__candidate_controllers_list))
-
-        for i in range(len(self.__graph.get_vertexes())):
-            for j in range(j_upper_bound):
-                if j < len(self.__candidate_sinks_list):
-                    # The following line can be replaced with vertexIndex = i - but I preferred to write this in the
-                    # following way for more readability
-                    spin_vertex_index1 = self.__graph.get_vertex_index_by_id((self.__graph.get_vertexes()[i]).get_id())
-                    spin_vertex_index2 = self.__graph.get_vertex_index_by_id(self.__candidate_sinks_list[j].get_id())
-                    self.__sink_Y_spin_variables_2d_arr[i][j] = is_distance_favorable(
-                        self.__graph, spin_vertex_index1, spin_vertex_index2, self.__sensor_sink_max_distance
-                    )
-
-                if j < len(self.__candidate_controllers_list):
-                    # The following line can be replaced with vertexIndex = i - but I preferred to write this in the
-                    # following way for more readability
-                    vertex_index1 = self.__graph.get_vertex_index_by_id(self.__graph.get_vertexes()[i].get_id())
-                    vertex_index2 = self.__graph.get_vertex_index_by_id(self.__candidate_controllers_list()[j].get_id())
-                    self.__controller_Y_spin_variables_2d_arr[i][j] = is_distance_favorable(
-                        self.__graph, vertex_index1, vertex_index2, self.__sensor_controller_max_distance
-                    )
 
     def generate_replicas_of_solution(self):
         for i in range(self.__trotter_replicas):

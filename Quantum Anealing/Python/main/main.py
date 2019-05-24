@@ -1,3 +1,0 @@
-
-DO_PRINT_INSTANCES = False
-DO_PRINT_STEPS = False
