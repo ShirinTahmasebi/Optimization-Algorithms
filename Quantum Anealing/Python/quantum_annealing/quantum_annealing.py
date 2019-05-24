@@ -15,10 +15,10 @@ class QuantumAnnealing:
     def __init__(
             self,
             graph,
-            sink_y_spin_variables,
-            controller_y_spin_variables,
             candidate_sinks_list,
             candidate_controllers_list,
+            sink_y_spin_variables_2d_arr,
+            controller_y_spin_variables_2d_arr,
             sensor_sink_max_distance,
             sensor_controller_max_distance,
             max_sink_coverage,
@@ -42,14 +42,14 @@ class QuantumAnnealing:
             self.__sensor_sink_max_distance = sensor_sink_max_distance
             self.__sensor_controller_max_distance = sensor_controller_max_distance
 
-            self.__sink_Y_spin_variables_2d_arr = sink_y_spin_variables
-            self.__controller_Y_spin_variables_2d_arr = controller_y_spin_variables
+            self.__sink_Y_spin_variables_2d_arr = sink_y_spin_variables_2d_arr
+            self.__controller_Y_spin_variables_2d_arr = controller_y_spin_variables_2d_arr
 
             self.__sink_X_spin_variables_list = []
             self.__controller_X_spin_variables_list = []
 
-            self.__replicas_of_sink_X_spin_variables_2d_arr = [[]]
-            self.__replicas_of_controller_X_spin_variables_2d_arr = [[]]
+            self.__replicas_of_sink_X_spin_variables_2d_arr = [[] for _ in range(trotter_replicas)]
+            self.__replicas_of_controller_X_spin_variables_2d_arr = [[] for _ in range(trotter_replicas)]
 
             self.__temp_sink_X_spin_variables_list = []
             self.__temp_controller_X_spin_variables_list = []
@@ -83,6 +83,12 @@ class QuantumAnnealing:
         # Reset Temperature and Tunneling Field
         self.__temperature = self.__temperature_initial
         self.__tunneling_field = self.__tunneling_field_initial
+        self.__temp_sink_X_spin_variables_list = []
+        self.__temp_controller_X_spin_variables_list = []
+        self.__sink_X_spin_variables_list = []
+        self.__controller_X_spin_variables_list = []
+        self.__replicas_of_sink_X_spin_variables_2d_arr = [[] for _ in range(self.__trotter_replicas)]
+        self.__replicas_of_controller_X_spin_variables_2d_arr = [[] for _ in range(self.__trotter_replicas)]
 
         # Generate replicas (Fill replicasOfSinkXSpinVariables, replicasOfControllerXSpinVariables )
         self.generate_replicas_of_solution()
@@ -97,8 +103,7 @@ class QuantumAnnealing:
             # For each replica
             for ro in range(self.__trotter_replicas):
                 self.__temp_sink_X_spin_variables_list = deepcopy(self.__replicas_of_sink_X_spin_variables_2d_arr[ro])
-                self.__temp_controller_X_spin_variables_list = deepcopy(
-                    self.__replicas_of_controller_X_spin_variables_2d_arr[ro])
+                self.__temp_controller_X_spin_variables_list = deepcopy(self.__replicas_of_controller_X_spin_variables_2d_arr[ro])
                 # For each montecarlo step
                 for step in range(self.__monte_carlo_steps):
                     counter += 1
@@ -154,9 +159,9 @@ class QuantumAnnealing:
     def generate_initial_spin_variables_and_energy(self):
         # Initialize temp lists to false
         for i in range(len(self.__candidate_controllers_list)):
-            self.__controller_X_spin_variables_list[i] = False
+            self.__controller_X_spin_variables_list.append(False)
         for i in range(len(self.__candidate_sinks_list)):
-            self.__sink_X_spin_variables_list[i] = False
+            self.__sink_X_spin_variables_list.append(False)
 
         self.__temp_controller_X_spin_variables_list = deepcopy(self.__controller_X_spin_variables_list)
         self.__temp_sink_X_spin_variables_list = deepcopy(self.__sink_X_spin_variables_list)
@@ -184,12 +189,14 @@ class QuantumAnnealing:
 
     def calculate_energy(self, current_replica_num):
         reliability_energy = get_reliability_energy(
-            self.__graph,
-            self.__sink_Y_spin_variables_2d_arr,
-            self.__controller_Y_spin_variables_2d_arr,
-            self.__candidate_sinks_list, self.__temp_sink_X_spin_variables_list,
-            self.__candidate_controllers_list, self.__temp_controller_X_spin_variables_list,
-            self.__max_sink_coverage, self.__max_controller_coverage)
+            graph=self.__graph,
+            sink_y_spin_variables=self.__sink_Y_spin_variables_2d_arr,
+            controller_y_spin_variables=self.__controller_Y_spin_variables_2d_arr,
+            candidate_controllers=self.__candidate_controllers_list,
+            candidate_sinks=self.__candidate_sinks_list,
+            temp_sink_x_spin_variables=self.__temp_sink_X_spin_variables_list,
+            temp_controller_x_spin_variables=self.__temp_controller_X_spin_variables_list,
+            max_sink_coverage=self.__max_sink_coverage, max_controller_coverage=self.__max_controller_coverage)
 
         load_balancing_energy = get_load_balancing_energy(
             self.__graph,
@@ -275,11 +282,11 @@ class QuantumAnnealing:
             # Select random configuration for replicas
             for j in range(len(self.__candidate_sinks_list)):
                 probability_of_one = random.random()
-                self.__replicas_of_sink_X_spin_variables_2d_arr[i][j] = (probability_of_one < .5)
+                self.__replicas_of_sink_X_spin_variables_2d_arr[i].append((probability_of_one < .5))
 
             for j in range(len(self.__candidate_controllers_list)):
                 probability_of_one = random.random()
-                self.__replicas_of_controller_X_spin_variables_2d_arr[i][j] = (probability_of_one < .5)
+                self.__replicas_of_controller_X_spin_variables_2d_arr[i].append((probability_of_one < .5))
 
     @staticmethod
     def calculate_energy_from_pair(energy_pair):

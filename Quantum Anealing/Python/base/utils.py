@@ -3,19 +3,19 @@ from dijkstra.dijkstra_algorithm import DijkstraAlgorithm
 
 def print_problem_specifications(
         graph,
-        candidate_sinks_list, sink_Y_spin_variables_2d_arr,
-        candidate_controllers_list, controller_Y_spin_variables_2d_arr):
+        candidate_sinks_list, sink__y_spin_variables_2d_arr,
+        candidate_controllers_list, controller__y_spin_variables_2d_arr):
     for vertex in graph.get_vertexes():
-        print("Vertex: " + vertex.__str__() + "\n")
+        print("Vertex: " + vertex.__str__())
 
     print("\n")
 
     for edge in graph.get_edges():
-        print("Edge: " + edge.__str__() + "\n")
+        print("Edge: " + edge.__str__())
 
     print("\n")
 
-    print("Candidate sink vertexes are: \n")
+    print("Candidate sink vertexes are:")
 
     for candidate_sink in candidate_sinks_list:
         print(candidate_sink.__str__() + ", ")
@@ -27,17 +27,17 @@ def print_problem_specifications(
 
     for i in range(len(graph.get_vertexes())):
         for j in range(len(candidate_sinks_list)):
-            print(sink_Y_spin_variables_2d_arr[i][j] + ", ")
+            print(sink__y_spin_variables_2d_arr[i][j] + ", ")
         print("\n")
 
     print("\n")
     print("\n")
 
-    print("Controller Y: \n")
+    print("Controller Y:")
 
     for i in range(len(graph.get_vertexes())):
         for j in range(len(candidate_controllers_list)):
-            print(controller_Y_spin_variables_2d_arr[i][j] + ", ")
+            print(controller__y_spin_variables_2d_arr[i][j] + ", ")
 
     print("\n")
 
@@ -46,17 +46,18 @@ def print_generated_solution(temp_sink_x_spin_variables, temp_controller_x_spin_
     print("\n")
     print("Temp Sink X:")
 
+    temp_str = ""
     for i in range(len(temp_sink_x_spin_variables)):
-        print(str(temp_sink_x_spin_variables[i]) + "\n")
+        temp_str += str(temp_sink_x_spin_variables[i]) + ", "
 
-    print("\n")
+    print(temp_str + "\n")
     print("Temp Controller X:")
 
+    temp_str = ""
     for i in range(len(temp_controller_x_spin_variables)):
-        print(str(temp_controller_x_spin_variables[i]) + "\n")
+        temp_str += str(temp_controller_x_spin_variables[i]) + ", "
 
-    print("\n")
-    print("\n")
+    print(temp_str + "\n")
 
 
 def get_reliability_energy(
@@ -66,8 +67,12 @@ def get_reliability_energy(
         candidate_controllers, temp_controller_x_spin_variables,
         max_sink_coverage, max_controller_coverage
 ):
-    sensor_numbers = get_sensors_count(graph, candidate_sinks, temp_sink_x_spin_variables, candidate_controllers,
-                                       temp_controller_x_spin_variables)
+    sensor_numbers = get_sensors_count(
+        graph=graph,
+        candidate_sinks=candidate_sinks,
+        candidate_controllers=candidate_controllers,
+        temp_sink_x_spin_variables=temp_sink_x_spin_variables,
+        temp_controller_x_spin_variables=temp_controller_x_spin_variables)
     return (
             (
                     max_sink_coverage *
@@ -137,8 +142,11 @@ def get_sensors_count(graph,
         graph_node = graph.get_vertexes()[i]
 
         if not is_node_selected_as_sink_or_controller(
-                graph_node.getId(), temp_sink_x_spin_variables, candidate_sinks,
-                temp_controller_x_spin_variables, candidate_controllers):
+                graph_node.get_id(),
+                temp_sink_x_spin_variables=temp_sink_x_spin_variables,
+                candidate_sinks=candidate_sinks,
+                temp_controller_x_spin_variables=temp_controller_x_spin_variables,
+                candidate_controllers=candidate_controllers):
             sensor_count += 1
 
     return sensor_count
@@ -217,7 +225,7 @@ def calculate_load_to_jth_sink(
                 temp_controller_x_spin_variables, candidate_controllers):
             condition = sink_y_spin_variables[i][j] and temp_sink_x_spin_variables[j]
             if condition:
-                total_load_to_jth_sink += float(graph_node.getSinkLoad()) / float(
+                total_load_to_jth_sink += float(graph_node.get_sink_load()) / float(
                     covered_sinks_count_by_node(i, candidate_sinks, sink_y_spin_variables, temp_sink_x_spin_variables))
 
     return float(total_load_to_jth_sink)
@@ -235,7 +243,7 @@ def calculate_load_to_jth_controller(
                 temp_controller_x_spin_variables, candidate_controllers):
             condition = controller_y_spin_variables[i][j] and temp_controller_x_spin_variables[j]
             if condition:
-                total_load_to_jth_controller += float(graph_node.getControllerLoad()) / float(
+                total_load_to_jth_controller += float(graph_node.get_controller_load()) / float(
                     covered_controllers_count_by_node(i, candidate_controllers, controller_y_spin_variables,
                                                       temp_controller_x_spin_variables))
 
@@ -305,7 +313,7 @@ def total_cover_controllers_score(graph, max_controller_coverage, controller_y_s
     score = 0
     for i in range(len(graph.get_vertexes())):
         graph_node = graph.get_vertexes()[i]
-        if is_node_selected_as_sink_or_controller(graph_node.getId(),
+        if is_node_selected_as_sink_or_controller(graph_node.get_id(),
                                                   temp_sink_x_spin_variables, candidate_sinks,
                                                   temp_controller_x_spin_variables, candidate_controllers):
             score += min(max_controller_coverage,
@@ -341,11 +349,11 @@ def initialize_spin_variables(
         controller__y_spin_variables_2d_arr):
     for i in range(len(graph.get_vertexes())):
         for j in range(len(candidate_sinks_list)):
-            sink__y_spin_variables_2d_arr.append(False)
+            sink__y_spin_variables_2d_arr[i].append(False)
 
     for i in range(len(graph.get_vertexes())):
         for j in range(len(candidate_controllers_list)):
-            controller__y_spin_variables_2d_arr.append(False)
+            controller__y_spin_variables_2d_arr[i].append(False)
 
     j_upper_bound = max(len(candidate_sinks_list), len(candidate_controllers_list))
 
@@ -356,9 +364,9 @@ def initialize_spin_variables(
                 # following way for more readability
                 spin_vertex_index1 = graph.get_vertex_index_by_id((graph.get_vertexes()[i]).get_id())
                 spin_vertex_index2 = graph.get_vertex_index_by_id(candidate_sinks_list[j].get_id())
-                sink__y_spin_variables_2d_arr.append(is_distance_favorable(
+                sink__y_spin_variables_2d_arr[i][j] = is_distance_favorable(
                     graph, spin_vertex_index1, spin_vertex_index2, sensor_sink_max_distance
-                ))
+                )
 
             if j < len(candidate_controllers_list):
                 # The following line can be replaced with vertexIndex = i - but I preferred to write this in the
