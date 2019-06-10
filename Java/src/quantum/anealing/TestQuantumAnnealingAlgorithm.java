@@ -14,7 +14,7 @@ public class TestQuantumAnnealingAlgorithm {
     private static final float TUNNLING_FIELD_FINAL = .5f;
     private static final float TUNNLING_FIELD_EVAPORATION = .95f;
 
-    QuantumAnealing qa;
+    QuantumAnnealing qa;
 
     public TestQuantumAnnealingAlgorithm(
             Graph graph,
@@ -30,7 +30,7 @@ public class TestQuantumAnnealingAlgorithm {
             int maxControllerLoad,
             int costSink,
             int costController) {
-        qa = new QuantumAnealing(
+        qa = new QuantumAnnealing(
                 graph,
                 candidateSinks,
                 candidateControllers,

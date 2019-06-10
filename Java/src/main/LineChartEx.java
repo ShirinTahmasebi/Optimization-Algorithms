@@ -6,6 +6,7 @@ import java.awt.Font;
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
+
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -24,14 +25,19 @@ public class LineChartEx extends JFrame {
     private final XYSeries visitedSeries = new XYSeries("Visited Energy");
     private final XYSeries minimumSeries = new XYSeries("Minimum Energy");
 
+    private final XYSeries totalCuckooSeries = new XYSeries("Cuckoo Potential Energy");
     private final XYSeries totalQASeries = new XYSeries("QA Potential Energy");
     private final XYSeries totalSASeries = new XYSeries("SA Potential Energy");
 
     public void addToEnergySeries(int iterationNumber,
-            double selectedEnergy, double visitedEnergy, double minEnergy, double minTotalEnergy) {
+                                  double selectedEnergy, double visitedEnergy, double minEnergy, double minTotalEnergy) {
         selectedSeries.add(iterationNumber, selectedEnergy);
         visitedSeries.add(iterationNumber, visitedEnergy);
         minimumSeries.add(iterationNumber, minEnergy);
+    }
+
+    public void addToCuckooSeries(int iterationNumber, double energy) {
+        totalCuckooSeries.add(iterationNumber, energy);
     }
 
     public void addToQASeries(int iterationNumber, double energy) {
@@ -79,6 +85,7 @@ public class LineChartEx extends JFrame {
     private XYDataset createComparativePotEnergyDataset() {
         XYSeriesCollection dataset = new XYSeriesCollection();
 
+        dataset.addSeries(totalCuckooSeries);
         dataset.addSeries(totalQASeries);
         dataset.addSeries(totalSASeries);
 
@@ -121,8 +128,8 @@ public class LineChartEx extends JFrame {
         chart.getLegend().setFrame(BlockBorder.NONE);
 
         chart.setTitle(new TextTitle("Energy Level",
-                new Font("Serif", java.awt.Font.BOLD, 18)
-        )
+                        new Font("Serif", Font.BOLD, 18)
+                )
         );
 
         return chart;
