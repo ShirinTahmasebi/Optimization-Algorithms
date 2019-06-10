@@ -5,6 +5,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
+
+import cuckoo.TestCuckooAlgorithm;
 import javafx.util.Pair;
 import quantum.anealing.TestQuantumAnnealingAlgorithm;
 import main.model.Edge;
@@ -17,7 +19,7 @@ public class Main {
     public static final boolean DO_PRINT_INSTANCES = false;
     public static final boolean DO_PRINT_STEPS = false;
 
-    private static final int SIMULATION_COUNT = 20;
+    private static final int SIMULATION_COUNT = 5;
     private static final int SINK_LOAD = 10;            // w
     private static final int CONTROLLER_LOAD = 10;      // wPrime
     private static final int SENSOR_SINK_MAX_DISTANCE = 3;              // Lmax
@@ -41,8 +43,32 @@ public class Main {
         Main m = new Main();
         Graph graph = m.initialize();
         LineChartEx chartEx = new LineChartEx();
+        double cuckooEnergySum = 0;
         double qaEnergySum = 0;
         double saEnergySum = 0;
+
+        TestCuckooAlgorithm cuckooTest = new TestCuckooAlgorithm(
+                graph,
+                m.candidateSinks,
+                m.candidateControllers,
+                m.sinkYSpinVariables,
+                m.controllerYSpinVariables,
+                SENSOR_SINK_MAX_DISTANCE,
+                SENSOR_CONTROLLER_MAX_DISTANCE,
+                MAX_SINK_COVERAGE,
+                MAX_CONTROLLER_COVERAGE,
+                MAX_SINK_LOAD,
+                MAX_CONTROLLER_LOAD,
+                COST_SINK,
+                COST_CONTROLLER
+        );
+
+        for (int i = 0; i < SIMULATION_COUNT; i++) {
+            double cuckooPotentialEnergy = cuckooTest.execute();
+            chartEx.addToCuckooSeries(i + 1, cuckooPotentialEnergy);
+            cuckooEnergySum += cuckooPotentialEnergy;
+            System.out.println("Cuckoo Energy: " + cuckooPotentialEnergy);
+        }
 
         TestQuantumAnnealingAlgorithm qaTest = new TestQuantumAnnealingAlgorithm(
                 graph,
@@ -80,7 +106,8 @@ public class Main {
                 MAX_SINK_LOAD,
                 MAX_CONTROLLER_LOAD,
                 COST_SINK,
-                COST_CONTROLLER);
+                COST_CONTROLLER
+        );
 
         for (int i = 0; i < SIMULATION_COUNT; i++) {
             double saPotentialEnergy = saTest.execute();
@@ -90,6 +117,7 @@ public class Main {
         }
 
         chartEx.drawChart();
+        System.out.println("Cuckoo average potential energy is: " + cuckooEnergySum / SIMULATION_COUNT);
         System.out.println("QA average potential energy is: " + qaEnergySum / SIMULATION_COUNT);
         System.out.println("SA average potential energy is: " + saEnergySum / SIMULATION_COUNT);
     }
@@ -146,9 +174,7 @@ public class Main {
             nodes.add(location);
         }
 
-        edgesPairList.stream().forEach((edge) -> {
-            addLane(edge.getKey(), edge.getValue().getKey(), edge.getValue().getValue());
-        });
+        edgesPairList.stream().forEach((edge) -> addLane(edge.getKey(), edge.getValue().getKey(), edge.getValue().getValue()));
 
         Set<Integer> candidateSinksNumberSet = new HashSet<>();
         Set<Integer> candidateControllerNumberSet = new HashSet<>();
@@ -163,16 +189,11 @@ public class Main {
             candidateControllerNumberSet.add(nextInt);
         }
 
-        candidateControllerNumberSet.stream().forEach((candidateControllerNumber) -> {
-            candidateControllers.add(nodes.get(candidateControllerNumber));
-        });
+        candidateControllerNumberSet.stream().forEach((candidateControllerNumber) -> candidateControllers.add(nodes.get(candidateControllerNumber)));
 
-        candidateSinksNumberSet.stream().forEach((candidateSinkNumber) -> {
-            candidateSinks.add(nodes.get(candidateSinkNumber));
-        });
+        candidateSinksNumberSet.stream().forEach((candidateSinkNumber) -> candidateSinks.add(nodes.get(candidateSinkNumber)));
 
-        Graph graph = new Graph(nodes, edges);
-        return graph;
+        return new Graph(nodes, edges);
     }
 
     private void addLane(String laneId, int sourceLocNo, int destLocNo) {
@@ -182,6 +203,7 @@ public class Main {
         edges.add(lane2);
     }
 
+    @SuppressWarnings("unused")
     private void addLane(String laneId, int sourceLocNo, int destLocNo, int duration) {
         Edge lane = new Edge(laneId, nodes.get(sourceLocNo), nodes.get(destLocNo), duration);
         edges.add(lane);

@@ -12,7 +12,7 @@ public class TestSimulatedAnnealingAlgorithm {
     private static final float TEMPERATURE_COOLING_RATE = .75f;         // T Cooling Rate
     private static final int MONTE_CARLO_STEP = 50;   // M
 
-    SimulatedAnealing sa;
+    SimulatedAnnealing sa;
 
     public TestSimulatedAnnealingAlgorithm(
             Graph graph,
@@ -28,7 +28,7 @@ public class TestSimulatedAnnealingAlgorithm {
             int maxControllerLoad,
             int costSink,
             int costController) {
-        sa = new SimulatedAnealing(
+        sa = new SimulatedAnnealing(
                 graph,
                 candidateSinks,
                 candidateControllers,

@@ -1,41 +1,16 @@
 package simulated.anealing;
 
-import main.model.Vertex;
+import main.BaseAlgorithm;
 import main.model.Graph;
+
 import java.util.List;
 import java.util.Random;
+
 import main.Utils;
-import main.LineChartEx;
+import main.model.Vertex;
 
-public class SimulatedAnealing {
+public class SimulatedAnnealing extends BaseAlgorithm {
 
-    // Problem Specifications
-    private final Graph graph;
-
-    private final List<Vertex> candidateSinks;            // AS
-    private final List<Vertex> candidateControllers;      //AC
-
-    private final int sensorSinkMaxDistance;              // Lmax
-    private final int sensorControllerMaxDistance;        // LPrimeMax
-
-    private final boolean[][] sinkYSpinVariables;           // SY (Y Spin Variable)
-    private final boolean[][] controllerYSpinVariables;     // SYPrime (Y Spin Variable)
-
-    // Solution Spin Variables
-    private boolean[] sinkXSpinVariables;             // SX (X Spin Variable)
-    private boolean[] controllerXSpinVariables;       // SXPrime (X Spin Variable)
-
-    // Temp Spin Variables
-    private boolean[] tempSinkXSpinVariables;           // SX (X Spin Variable)           
-    private boolean[] tempControllerXSpinVariables;     // SXPrime (X Spin Variable)
-
-    private final int maxSinkCoverage;          // K
-    private final int maxControllerCoverage;    // KPrime
-    private final int maxSinkLoad;          // W
-    private final int maxControllerLoad;    // WPrime
-    private final int costSink;
-    private final int costController;
-    private final float costReductionFactor;
     private float temperature;                    // T0
     private final float temperatureInitial;         // T1
     private final float temperatureFinal;         // T1
@@ -43,12 +18,10 @@ public class SimulatedAnealing {
     private final int monteCarloSteps;
     private double prevEnergy;
 
-    private final LineChartEx lineChartEx;
-
-    public SimulatedAnealing(
+    public SimulatedAnnealing(
             Graph graph,
-            List candidateSinks,
-            List candidateControllers,
+            List<Vertex> candidateSinks,
+            List<Vertex> candidateControllers,
             boolean[][] sinkYSpinVariables,
             boolean[][] controllerYSpinVariables,
             int sensorSinkMaxDistance,
@@ -65,35 +38,27 @@ public class SimulatedAnealing {
             float temperatureCoolingRate,
             int monteCarloSteps
     ) {
-        this.controllerYSpinVariables = controllerYSpinVariables;
-        this.sinkYSpinVariables = sinkYSpinVariables;
-        this.tempControllerXSpinVariables = new boolean[candidateControllers.size()];
-        this.tempSinkXSpinVariables = new boolean[candidateSinks.size()];
-        this.sinkXSpinVariables = new boolean[candidateSinks.size()];
-        this.controllerXSpinVariables = new boolean[candidateControllers.size()];
+        super(
+                graph,
+                candidateSinks,
+                candidateControllers,
+                sinkYSpinVariables,
+                controllerYSpinVariables,
+                sensorSinkMaxDistance,
+                sensorControllerMaxDistance,
+                maxSinkCovrage,
+                maxControllerCoverage,
+                maxSinkLoad,
+                maxControllerLoad,
+                costSink,
+                costController,
+                costReductionFactor);
 
-        this.graph = graph;
-        this.candidateSinks = candidateSinks;
-        this.candidateControllers = candidateControllers;
-        this.sensorSinkMaxDistance = sensorSinkMaxDistance;
-        this.sensorControllerMaxDistance = sensorControllerMaxDistance;
-
-        this.maxSinkCoverage = maxSinkCovrage;
-        this.maxControllerCoverage = maxControllerCoverage;
-        this.maxSinkLoad = maxSinkLoad;
-        this.maxControllerLoad = maxControllerLoad;
-        this.costSink = costSink;
-        this.costController = costController;
-        this.costReductionFactor = costReductionFactor;
         this.temperature = temperatureInitial;
         this.temperatureInitial = temperatureInitial;
         this.temperatureFinal = temperatureFinal;
         this.temperatureCoolingRate = temperatureCoolingRate;
         this.monteCarloSteps = monteCarloSteps;
-
-        lineChartEx = new LineChartEx();
-
-        initializeSpinVariables();
 
         if (main.Main.DO_PRINT_STEPS) {
             Utils.printProblemSpecifications(graph, candidateSinks, sinkYSpinVariables, candidateControllers, controllerYSpinVariables);
@@ -228,14 +193,6 @@ public class SimulatedAnealing {
                 costSink, costController, costReductionFactor
         );
 
-        double potentialEnergy = reliabilityEnergy + loadBalancingEnergy + costEnergy;
-
-        return potentialEnergy;
-    }
-    
-    private void initializeSpinVariables() {
-        // --- Initialize Y and YPrime Spin Variables
-        // Extracted to Utils Class
-        // ---
+        return reliabilityEnergy + loadBalancingEnergy + costEnergy;
     }
 }
