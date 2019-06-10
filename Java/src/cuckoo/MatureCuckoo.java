@@ -1,5 +1,6 @@
 package cuckoo;
 
+// Mature Cuckoo == Habitat
 public class MatureCuckoo {
     private int numberOfEggs;
     private int ELR;

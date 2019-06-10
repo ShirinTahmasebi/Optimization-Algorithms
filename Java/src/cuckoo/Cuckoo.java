@@ -1,13 +1,13 @@
 package cuckoo;
 
-import main.model.Vertex;
-
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class Cuckoo {
 
-    private List<Vertex> candidateSinks;            // AS
-    private List<Vertex> candidateControllers;      //AC
+    protected boolean[] sinkXSpinVariables;             // SX (X Spin Variable)
+    protected boolean[] controllerXSpinVariables;       // SXPrime (X Spin Variable)
     private boolean isMature = false;
     private double cost;
 
@@ -18,26 +18,32 @@ public class Cuckoo {
         this(false, null, null);
     }
 
-    public Cuckoo(boolean isMature, List<Vertex> candidateControllers, List<Vertex> candidateSinks) {
+    public Cuckoo(boolean isMature, boolean[] sinkXSpinVariables, boolean[] controllerXSpinVariables) {
         this.isMature = isMature;
-        this.candidateControllers = candidateControllers;
-        this.candidateSinks = candidateSinks;
+        this.controllerXSpinVariables = controllerXSpinVariables;
+        this.sinkXSpinVariables = sinkXSpinVariables;
+
+        if (isMature) {
+            Random rand = new Random();
+            int eggsNumber = rand.nextInt(CuckooAlgorithm.maxEggNumber - CuckooAlgorithm.minEggNumber) + CuckooAlgorithm.minEggNumber;
+            matureCuckooInfo.setNumberOfEggs(eggsNumber);
+        }
     }
 
-    public List<Vertex> getCandidateSinks() {
-        return candidateSinks;
+    public boolean[] getSinkXSpinVariables() {
+        return sinkXSpinVariables;
     }
 
-    public void setCandidateSinks(List<Vertex> candidateSinks) {
-        this.candidateSinks = candidateSinks;
+    public void setSinkXSpinVariables(boolean[] sinkXSpinVariables) {
+        this.sinkXSpinVariables = sinkXSpinVariables;
     }
 
-    public List<Vertex> getCandidateControllers() {
-        return candidateControllers;
+    public boolean[] getControllerXSpinVariables() {
+        return controllerXSpinVariables;
     }
 
-    public void setCandidateControllers(List<Vertex> candidateControllers) {
-        this.candidateControllers = candidateControllers;
+    public void setControllerXSpinVariables(boolean[] controllerXSpinVariables) {
+        this.controllerXSpinVariables = controllerXSpinVariables;
     }
 
     public boolean isMature() {
@@ -70,5 +76,14 @@ public class Cuckoo {
 
     public void setEggCuckooInfo(EggCuckoo eggCuckooInfo) {
         this.eggCuckooInfo = eggCuckooInfo;
+    }
+
+    public List<Cuckoo> generateEggs() {
+        List<Cuckoo> eggs = new ArrayList<>();
+        for (int i = 0; i < matureCuckooInfo.getNumberOfEggs(); i++) {
+            // TODO: Fill candidate sinks and controllers
+            eggs.add(new Cuckoo());
+        }
+        return eggs;
     }
 }
