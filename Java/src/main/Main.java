@@ -210,7 +210,7 @@ public class Main {
     }
 
     private Graph initialize() {
-        Graph graph = initializeGraph(1);
+        Graph graph = initializeGraph(3);
 
         this.controllerYSpinVariables = new boolean[graph.getVertexes().size()][candidateControllers.size()];
         this.sinkYSpinVariables = new boolean[graph.getVertexes().size()][candidateSinks.size()];

@@ -5,7 +5,7 @@ import main.model.Vertex;
 
 import java.util.List;
 
-public class BaseAlgorithm {
+public abstract class BaseAlgorithm {
     // Problem Specifications
     protected Graph graph;
 
