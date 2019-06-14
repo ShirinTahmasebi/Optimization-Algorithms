@@ -88,7 +88,7 @@ public class SimulatedAnnealing extends BaseAlgorithm {
                 // Generate neighbor
                 generateNeighbour();
                 // ------ Calculate potential energy of temp solution
-                double energy = calculateEnergy();
+                double energy = calculateCost();
                 if (energy < minEnergy) {
                     minEnergy = energy;
                 }
@@ -147,7 +147,7 @@ public class SimulatedAnnealing extends BaseAlgorithm {
 
         tempControllerXSpinVariables = controllerXSpinVariables.clone();
         tempSinkXSpinVariables = sinkXSpinVariables.clone();
-        prevEnergy = calculateEnergy();
+        prevEnergy = calculateCost();
     }
 
     private void generateNeighbour() {
@@ -169,7 +169,7 @@ public class SimulatedAnnealing extends BaseAlgorithm {
         }
     }
 
-    private double calculateEnergy() {
+    public double calculateCost() {
         int reliabilityEnergy = Utils.getReliabilityEnergy(
                 graph,
                 sinkYSpinVariables, controllerYSpinVariables,

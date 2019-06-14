@@ -1,5 +1,7 @@
 package cuckoo;
 
+import cuckoo.model.Cuckoo;
+
 import java.util.Comparator;
 
 public class CuckooComparator implements Comparator<Cuckoo> {

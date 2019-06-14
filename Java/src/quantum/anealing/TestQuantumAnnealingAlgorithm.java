@@ -9,10 +9,10 @@ public class TestQuantumAnnealingAlgorithm {
     private static final float COST_REDUCTION_FACTOR = 0.75f;
     private static final int TROTTER_REPLICAS = 50;     // P
     private static final float TEMPERATURE = 100f;         // T
-    private static final int MONTE_CARLO_STEP = 100;   // M
-    private static final float TUNNLING_FIELD_INITIAL = 1f;
-    private static final float TUNNLING_FIELD_FINAL = .5f;
-    private static final float TUNNLING_FIELD_EVAPORATION = .95f;
+    private static final int MONTE_CARLO_STEP = 50;   // M
+    private static final float TUNNELING_FIELD_INITIAL = 1f;
+    private static final float TUNNELING_FIELD_FINAL = .5f;
+    private static final float TUNNELING_FIELD_EVAPORATION = .75f;
 
     QuantumAnnealing qa;
 
@@ -48,9 +48,9 @@ public class TestQuantumAnnealingAlgorithm {
                 TROTTER_REPLICAS,
                 TEMPERATURE,
                 MONTE_CARLO_STEP,
-                TUNNLING_FIELD_INITIAL,
-                TUNNLING_FIELD_FINAL,
-                TUNNLING_FIELD_EVAPORATION
+                TUNNELING_FIELD_INITIAL,
+                TUNNELING_FIELD_FINAL,
+                TUNNELING_FIELD_EVAPORATION
         );
     }
 

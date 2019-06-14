@@ -1,13 +1,13 @@
-package cuckoo;
+package cuckoo.model;
 
-import main.Utils;
+import cuckoo.CuckooAlgorithm;
 
 import java.util.*;
 
 public class Cuckoo {
 
-    protected boolean[] sinkXSpinVariables;             // SX (X Spin Variable)
-    protected boolean[] controllerXSpinVariables;       // SXPrime (X Spin Variable)
+    public boolean[] sinkXSpinVariables;             // SX (X Spin Variable)
+    public boolean[] controllerXSpinVariables;       // SXPrime (X Spin Variable)
     private boolean isMature = false;
     private double cost;
 

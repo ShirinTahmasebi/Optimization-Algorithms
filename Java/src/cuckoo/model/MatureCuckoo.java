@@ -1,4 +1,4 @@
-package cuckoo;
+package cuckoo.model;
 
 // Mature Cuckoo == Habitat
 public class MatureCuckoo {

@@ -8,7 +8,7 @@ public class TestSimulatedAnnealingAlgorithm {
 
     private static final float COST_REDUCTION_FACTOR = 0.75f;
     private static final float TEMPERATURE_INITIAL = 100;              // T Initial
-    private static final float TEMPERATURE_FINAL = 1;                // T Final
+    private static final float TEMPERATURE_FINAL = 50;                // T Final
     private static final float TEMPERATURE_COOLING_RATE = .75f;         // T Cooling Rate
     private static final int MONTE_CARLO_STEP = 50;   // M
 

@@ -1,4 +1,4 @@
-package cuckoo;
+package cuckoo.model;
 
 public class EggCuckoo {
 }

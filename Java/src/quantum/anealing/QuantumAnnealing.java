@@ -109,7 +109,7 @@ public class QuantumAnnealing extends BaseAlgorithm {
                     // Generate neighbor
                     generateNeighbour();
                     // Calculate energy of temp solution
-                    Pair<Double, Double> energyPair = calculateEnergy(ro);
+                    Pair<Double, Double> energyPair = calculateCost(ro);
                     double energy = calculateEnergyFromPair(energyPair);
                     double prevEnergy = calculateEnergyFromPair(prevEnergyPair);
                     double minEnergy = calculateEnergyFromPair(minEnergyPair);
@@ -174,7 +174,7 @@ public class QuantumAnnealing extends BaseAlgorithm {
 
         tempControllerXSpinVariables = controllerXSpinVariables.clone();
         tempSinkXSpinVariables = sinkXSpinVariables.clone();
-        prevEnergyPair = calculateEnergy(-1);
+        prevEnergyPair = calculateCost(-1);
     }
 
     private void generateNeighbour() {
@@ -196,7 +196,7 @@ public class QuantumAnnealing extends BaseAlgorithm {
         }
     }
 
-    private Pair<Double, Double> calculateEnergy(int currentReplicaNum) {
+    public Pair<Double, Double> calculateCost(int currentReplicaNum) {
         int reliabilityEnergy = Utils.getReliabilityEnergy(
                 graph,
                 sinkYSpinVariables, controllerYSpinVariables,

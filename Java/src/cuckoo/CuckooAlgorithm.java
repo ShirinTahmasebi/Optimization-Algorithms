@@ -1,5 +1,6 @@
 package cuckoo;
 
+import cuckoo.model.Cuckoo;
 import main.BaseAlgorithm;
 import main.Utils;
 import main.model.Graph;
