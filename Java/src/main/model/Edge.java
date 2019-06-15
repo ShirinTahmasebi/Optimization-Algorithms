@@ -1,6 +1,8 @@
 package main.model;
 
-public class Edge {
+import java.io.Serializable;
+
+public class Edge implements Serializable {
 
     private final String id;
     private final Vertex source;
