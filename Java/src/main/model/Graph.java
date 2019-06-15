@@ -1,8 +1,9 @@
 package main.model;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class Graph {
+public class Graph implements Serializable {
 
     private final List<Vertex> vertexes;
     private final List<Edge> edges;

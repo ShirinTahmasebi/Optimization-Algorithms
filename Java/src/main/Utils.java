@@ -1,5 +1,6 @@
 package main;
 
+import java.io.*;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -8,6 +9,12 @@ import main.model.Graph;
 import main.model.Vertex;
 
 public class Utils {
+
+    public static String FILE_NAME_GRAPH = "Graph";
+    public static String FILE_NAME_CANDIDATE_SINKS = "CandidateSinks";
+    public static String FILE_NAME_CANDIDATE_CONTROLLERS = "CandidateControllers";
+    public static String FILE_NAME_SINK_Y_SPIN_VARIABLES = "SinkYSpinVariables";
+    public static String FILE_NAME_CONTROLLER_Y_SPIN_VARIABLES = "ControllerYSpinVariables";
 
     public static int getReliabilityEnergy(
             Graph graph, boolean[][] sinkYSpinVariables, boolean[][] controllerYSpinVariables,
@@ -391,5 +398,32 @@ public class Utils {
             }
         }
         // ---
+    }
+
+    public static void writeObjectToFile(Object object, String fileName) {
+        try {
+            File f = new File(fileName + ".txt");
+            FileOutputStream fos = null;
+            fos = new FileOutputStream(f);
+            ObjectOutputStream oos = new ObjectOutputStream(fos);
+            oos.writeObject(object);
+            oos.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static Object readObjectFromFile(String fileName) {
+        Object object = null;
+        try {
+            File f = new File(fileName + ".txt");
+            FileInputStream fis = new FileInputStream(f);
+            ObjectInputStream ois = new ObjectInputStream(fis);
+            object = ois.readObject();
+            ois.close();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return object;
     }
 }
