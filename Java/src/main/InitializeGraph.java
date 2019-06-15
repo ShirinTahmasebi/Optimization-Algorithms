@@ -10,13 +10,7 @@ import java.util.*;
 import static main.Utils.writeObjectToFile;
 
 public class InitializeGraph {
-    private static final int SINK_LOAD = 10;            // w
-    private static final int CONTROLLER_LOAD = 10;      // wPrime
-    private static final int SENSOR_SINK_MAX_DISTANCE = 3;              // Lmax
-    private static final int SENSOR_CONTROLLER_MAX_DISTANCE = 2;        // LPrimeMax
-    public static final int GRAPH_SIZE = 5;
-
-    private static final List<Vertex> nodes = new ArrayList<>();        // V
+        private static final List<Vertex> nodes = new ArrayList<>();        // V
     private static final List<Edge> edges = new ArrayList<>();          // E
     private final List<Vertex> candidateSinks = new ArrayList<>();            // AS
     private final List<Vertex> candidateControllers = new ArrayList<>();      // AC
@@ -32,11 +26,11 @@ public class InitializeGraph {
     }
 
     private void writeObjectsToFile() {
-        writeObjectToFile(graph, Utils.FILE_NAME_GRAPH + GRAPH_SIZE);
-        writeObjectToFile(candidateSinks, Utils.FILE_NAME_CANDIDATE_SINKS + GRAPH_SIZE);
-        writeObjectToFile(candidateControllers, Utils.FILE_NAME_CANDIDATE_CONTROLLERS + GRAPH_SIZE);
-        writeObjectToFile(sinkYSpinVariables, Utils.FILE_NAME_SINK_Y_SPIN_VARIABLES + GRAPH_SIZE);
-        writeObjectToFile(controllerYSpinVariables, Utils.FILE_NAME_CONTROLLER_Y_SPIN_VARIABLES + GRAPH_SIZE);
+        writeObjectToFile(graph, Utils.FILE_NAME_GRAPH + main.Parameters.Common.GRAPH_SIZE);
+        writeObjectToFile(candidateSinks, Utils.FILE_NAME_CANDIDATE_SINKS + main.Parameters.Common.GRAPH_SIZE);
+        writeObjectToFile(candidateControllers, Utils.FILE_NAME_CANDIDATE_CONTROLLERS + main.Parameters.Common.GRAPH_SIZE);
+        writeObjectToFile(sinkYSpinVariables, Utils.FILE_NAME_SINK_Y_SPIN_VARIABLES + main.Parameters.Common.GRAPH_SIZE);
+        writeObjectToFile(controllerYSpinVariables, Utils.FILE_NAME_CONTROLLER_Y_SPIN_VARIABLES + main.Parameters.Common.GRAPH_SIZE);
     }
 
     public Graph initializeGraph(int graphSize) {
@@ -93,7 +87,7 @@ public class InitializeGraph {
         }
 
         for (int i = 0; i < vertexCount; i++) {
-            Vertex location = new Vertex("Node_" + i, "Node_" + i, SINK_LOAD, CONTROLLER_LOAD);
+            Vertex location = new Vertex("Node_" + i, "Node_" + i, main.Parameters.Common.SINK_LOAD, main.Parameters.Common.CONTROLLER_LOAD);
             nodes.add(location);
         }
 
@@ -134,7 +128,7 @@ public class InitializeGraph {
     }
 
     private Graph initialize() {
-        Graph graph = initializeGraph(GRAPH_SIZE);
+        Graph graph = initializeGraph(main.Parameters.Common.GRAPH_SIZE);
 
         this.controllerYSpinVariables = new boolean[graph.getVertexes().size()][candidateControllers.size()];
         this.sinkYSpinVariables = new boolean[graph.getVertexes().size()][candidateSinks.size()];
@@ -143,8 +137,8 @@ public class InitializeGraph {
                 graph,
                 candidateSinks,
                 candidateControllers,
-                SENSOR_SINK_MAX_DISTANCE,
-                SENSOR_CONTROLLER_MAX_DISTANCE,
+                main.Parameters.Common.SENSOR_SINK_MAX_DISTANCE,
+                main.Parameters.Common.SENSOR_CONTROLLER_MAX_DISTANCE,
                 sinkYSpinVariables,
                 controllerYSpinVariables
         );

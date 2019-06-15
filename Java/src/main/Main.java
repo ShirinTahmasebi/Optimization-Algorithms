@@ -7,6 +7,7 @@ import quantum.anealing.TestQuantumAnnealingAlgorithm;
 import simulated.anealing.TestSimulatedAnnealingAlgorithm;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static main.Utils.readObjectFromFile;
@@ -43,6 +44,8 @@ public class Main {
         double qaEnergySum = 0;
         double saEnergySum = 0;
 
+        Date cuckooTimeA = new Date();
+
         TestCuckooAlgorithm cuckooTest = new TestCuckooAlgorithm(
                 m.graph,
                 m.candidateSinks,
@@ -65,6 +68,10 @@ public class Main {
             cuckooEnergySum += cuckooPotentialEnergy;
             System.out.println("Cuckoo Energy: " + cuckooPotentialEnergy);
         }
+
+        Date cuckooTimeB = new Date();
+
+        Date quantumTimeA = new Date();
 
         TestQuantumAnnealingAlgorithm qaTest = new TestQuantumAnnealingAlgorithm(
                 m.graph,
@@ -89,6 +96,10 @@ public class Main {
             System.out.println("QA Energy: " + qaPotentialEnergy);
         }
 
+        Date quantumTimeB = new Date();
+
+        Date simulatedTimeA = new Date();
+
         TestSimulatedAnnealingAlgorithm saTest = new TestSimulatedAnnealingAlgorithm(
                 m.graph,
                 m.candidateSinks,
@@ -112,18 +123,25 @@ public class Main {
             System.out.println("SA Energy: " + saPotentialEnergy);
         }
 
+        Date simulatedTimeB = new Date();
+
         chartEx.drawChart();
         System.out.println("Cuckoo average potential energy is: " + cuckooEnergySum / SIMULATION_COUNT);
+        System.out.println("Cuckoo average time is: " + (double) (cuckooTimeB.getTime() - cuckooTimeA.getTime()) / SIMULATION_COUNT);
+        System.out.println();
         System.out.println("QA average potential energy is: " + qaEnergySum / SIMULATION_COUNT);
+        System.out.println("QA average time is: " + (double) (quantumTimeB.getTime() - quantumTimeA.getTime()) / SIMULATION_COUNT);
+        System.out.println();
         System.out.println("SA average potential energy is: " + saEnergySum / SIMULATION_COUNT);
+        System.out.println("SA average time is: " + (double) (simulatedTimeB.getTime() - simulatedTimeA.getTime()) / SIMULATION_COUNT);
     }
 
     private void retrieveVariablesFromFile(Main m) {
-        m.graph = (Graph) readObjectFromFile(Utils.FILE_NAME_GRAPH + InitializeGraph.GRAPH_SIZE);
-        m.candidateSinks = (List<Vertex>) readObjectFromFile(Utils.FILE_NAME_CANDIDATE_SINKS + InitializeGraph.GRAPH_SIZE);
-        m.candidateControllers = (List<Vertex>) readObjectFromFile(Utils.FILE_NAME_CANDIDATE_CONTROLLERS + InitializeGraph.GRAPH_SIZE);
-        m.sinkYSpinVariables = (boolean[][]) readObjectFromFile(Utils.FILE_NAME_SINK_Y_SPIN_VARIABLES + InitializeGraph.GRAPH_SIZE);
-        m.controllerYSpinVariables = (boolean[][]) readObjectFromFile(Utils.FILE_NAME_CONTROLLER_Y_SPIN_VARIABLES + InitializeGraph.GRAPH_SIZE);
+        m.graph = (Graph) readObjectFromFile(Utils.FILE_NAME_GRAPH + main.Parameters.Common.GRAPH_SIZE);
+        m.candidateSinks = (List<Vertex>) readObjectFromFile(Utils.FILE_NAME_CANDIDATE_SINKS + main.Parameters.Common.GRAPH_SIZE);
+        m.candidateControllers = (List<Vertex>) readObjectFromFile(Utils.FILE_NAME_CANDIDATE_CONTROLLERS + main.Parameters.Common.GRAPH_SIZE);
+        m.sinkYSpinVariables = (boolean[][]) readObjectFromFile(Utils.FILE_NAME_SINK_Y_SPIN_VARIABLES + main.Parameters.Common.GRAPH_SIZE);
+        m.controllerYSpinVariables = (boolean[][]) readObjectFromFile(Utils.FILE_NAME_CONTROLLER_Y_SPIN_VARIABLES + main.Parameters.Common.GRAPH_SIZE);
 
     }
 }

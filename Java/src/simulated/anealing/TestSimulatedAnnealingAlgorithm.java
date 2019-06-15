@@ -2,15 +2,10 @@ package simulated.anealing;
 
 import main.model.Vertex;
 import main.model.Graph;
+
 import java.util.List;
 
 public class TestSimulatedAnnealingAlgorithm {
-
-    private static final float COST_REDUCTION_FACTOR = 0.75f;
-    private static final float TEMPERATURE_INITIAL = 100;              // T Initial
-    private static final float TEMPERATURE_FINAL = 1;                // T Final
-    private static final float TEMPERATURE_COOLING_RATE = .75f;         // T Cooling Rate
-    private static final int MONTE_CARLO_STEP = 50;   // M
 
     SimulatedAnnealing sa;
 
@@ -42,11 +37,11 @@ public class TestSimulatedAnnealingAlgorithm {
                 maxControllerLoad,
                 costSink,
                 costController,
-                COST_REDUCTION_FACTOR,
-                TEMPERATURE_INITIAL,
-                TEMPERATURE_FINAL,
-                TEMPERATURE_COOLING_RATE,
-                MONTE_CARLO_STEP
+                main.Parameters.SimulatedAnnealing.COST_REDUCTION_FACTOR,
+                main.Parameters.SimulatedAnnealing.TEMPERATURE_INITIAL,
+                main.Parameters.SimulatedAnnealing.TEMPERATURE_FINAL,
+                main.Parameters.SimulatedAnnealing.TEMPERATURE_COOLING_RATE,
+                main.Parameters.SimulatedAnnealing.MONTE_CARLO_STEP
         );
     }
 

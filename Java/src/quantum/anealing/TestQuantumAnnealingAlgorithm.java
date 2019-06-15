@@ -2,17 +2,10 @@ package quantum.anealing;
 
 import main.model.Vertex;
 import main.model.Graph;
+
 import java.util.List;
 
 public class TestQuantumAnnealingAlgorithm {
-
-    private static final float COST_REDUCTION_FACTOR = 0.75f;
-    private static final int TROTTER_REPLICAS = 50;     // P
-    private static final float TEMPERATURE = 100f;         // T
-    private static final int MONTE_CARLO_STEP = 100;   // M
-    private static final float TUNNLING_FIELD_INITIAL = 1f;
-    private static final float TUNNLING_FIELD_FINAL = .5f;
-    private static final float TUNNLING_FIELD_EVAPORATION = .95f;
 
     QuantumAnnealing qa;
 
@@ -44,13 +37,13 @@ public class TestQuantumAnnealingAlgorithm {
                 maxControllerLoad,
                 costSink,
                 costController,
-                COST_REDUCTION_FACTOR,
-                TROTTER_REPLICAS,
-                TEMPERATURE,
-                MONTE_CARLO_STEP,
-                TUNNLING_FIELD_INITIAL,
-                TUNNLING_FIELD_FINAL,
-                TUNNLING_FIELD_EVAPORATION
+                main.Parameters.QuantumAnnealing.COST_REDUCTION_FACTOR,
+                main.Parameters.QuantumAnnealing.TROTTER_REPLICAS,
+                main.Parameters.QuantumAnnealing.TEMPERATURE,
+                main.Parameters.QuantumAnnealing.MONTE_CARLO_STEP,
+                main.Parameters.QuantumAnnealing.TUNNLING_FIELD_INITIAL,
+                main.Parameters.QuantumAnnealing.TUNNLING_FIELD_FINAL,
+                main.Parameters.QuantumAnnealing.TUNNLING_FIELD_EVAPORATION
         );
     }
 
