@@ -1,5 +1,6 @@
 package simulated.anealing;
 
+import main.Parameters;
 import main.model.Vertex;
 import main.model.Graph;
 
@@ -37,7 +38,7 @@ public class TestSimulatedAnnealingAlgorithm {
                 maxControllerLoad,
                 costSink,
                 costController,
-                main.Parameters.SimulatedAnnealing.COST_REDUCTION_FACTOR,
+                Parameters.Common.COST_REDUCTION_FACTOR,
                 main.Parameters.SimulatedAnnealing.TEMPERATURE_INITIAL,
                 main.Parameters.SimulatedAnnealing.TEMPERATURE_FINAL,
                 main.Parameters.SimulatedAnnealing.TEMPERATURE_COOLING_RATE,

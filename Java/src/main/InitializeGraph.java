@@ -10,7 +10,7 @@ import java.util.*;
 import static main.Utils.writeObjectToFile;
 
 public class InitializeGraph {
-        private static final List<Vertex> nodes = new ArrayList<>();        // V
+    private static final List<Vertex> nodes = new ArrayList<>();        // V
     private static final List<Edge> edges = new ArrayList<>();          // E
     private final List<Vertex> candidateSinks = new ArrayList<>();            // AS
     private final List<Vertex> candidateControllers = new ArrayList<>();      // AC

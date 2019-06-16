@@ -37,13 +37,13 @@ public class TestQuantumAnnealingAlgorithm {
                 maxControllerLoad,
                 costSink,
                 costController,
-                main.Parameters.QuantumAnnealing.COST_REDUCTION_FACTOR,
+                main.Parameters.Common.COST_REDUCTION_FACTOR,
                 main.Parameters.QuantumAnnealing.TROTTER_REPLICAS,
                 main.Parameters.QuantumAnnealing.TEMPERATURE,
                 main.Parameters.QuantumAnnealing.MONTE_CARLO_STEP,
-                main.Parameters.QuantumAnnealing.TUNNLING_FIELD_INITIAL,
-                main.Parameters.QuantumAnnealing.TUNNLING_FIELD_FINAL,
-                main.Parameters.QuantumAnnealing.TUNNLING_FIELD_EVAPORATION
+                main.Parameters.QuantumAnnealing.TUNNELING_FIELD_INITIAL,
+                main.Parameters.QuantumAnnealing.TUNNELING_FIELD_FINAL,
+                main.Parameters.QuantumAnnealing.TUNNELING_FIELD_EVAPORATION
         );
     }
 
