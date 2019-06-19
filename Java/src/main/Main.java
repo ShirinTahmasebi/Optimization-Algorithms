@@ -36,28 +36,28 @@ public class Main {
 
         Date cuckooTimeA = new Date();
 
-        TestCuckooAlgorithm cuckooTest = new TestCuckooAlgorithm(
-                m.graph,
-                m.candidateSinks,
-                m.candidateControllers,
-                m.sinkYSpinVariables,
-                m.controllerYSpinVariables,
-                main.Parameters.Common.SENSOR_SINK_MAX_DISTANCE,
-                main.Parameters.Common.SENSOR_CONTROLLER_MAX_DISTANCE,
-                main.Parameters.Common.MAX_SINK_COVERAGE,
-                main.Parameters.Common.MAX_CONTROLLER_COVERAGE,
-                main.Parameters.Common.MAX_SINK_LOAD,
-                main.Parameters.Common.MAX_CONTROLLER_LOAD,
-                main.Parameters.Common.COST_SINK,
-                main.Parameters.Common.COST_CONTROLLER
-        );
-
-        for (int i = 0; i < main.Parameters.Common.SIMULATION_COUNT; i++) {
-            double cuckooPotentialEnergy = cuckooTest.execute();
-            chartEx.addToCuckooSeries(i + 1, cuckooPotentialEnergy);
-            cuckooEnergySum += cuckooPotentialEnergy;
-            System.out.println("Cuckoo Energy: " + cuckooPotentialEnergy);
-        }
+//        TestCuckooAlgorithm cuckooTest = new TestCuckooAlgorithm(
+//                m.graph,
+//                m.candidateSinks,
+//                m.candidateControllers,
+//                m.sinkYSpinVariables,
+//                m.controllerYSpinVariables,
+//                main.Parameters.Common.SENSOR_SINK_MAX_DISTANCE,
+//                main.Parameters.Common.SENSOR_CONTROLLER_MAX_DISTANCE,
+//                main.Parameters.Common.MAX_SINK_COVERAGE,
+//                main.Parameters.Common.MAX_CONTROLLER_COVERAGE,
+//                main.Parameters.Common.MAX_SINK_LOAD,
+//                main.Parameters.Common.MAX_CONTROLLER_LOAD,
+//                main.Parameters.Common.COST_SINK,
+//                main.Parameters.Common.COST_CONTROLLER
+//        );
+//
+//        for (int i = 0; i < main.Parameters.Common.SIMULATION_COUNT; i++) {
+//            double cuckooPotentialEnergy = cuckooTest.execute();
+//            chartEx.addToCuckooSeries(i + 1, cuckooPotentialEnergy);
+//            cuckooEnergySum += cuckooPotentialEnergy;
+//            System.out.println("Cuckoo Energy: " + cuckooPotentialEnergy);
+//        }
 
         Date cuckooTimeB = new Date();
 
@@ -116,6 +116,7 @@ public class Main {
         Date simulatedTimeB = new Date();
 
         chartEx.drawChart();
+        System.out.println();
         System.out.println("Cuckoo average potential energy is: " + cuckooEnergySum / main.Parameters.Common.SIMULATION_COUNT);
         System.out.println("Cuckoo average time is: " + (double) (cuckooTimeB.getTime() - cuckooTimeA.getTime()) / main.Parameters.Common.SIMULATION_COUNT);
         System.out.println();

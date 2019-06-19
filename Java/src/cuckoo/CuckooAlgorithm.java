@@ -2,6 +2,7 @@ package cuckoo;
 
 import cuckoo.model.Cuckoo;
 import main.BaseAlgorithm;
+import main.Parameters;
 import main.Utils;
 import main.model.Graph;
 import main.model.Vertex;
@@ -11,13 +12,6 @@ import java.util.Collections;
 import java.util.List;
 
 public class CuckooAlgorithm extends BaseAlgorithm {
-
-    @SuppressWarnings("FieldCanBeLocal")
-    private final int POPULATION = 40;      // Npop
-    public static final int maxEggNumber = 20;
-    public static final int minEggNumber = 15;
-    private static final double EGG_KILLING_RATE = .01;
-    private static final int MAX_CUCKOO_NUMBERS = 500;
 
     private List<Cuckoo> matureCuckoos = new ArrayList<>();
     private List<Cuckoo> eggs = new ArrayList<>();
@@ -89,34 +83,37 @@ public class CuckooAlgorithm extends BaseAlgorithm {
     }
 
     public double execute() {
-        for (int i = 0; i < POPULATION; i++) {
-            matureCuckoos.add(generateInitialRandomCuckoos());
-        }
+        matureCuckoos.clear();
+        for (int step = 0; step < Parameters.Cuckoo.MONTE_CARLO_STEP; step++) {
+            for (int i = 0; i < main.Parameters.Cuckoo.POPULATION; i++) {
+                matureCuckoos.add(generateInitialRandomCuckoos());
+            }
 
-        for (int i = 0; i < 10; i++) {
-            for (Cuckoo matureCuckoo : matureCuckoos) {
-                try {
-                    eggs.addAll(matureCuckoo.generateEggs());
-                } catch (Exception ignored) {
+            for (int i = 0; i < 10; i++) {
+                for (Cuckoo matureCuckoo : matureCuckoos) {
+                    try {
+                        eggs.addAll(matureCuckoo.generateEggs());
+                    } catch (Exception ignored) {
 
+                    }
                 }
+                for (Cuckoo cuckoo : eggs) {
+                    cuckoo.setCost(calculateCost(cuckoo.sinkXSpinVariables, cuckoo.controllerXSpinVariables));
+                }
+                Collections.sort(eggs, new CuckooComparator());
+
+                int highSubListBound = eggs.size() - (int) (eggs.size() * main.Parameters.Cuckoo.EGG_KILLING_RATE);
+                List<Cuckoo> cuckooList = eggs.subList(0, highSubListBound);
+
+                matureCuckoos.addAll(cuckooList);
+                eggs.clear();
+
+                if (matureCuckoos.size() > main.Parameters.Cuckoo.MAX_CUCKOO_NUMBERS) {
+                    Collections.sort(matureCuckoos, new CuckooComparator());
+                    matureCuckoos = matureCuckoos.subList(0, main.Parameters.Cuckoo.MAX_CUCKOO_NUMBERS);
+                }
+
             }
-            for (Cuckoo cuckoo : eggs) {
-                cuckoo.setCost(calculateCost(cuckoo.sinkXSpinVariables, cuckoo.controllerXSpinVariables));
-            }
-            Collections.sort(eggs, new CuckooComparator());
-
-            int highSubListBound = eggs.size() - (int) (eggs.size() * EGG_KILLING_RATE);
-            List<Cuckoo> cuckooList = eggs.subList(0, highSubListBound);
-
-            matureCuckoos.addAll(cuckooList);
-            eggs.clear();
-
-            if (matureCuckoos.size() > MAX_CUCKOO_NUMBERS) {
-                Collections.sort(matureCuckoos, new CuckooComparator());
-                matureCuckoos = matureCuckoos.subList(0, MAX_CUCKOO_NUMBERS);
-            }
-
         }
 
         return matureCuckoos.get(0).getCost();

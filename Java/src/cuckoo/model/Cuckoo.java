@@ -1,7 +1,5 @@
 package cuckoo.model;
 
-import cuckoo.CuckooAlgorithm;
-
 import java.util.*;
 
 public class Cuckoo {
@@ -26,7 +24,7 @@ public class Cuckoo {
         if (isMature) {
             Random rand = new Random();
             int eggsNumber = Math.min(
-                    rand.nextInt(CuckooAlgorithm.maxEggNumber - CuckooAlgorithm.minEggNumber) + CuckooAlgorithm.minEggNumber,
+                    rand.nextInt(main.Parameters.Cuckoo.MAX_EGG_NUMBER - main.Parameters.Cuckoo.MIN_EGG_NUMBER) + main.Parameters.Cuckoo.MIN_EGG_NUMBER,
                     (controllerXSpinVariables.length + sinkXSpinVariables.length) / 3
             );
             matureCuckooInfo.setNumberOfEggs(eggsNumber);
