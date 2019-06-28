@@ -36,28 +36,28 @@ public class Main {
 
         Date cuckooTimeA = new Date();
 
-//        TestCuckooAlgorithm cuckooTest = new TestCuckooAlgorithm(
-//                m.graph,
-//                m.candidateSinks,
-//                m.candidateControllers,
-//                m.sinkYSpinVariables,
-//                m.controllerYSpinVariables,
-//                main.Parameters.Common.SENSOR_SINK_MAX_DISTANCE,
-//                main.Parameters.Common.SENSOR_CONTROLLER_MAX_DISTANCE,
-//                main.Parameters.Common.MAX_SINK_COVERAGE,
-//                main.Parameters.Common.MAX_CONTROLLER_COVERAGE,
-//                main.Parameters.Common.MAX_SINK_LOAD,
-//                main.Parameters.Common.MAX_CONTROLLER_LOAD,
-//                main.Parameters.Common.COST_SINK,
-//                main.Parameters.Common.COST_CONTROLLER
-//        );
-//
-//        for (int i = 0; i < main.Parameters.Common.SIMULATION_COUNT; i++) {
-//            double cuckooPotentialEnergy = cuckooTest.execute();
-//            chartEx.addToCuckooSeries(i + 1, cuckooPotentialEnergy);
-//            cuckooEnergySum += cuckooPotentialEnergy;
-//            System.out.println("Cuckoo Energy: " + cuckooPotentialEnergy);
-//        }
+        TestCuckooAlgorithm cuckooTest = new TestCuckooAlgorithm(
+                m.graph,
+                m.candidateSinks,
+                m.candidateControllers,
+                m.sinkYSpinVariables,
+                m.controllerYSpinVariables,
+                main.Parameters.Common.SENSOR_SINK_MAX_DISTANCE,
+                main.Parameters.Common.SENSOR_CONTROLLER_MAX_DISTANCE,
+                main.Parameters.Common.MAX_SINK_COVERAGE,
+                main.Parameters.Common.MAX_CONTROLLER_COVERAGE,
+                main.Parameters.Common.MAX_SINK_LOAD,
+                main.Parameters.Common.MAX_CONTROLLER_LOAD,
+                main.Parameters.Common.COST_SINK,
+                main.Parameters.Common.COST_CONTROLLER
+        );
+
+        for (int i = 0; i < main.Parameters.Common.SIMULATION_COUNT; i++) {
+            double cuckooPotentialEnergy = cuckooTest.execute();
+            chartEx.addToCuckooSeries(i + 1, cuckooPotentialEnergy);
+            cuckooEnergySum += cuckooPotentialEnergy;
+            System.out.println("Cuckoo Energy: " + cuckooPotentialEnergy);
+        }
 
         Date cuckooTimeB = new Date();
 
@@ -90,28 +90,28 @@ public class Main {
 
         Date simulatedTimeA = new Date();
 
-//        TestSimulatedAnnealingAlgorithm saTest = new TestSimulatedAnnealingAlgorithm(
-//                m.graph,
-//                m.candidateSinks,
-//                m.candidateControllers,
-//                m.sinkYSpinVariables,
-//                m.controllerYSpinVariables,
-//                main.Parameters.Common.SENSOR_SINK_MAX_DISTANCE,
-//                main.Parameters.Common.SENSOR_CONTROLLER_MAX_DISTANCE,
-//                main.Parameters.Common.MAX_SINK_COVERAGE,
-//                main.Parameters.Common.MAX_CONTROLLER_COVERAGE,
-//                main.Parameters.Common.MAX_SINK_LOAD,
-//                main.Parameters.Common.MAX_CONTROLLER_LOAD,
-//                main.Parameters.Common.COST_SINK,
-//                main.Parameters.Common.COST_CONTROLLER
-//        );
-//
-//        for (int i = 0; i < main.Parameters.Common.SIMULATION_COUNT; i++) {
-//            double saPotentialEnergy = saTest.execute();
-//            chartEx.addToSASeries(i + 1, saPotentialEnergy);
-//            saEnergySum += saPotentialEnergy;
-//            System.out.println("SA Energy: " + saPotentialEnergy);
-//        }
+        TestSimulatedAnnealingAlgorithm saTest = new TestSimulatedAnnealingAlgorithm(
+                m.graph,
+                m.candidateSinks,
+                m.candidateControllers,
+                m.sinkYSpinVariables,
+                m.controllerYSpinVariables,
+                main.Parameters.Common.SENSOR_SINK_MAX_DISTANCE,
+                main.Parameters.Common.SENSOR_CONTROLLER_MAX_DISTANCE,
+                main.Parameters.Common.MAX_SINK_COVERAGE,
+                main.Parameters.Common.MAX_CONTROLLER_COVERAGE,
+                main.Parameters.Common.MAX_SINK_LOAD,
+                main.Parameters.Common.MAX_CONTROLLER_LOAD,
+                main.Parameters.Common.COST_SINK,
+                main.Parameters.Common.COST_CONTROLLER
+        );
+
+        for (int i = 0; i < main.Parameters.Common.SIMULATION_COUNT; i++) {
+            double saPotentialEnergy = saTest.execute();
+            chartEx.addToSASeries(i + 1, saPotentialEnergy);
+            saEnergySum += saPotentialEnergy;
+            System.out.println("SA Energy: " + saPotentialEnergy);
+        }
 
         Date simulatedTimeB = new Date();
 

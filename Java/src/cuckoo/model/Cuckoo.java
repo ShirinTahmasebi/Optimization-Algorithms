@@ -84,7 +84,6 @@ public class Cuckoo {
             throw new Exception("Using generateEggs is not valid for not mature cuckoos!");
         }
         List<Cuckoo> eggs = new ArrayList<>();
-        // TODO: Remove this line later
         this.matureCuckooInfo.setELR(
                 Math.min(this.getControllerXSpinVariables().length, this.getSinkXSpinVariables().length) / 2
         );
