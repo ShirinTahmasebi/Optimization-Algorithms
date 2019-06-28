@@ -6,6 +6,7 @@ import algorithms_modeling.QA.QAAlgorithm;
 import algorithms_modeling.QA.QAModelingInterface;
 import algorithms_modeling.QA.QAPlainOldData;
 import problem_modelings.first_modeling.QAFirstModeling;
+import problem_modelings.modeling_types.first_modeling.FirstModelPlainOldData;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -49,7 +50,7 @@ public class FactoryClient {
                 main.Parameters.QuantumAnnealing.TUNNELING_FIELD_EVAPORATION
         );
 
-        QAModelingInterface qaModelingInterface = new QAFirstModeling(
+        FirstModelPlainOldData firstModelPlainOldData = new FirstModelPlainOldData(
                 client.graph,
                 client.candidateSinks,
                 client.candidateControllers,
@@ -63,7 +64,11 @@ public class FactoryClient {
                 main.Parameters.Common.MAX_CONTROLLER_LOAD,
                 main.Parameters.Common.COST_SINK,
                 main.Parameters.Common.COST_CONTROLLER,
-                main.Parameters.Common.COST_REDUCTION_FACTOR,
+                main.Parameters.Common.COST_REDUCTION_FACTOR
+        );
+
+        QAModelingInterface qaModelingInterface = new QAFirstModeling(
+                firstModelPlainOldData,
                 qaPlainOldData
         );
 

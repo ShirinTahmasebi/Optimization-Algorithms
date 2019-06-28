@@ -6,7 +6,8 @@ import main.model.Graph;
 import main.model.Vertex;
 import algorithms_modeling.QA.QAModelingInterface;
 import algorithms_modeling.QA.QAPlainOldData;
-import problem_modelings.modeling_types.FirstModelAbstract;
+import problem_modelings.modeling_types.first_modeling.FirstModelAbstract;
+import problem_modelings.modeling_types.first_modeling.FirstModelPlainOldData;
 
 import java.util.List;
 import java.util.Random;
@@ -15,42 +16,9 @@ public class QAFirstModeling extends FirstModelAbstract implements QAModelingInt
 
     private QAPlainOldData qaDataStructure;
 
-    public QAFirstModeling(
-            Graph graph,
-            List<Vertex> candidateSinks,
-            List<Vertex> candidateControllers,
-            boolean[][] sinkYSpinVariables,
-            boolean[][] controllerYSpinVariables,
-            int sensorSinkMaxDistance,
-            int sensorControllerMaxDistance,
-            int maxSinkCoverage,
-            int maxControllerCoverage,
-            int maxSinkLoad,
-            int maxControllerLoad,
-            int costSink,
-            int costController,
-            float costReductionFactor,
-            QAPlainOldData qaDataStructure
-    ) {
-        super(
-                graph,
-                candidateSinks,
-                candidateControllers,
-                sinkYSpinVariables,
-                controllerYSpinVariables,
-                sensorSinkMaxDistance,
-                sensorControllerMaxDistance,
-                maxSinkCoverage,
-                maxControllerCoverage,
-                maxSinkLoad,
-                maxControllerLoad,
-                costSink,
-                costController,
-                costReductionFactor
-        );
-
+    public QAFirstModeling(FirstModelPlainOldData firstModelPlainOldData, QAPlainOldData qaDataStructure) {
+        super(firstModelPlainOldData);
         this.qaDataStructure = qaDataStructure;
-
     }
 
     @Override
@@ -62,25 +30,25 @@ public class QAFirstModeling extends FirstModelAbstract implements QAModelingInt
     public void resetDynamicVariables() {
         qaDataStructure.temperature = qaDataStructure.temperatureInitial;
         qaDataStructure.tunnelingField = qaDataStructure.tunnelingFieldInitial;
-        this.tempControllerXSpinVariables = new boolean[candidateControllers.size()];
-        this.tempSinkXSpinVariables = new boolean[candidateSinks.size()];
-        this.sinkXSpinVariables = new boolean[candidateSinks.size()];
-        this.controllerXSpinVariables = new boolean[candidateControllers.size()];
-        this.replicasOfSinkXSpinVariables = new boolean[qaDataStructure.trotterReplicas][candidateSinks.size()];
-        this.replicasOfControllerXSpinVariables = new boolean[qaDataStructure.trotterReplicas][candidateControllers.size()];
+        this.modelPlainOldData.tempControllerXSpinVariables = new boolean[modelPlainOldData.candidateControllers.size()];
+        this.modelPlainOldData.tempSinkXSpinVariables = new boolean[modelPlainOldData.candidateSinks.size()];
+        this.modelPlainOldData.sinkXSpinVariables = new boolean[modelPlainOldData.candidateSinks.size()];
+        this.modelPlainOldData.controllerXSpinVariables = new boolean[modelPlainOldData.candidateControllers.size()];
+        this.modelPlainOldData.replicasOfSinkXSpinVariables = new boolean[qaDataStructure.trotterReplicas][modelPlainOldData.candidateSinks.size()];
+        this.modelPlainOldData.replicasOfControllerXSpinVariables = new boolean[qaDataStructure.trotterReplicas][modelPlainOldData.candidateControllers.size()];
     }
 
     @Override
     public void generateReplicasOfSolutions() {
         for (int i = 0; i < qaDataStructure.trotterReplicas; i++) {
             // --- Select random configuration for replicas
-            for (int j = 0; j < candidateSinks.size(); j++) {
+            for (int j = 0; j < modelPlainOldData.candidateSinks.size(); j++) {
                 double probabilityOfOne = Math.random();
-                replicasOfSinkXSpinVariables[i][j] = probabilityOfOne < .5;
+                modelPlainOldData.replicasOfSinkXSpinVariables[i][j] = probabilityOfOne < .5;
             }
-            for (int j = 0; j < candidateControllers.size(); j++) {
+            for (int j = 0; j < modelPlainOldData.candidateControllers.size(); j++) {
                 double probabilityOfOne = Math.random();
-                replicasOfControllerXSpinVariables[i][j] = probabilityOfOne < .5;
+                modelPlainOldData.replicasOfControllerXSpinVariables[i][j] = probabilityOfOne < .5;
             }
         }
     }
@@ -88,68 +56,68 @@ public class QAFirstModeling extends FirstModelAbstract implements QAModelingInt
     @Override
     public void generateInitialSpinVariablesAndEnergy() {
         // --- Initialize temp lists to false
-        for (int i = 0; i < candidateControllers.size(); i++) {
-            controllerXSpinVariables[i] = false;
+        for (int i = 0; i < modelPlainOldData.candidateControllers.size(); i++) {
+            modelPlainOldData.controllerXSpinVariables[i] = false;
         }
 
-        for (int i = 0; i < candidateSinks.size(); i++) {
-            sinkXSpinVariables[i] = false;
+        for (int i = 0; i < modelPlainOldData.candidateSinks.size(); i++) {
+            modelPlainOldData.sinkXSpinVariables[i] = false;
         }
 
-        tempControllerXSpinVariables = controllerXSpinVariables.clone();
-        tempSinkXSpinVariables = sinkXSpinVariables.clone();
+        modelPlainOldData.tempControllerXSpinVariables = modelPlainOldData.controllerXSpinVariables.clone();
+        modelPlainOldData.tempSinkXSpinVariables = modelPlainOldData.sinkXSpinVariables.clone();
         qaDataStructure.prevEnergyPair = calculateCost(-1);
     }
 
     @Override
     public void getAReplica(int replicaNumber) {
-        tempSinkXSpinVariables = replicasOfSinkXSpinVariables[replicaNumber].clone();
-        tempControllerXSpinVariables = replicasOfControllerXSpinVariables[replicaNumber].clone();
+        modelPlainOldData.tempSinkXSpinVariables = modelPlainOldData.replicasOfSinkXSpinVariables[replicaNumber].clone();
+        modelPlainOldData.tempControllerXSpinVariables = modelPlainOldData.replicasOfControllerXSpinVariables[replicaNumber].clone();
     }
 
     @Override
     public void generateNeighbor() {
         Random random = new Random();
-        int randInt = random.nextInt(tempSinkXSpinVariables.length + tempControllerXSpinVariables.length);
+        int randInt = random.nextInt(modelPlainOldData.tempSinkXSpinVariables.length + modelPlainOldData.tempControllerXSpinVariables.length);
 
-        if (randInt < tempSinkXSpinVariables.length) {
+        if (randInt < modelPlainOldData.tempSinkXSpinVariables.length) {
             // Change randInt-th item in sink array
-            boolean prevValue = tempSinkXSpinVariables[randInt];
-            tempSinkXSpinVariables[randInt] = !prevValue;
+            boolean prevValue = modelPlainOldData.tempSinkXSpinVariables[randInt];
+            modelPlainOldData.tempSinkXSpinVariables[randInt] = !prevValue;
         } else {
             // Change index-th item in controller array
-            int index = randInt - (tempSinkXSpinVariables.length - 1) - 1;
-            boolean prevValue = tempControllerXSpinVariables[index];
-            tempControllerXSpinVariables[index] = !prevValue;
+            int index = randInt - (modelPlainOldData.tempSinkXSpinVariables.length - 1) - 1;
+            boolean prevValue = modelPlainOldData.tempControllerXSpinVariables[index];
+            modelPlainOldData.tempControllerXSpinVariables[index] = !prevValue;
         }
         if (main.Main.DO_PRINT_STEPS) {
-            Utils.printGeneratedSolution(tempSinkXSpinVariables, tempControllerXSpinVariables);
+            Utils.printGeneratedSolution(modelPlainOldData.tempSinkXSpinVariables, modelPlainOldData.tempControllerXSpinVariables);
         }
     }
 
     @Override
     public Pair<Double, Double> calculateCost(int currentReplicaNum) {
         int reliabilityEnergy = Utils.getReliabilityEnergy(
-                graph,
-                sinkYSpinVariables, controllerYSpinVariables,
-                candidateSinks, tempSinkXSpinVariables,
-                candidateControllers, tempControllerXSpinVariables,
-                maxSinkCoverage, maxControllerCoverage
+                modelPlainOldData.graph,
+                modelPlainOldData.sinkYSpinVariables, modelPlainOldData.controllerYSpinVariables,
+                modelPlainOldData.candidateSinks, modelPlainOldData.tempSinkXSpinVariables,
+                modelPlainOldData.candidateControllers, modelPlainOldData.tempControllerXSpinVariables,
+                modelPlainOldData.maxSinkCoverage, modelPlainOldData.maxControllerCoverage
         );
 
         double loadBalancingEnergy = Utils.getLoadBalancingEnergy(
-                graph,
-                sinkYSpinVariables, controllerYSpinVariables,
-                candidateSinks, tempSinkXSpinVariables,
-                candidateControllers, tempControllerXSpinVariables,
-                maxSinkLoad, maxSinkCoverage,
-                maxControllerLoad, maxControllerCoverage
+                modelPlainOldData.graph,
+                modelPlainOldData.sinkYSpinVariables, modelPlainOldData.controllerYSpinVariables,
+                modelPlainOldData.candidateSinks, modelPlainOldData.tempSinkXSpinVariables,
+                modelPlainOldData.candidateControllers, modelPlainOldData.tempControllerXSpinVariables,
+                modelPlainOldData.maxSinkLoad, modelPlainOldData.maxSinkCoverage,
+                modelPlainOldData.maxControllerLoad, modelPlainOldData.maxControllerCoverage
         );
 
         double costEnergy = Utils.getCostEnergy(
-                candidateSinks, tempSinkXSpinVariables,
-                candidateControllers, tempControllerXSpinVariables,
-                costSink, costController, costReductionFactor
+                modelPlainOldData.candidateSinks, modelPlainOldData.tempSinkXSpinVariables,
+                modelPlainOldData.candidateControllers, modelPlainOldData.tempControllerXSpinVariables,
+                modelPlainOldData.costSink, modelPlainOldData.costController, modelPlainOldData.costReductionFactor
         );
 
         double potentialEnergy = reliabilityEnergy + loadBalancingEnergy + costEnergy;
@@ -177,15 +145,15 @@ public class QAFirstModeling extends FirstModelAbstract implements QAModelingInt
         int sinkReplicaCoupling = 0;
         int controllerReplicaCoupling = 0;
 
-        for (int i = 0; i < candidateSinks.size(); i++) {
-            boolean areSpinVariablesTheSame = (replicasOfSinkXSpinVariables[currentReplicaNum][i] && replicasOfSinkXSpinVariables[currentReplicaNum + 1][i]);
+        for (int i = 0; i < modelPlainOldData.candidateSinks.size(); i++) {
+            boolean areSpinVariablesTheSame = (modelPlainOldData.replicasOfSinkXSpinVariables[currentReplicaNum][i] && modelPlainOldData.replicasOfSinkXSpinVariables[currentReplicaNum + 1][i]);
             sinkReplicaCoupling = areSpinVariablesTheSame ? 1 : -1;
         }
 
-        for (int i = 0; i < candidateControllers.size(); i++) {
+        for (int i = 0; i < modelPlainOldData.candidateControllers.size(); i++) {
             boolean areSpinVariablesTheSame
-                    = (replicasOfControllerXSpinVariables[currentReplicaNum][i]
-                    && replicasOfControllerXSpinVariables[currentReplicaNum + 1][i]);
+                    = (modelPlainOldData.replicasOfControllerXSpinVariables[currentReplicaNum][i]
+                    && modelPlainOldData.replicasOfControllerXSpinVariables[currentReplicaNum + 1][i]);
             controllerReplicaCoupling = areSpinVariablesTheSame ? 1 : -1;
         }
 
@@ -195,13 +163,13 @@ public class QAFirstModeling extends FirstModelAbstract implements QAModelingInt
 
     @Override
     public void acceptSolution() {
-        sinkXSpinVariables = tempSinkXSpinVariables.clone();
-        controllerXSpinVariables = tempControllerXSpinVariables.clone();
+        modelPlainOldData.sinkXSpinVariables = modelPlainOldData.tempSinkXSpinVariables.clone();
+        modelPlainOldData.controllerXSpinVariables = modelPlainOldData.tempControllerXSpinVariables.clone();
     }
 
     @Override
     public void printGeneratedSolution() {
-        super.printGeneratedSolution(tempSinkXSpinVariables, tempControllerXSpinVariables);
+        super.printGeneratedSolution(modelPlainOldData.tempSinkXSpinVariables, modelPlainOldData.tempControllerXSpinVariables);
     }
 
     @Override
@@ -212,26 +180,26 @@ public class QAFirstModeling extends FirstModelAbstract implements QAModelingInt
     @SuppressWarnings("unused")
     private double calculatePotentialEnergy(int currentReplicaNum) {
         int reliabilityEnergy = Utils.getReliabilityEnergy(
-                graph,
-                sinkYSpinVariables, controllerYSpinVariables,
-                candidateSinks, tempSinkXSpinVariables,
-                candidateControllers, tempControllerXSpinVariables,
-                maxSinkCoverage, maxControllerCoverage
+                modelPlainOldData.graph,
+                modelPlainOldData.sinkYSpinVariables, modelPlainOldData.controllerYSpinVariables,
+                modelPlainOldData.candidateSinks, modelPlainOldData.tempSinkXSpinVariables,
+                modelPlainOldData.candidateControllers, modelPlainOldData.tempControllerXSpinVariables,
+                modelPlainOldData.maxSinkCoverage, modelPlainOldData.maxControllerCoverage
         );
 
         double loadBalancingEnergy = Utils.getLoadBalancingEnergy(
-                graph,
-                sinkYSpinVariables, controllerYSpinVariables,
-                candidateSinks, tempSinkXSpinVariables,
-                candidateControllers, tempControllerXSpinVariables,
-                maxSinkLoad, maxSinkCoverage,
-                maxControllerLoad, maxControllerCoverage
+                modelPlainOldData.graph,
+                modelPlainOldData.sinkYSpinVariables, modelPlainOldData.controllerYSpinVariables,
+                modelPlainOldData.candidateSinks, modelPlainOldData.tempSinkXSpinVariables,
+                modelPlainOldData.candidateControllers, modelPlainOldData.tempControllerXSpinVariables,
+                modelPlainOldData.maxSinkLoad, modelPlainOldData.maxSinkCoverage,
+                modelPlainOldData.maxControllerLoad, modelPlainOldData.maxControllerCoverage
         );
 
         double costEnergy = Utils.getCostEnergy(
-                candidateSinks, tempSinkXSpinVariables,
-                candidateControllers, tempControllerXSpinVariables,
-                costSink, costController, costReductionFactor
+                modelPlainOldData.candidateSinks, modelPlainOldData.tempSinkXSpinVariables,
+                modelPlainOldData.candidateControllers, modelPlainOldData.tempControllerXSpinVariables,
+                modelPlainOldData.costSink, modelPlainOldData.costController, modelPlainOldData.costReductionFactor
         );
 
         return reliabilityEnergy + loadBalancingEnergy + costEnergy;
