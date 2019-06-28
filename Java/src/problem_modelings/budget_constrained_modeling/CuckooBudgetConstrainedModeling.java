@@ -1,7 +1,7 @@
 package problem_modelings.budget_constrained_modeling;
 
 import problem_modelings.algorithms_modeling.CuckooModelingInterface;
-import problem_modelings.modeling_types.BudgetConstrainedModelInterface;
+import problem_modelings.modeling_types.BudgetConstrainedModelAbstract;
 
-public class CuckooBudgetConstrainedModeling implements CuckooModelingInterface, BudgetConstrainedModelInterface {
+public class CuckooBudgetConstrainedModeling extends BudgetConstrainedModelAbstract implements CuckooModelingInterface {
 }

@@ -80,8 +80,7 @@ public class QuantumAnnealing extends BaseAlgorithm {
         }
     }
 
-    double execute() {
-        // Reset Dynamic Values
+    void resetDynamicValues() {
         temperature = temperatureInitial;
         tunnlingField = tunnlingFieldInitial;
         this.tempControllerXSpinVariables = new boolean[candidateControllers.size()];
@@ -90,6 +89,11 @@ public class QuantumAnnealing extends BaseAlgorithm {
         this.controllerXSpinVariables = new boolean[candidateControllers.size()];
         this.replicasOfSinkXSpinVariables = new boolean[trotterReplicas][candidateSinks.size()];
         this.replicasOfControllerXSpinVariables = new boolean[trotterReplicas][candidateControllers.size()];
+    }
+
+    double execute() {
+        // Reset Dynamic Values
+        resetDynamicValues();
 
         // Genreate replicas (Fill replicasOfSinkXSpinVariables, replicasOfControllerXSpinVariables )
         generateReplicasOfSolutions();
@@ -101,8 +105,7 @@ public class QuantumAnnealing extends BaseAlgorithm {
         do {
             // For each replica
             for (int ro = 0; ro < trotterReplicas; ro++) {
-                tempSinkXSpinVariables = replicasOfSinkXSpinVariables[ro].clone();
-                tempControllerXSpinVariables = replicasOfControllerXSpinVariables[ro].clone();
+                getAReplica(ro);
                 //  For each montecarlo step
                 for (int step = 0; step < monteCarloSteps; step++) {
                     counter++;
@@ -119,8 +122,7 @@ public class QuantumAnnealing extends BaseAlgorithm {
                     if (energyPair.getKey() < prevEnergyPair.getKey() || energy < prevEnergy) {
                         // If energy has decreased: accept solution
                         prevEnergyPair = energyPair;
-                        sinkXSpinVariables = tempSinkXSpinVariables.clone();
-                        controllerXSpinVariables = tempControllerXSpinVariables.clone();
+                        acceptSolution();
                     } else {
                         // Else with given probability decide to accept or not   
                         double baseProb = Math.exp((prevEnergy - energy) / temperature);
@@ -130,8 +132,7 @@ public class QuantumAnnealing extends BaseAlgorithm {
                         double rand = Math.random();
                         if (rand < baseProb) {
                             prevEnergyPair = energyPair;
-                            sinkXSpinVariables = tempSinkXSpinVariables.clone();
-                            controllerXSpinVariables = tempControllerXSpinVariables.clone();
+                            acceptSolution();
                         }
                     }
                     lineChartEx.addToEnergySeries(
@@ -160,6 +161,11 @@ public class QuantumAnnealing extends BaseAlgorithm {
 
         Utils.printGeneratedSolution(tempSinkXSpinVariables, tempControllerXSpinVariables);
         return prevEnergyPair.getKey();
+    }
+
+    private void getAReplica(int ro) {
+        tempSinkXSpinVariables = replicasOfSinkXSpinVariables[ro].clone();
+        tempControllerXSpinVariables = replicasOfControllerXSpinVariables[ro].clone();
     }
 
     private void generateInitialSpinVariablesAndEnergy() {
@@ -300,5 +306,10 @@ public class QuantumAnnealing extends BaseAlgorithm {
 
     private double calculateEnergyFromPair(Pair<Double, Double> energyPair) {
         return energyPair.getKey() + energyPair.getValue();
+    }
+
+    private void acceptSolution() {
+        sinkXSpinVariables = tempSinkXSpinVariables.clone();
+        controllerXSpinVariables = tempControllerXSpinVariables.clone();
     }
 }
