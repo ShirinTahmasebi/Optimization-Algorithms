@@ -2,14 +2,11 @@ package problem_modelings.first_modeling;
 
 import javafx.util.Pair;
 import main.Utils;
-import main.model.Graph;
-import main.model.Vertex;
-import algorithms_modeling.QA.QAModelingInterface;
-import algorithms_modeling.QA.QAPlainOldData;
+import algorithms_modeling.quantum_annealing.QAModelingInterface;
+import algorithms_modeling.quantum_annealing.QAPlainOldData;
 import problem_modelings.modeling_types.first_modeling.FirstModelAbstract;
 import problem_modelings.modeling_types.first_modeling.FirstModelPlainOldData;
 
-import java.util.List;
 import java.util.Random;
 
 public class QAFirstModeling extends FirstModelAbstract implements QAModelingInterface {
@@ -19,11 +16,6 @@ public class QAFirstModeling extends FirstModelAbstract implements QAModelingInt
     public QAFirstModeling(FirstModelPlainOldData firstModelPlainOldData, QAPlainOldData qaDataStructure) {
         super(firstModelPlainOldData);
         this.qaDataStructure = qaDataStructure;
-    }
-
-    @Override
-    public void initializeVariables() {
-
     }
 
     @Override
@@ -91,7 +83,7 @@ public class QAFirstModeling extends FirstModelAbstract implements QAModelingInt
             modelPlainOldData.tempControllerXSpinVariables[index] = !prevValue;
         }
         if (main.Main.DO_PRINT_STEPS) {
-            Utils.printGeneratedSolution(modelPlainOldData.tempSinkXSpinVariables, modelPlainOldData.tempControllerXSpinVariables);
+            super.printGeneratedSolution(modelPlainOldData.tempSinkXSpinVariables, modelPlainOldData.tempControllerXSpinVariables);
         }
     }
 

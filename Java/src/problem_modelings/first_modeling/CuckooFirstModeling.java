@@ -1,6 +1,6 @@
 package problem_modelings.first_modeling;
 
-import algorithms_modeling.Cuckoo.CuckooModelingInterface;
+import algorithms_modeling.cuckoo.CuckooModelingInterface;
 import problem_modelings.modeling_types.first_modeling.FirstModelAbstract;
 import problem_modelings.modeling_types.first_modeling.FirstModelPlainOldData;
 

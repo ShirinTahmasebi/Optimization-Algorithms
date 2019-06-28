@@ -1,15 +1,11 @@
 package problem_modelings.budget_constrained_modeling;
 
 import javafx.util.Pair;
-import algorithms_modeling.QA.QAModelingInterface;
-import algorithms_modeling.QA.QAPlainOldData;
+import algorithms_modeling.quantum_annealing.QAModelingInterface;
+import algorithms_modeling.quantum_annealing.QAPlainOldData;
 import problem_modelings.modeling_types.BudgetConstrainedModelAbstract;
 
 public class QABudgetConstrainedModeling extends BudgetConstrainedModelAbstract implements QAModelingInterface {
-    @Override
-    public void initializeVariables() {
-
-    }
 
     @Override
     public void resetDynamicVariables() {

@@ -1,7 +1,7 @@
 package algorithms.cuckoo;
 
-import algorithms_modeling.Cuckoo.CuckooComparator;
-import algorithms_modeling.Cuckoo.model.Cuckoo;
+import algorithms_modeling.cuckoo.CuckooComparator;
+import algorithms_modeling.cuckoo.model.Cuckoo;
 import main.BaseAlgorithm;
 import main.Parameters;
 import main.Utils;

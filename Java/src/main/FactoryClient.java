@@ -1,11 +1,15 @@
 package main;
 
+import algorithms_modeling.simulated_annealing.SAAlgorithm;
+import algorithms_modeling.simulated_annealing.SAModelingInterface;
+import algorithms_modeling.simulated_annealing.SAPlainOldData;
 import main.model.Graph;
 import main.model.Vertex;
-import algorithms_modeling.QA.QAAlgorithm;
-import algorithms_modeling.QA.QAModelingInterface;
-import algorithms_modeling.QA.QAPlainOldData;
+import algorithms_modeling.quantum_annealing.QAAlgorithm;
+import algorithms_modeling.quantum_annealing.QAModelingInterface;
+import algorithms_modeling.quantum_annealing.QAPlainOldData;
 import problem_modelings.first_modeling.QAFirstModeling;
+import problem_modelings.first_modeling.SAFirstModeling;
 import problem_modelings.modeling_types.first_modeling.FirstModelPlainOldData;
 
 import java.util.ArrayList;
@@ -33,23 +37,6 @@ public class FactoryClient {
         double qaEnergySum = 0;
         double saEnergySum = 0;
 
-        Date cuckooTimeA = new Date();
-
-        // TODO: Execute Cuckoo Algorithm
-
-        Date cuckooTimeB = new Date();
-
-        Date quantumTimeA = new Date();
-
-        QAPlainOldData qaPlainOldData = new QAPlainOldData(
-                main.Parameters.QuantumAnnealing.TROTTER_REPLICAS,
-                main.Parameters.QuantumAnnealing.TEMPERATURE,
-                main.Parameters.QuantumAnnealing.MONTE_CARLO_STEP,
-                main.Parameters.QuantumAnnealing.TUNNELING_FIELD_INITIAL,
-                main.Parameters.QuantumAnnealing.TUNNELING_FIELD_FINAL,
-                main.Parameters.QuantumAnnealing.TUNNELING_FIELD_EVAPORATION
-        );
-
         FirstModelPlainOldData firstModelPlainOldData = new FirstModelPlainOldData(
                 client.graph,
                 client.candidateSinks,
@@ -67,11 +54,27 @@ public class FactoryClient {
                 main.Parameters.Common.COST_REDUCTION_FACTOR
         );
 
+        Date cuckooTimeA = new Date();
+
+        // TODO: Execute Cuckoo Algorithm
+
+        Date cuckooTimeB = new Date();
+
+        Date quantumTimeA = new Date();
+
+        QAPlainOldData qaPlainOldData = new QAPlainOldData(
+                main.Parameters.QuantumAnnealing.TROTTER_REPLICAS,
+                main.Parameters.QuantumAnnealing.TEMPERATURE,
+                main.Parameters.QuantumAnnealing.MONTE_CARLO_STEP,
+                main.Parameters.QuantumAnnealing.TUNNELING_FIELD_INITIAL,
+                main.Parameters.QuantumAnnealing.TUNNELING_FIELD_FINAL,
+                main.Parameters.QuantumAnnealing.TUNNELING_FIELD_EVAPORATION
+        );
+
         QAModelingInterface qaModelingInterface = new QAFirstModeling(
                 firstModelPlainOldData,
                 qaPlainOldData
         );
-
 
         QAAlgorithm qaAlgorithm = new QAAlgorithm(qaModelingInterface);
 
@@ -86,7 +89,28 @@ public class FactoryClient {
 
         Date simulatedTimeA = new Date();
 
-        // TODO: Execute SA Algorithm
+        SAPlainOldData saPlainOldData = new SAPlainOldData(
+                Parameters.SimulatedAnnealing.TEMPERATURE_INITIAL,
+                Parameters.SimulatedAnnealing.TEMPERATURE_FINAL,
+                Parameters.SimulatedAnnealing.TEMPERATURE_COOLING_RATE,
+                Parameters.SimulatedAnnealing.MONTE_CARLO_STEP
+        );
+
+        SAModelingInterface saModelingInterface = new SAFirstModeling(
+                firstModelPlainOldData,
+                saPlainOldData
+        );
+
+
+        SAAlgorithm saAlgorithm = new SAAlgorithm(saModelingInterface);
+
+        for (int i = 0; i < main.Parameters.Common.SIMULATION_COUNT; i++) {
+            double saPotentialEnergy = saAlgorithm.execute();
+            chartEx.addToSASeries(i + 1, saPotentialEnergy);
+            saEnergySum += saPotentialEnergy;
+            System.out.println("SA Energy: " + saPotentialEnergy);
+        }
+
 
         Date simulatedTimeB = new Date();
 

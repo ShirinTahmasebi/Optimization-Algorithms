@@ -67,12 +67,7 @@ public class SimulatedAnnealing extends BaseAlgorithm {
 
     double execute() {
         // Reset Dynamic Variables
-        temperature = temperatureInitial;
-        prevEnergy = 0;
-        this.tempControllerXSpinVariables = new boolean[candidateControllers.size()];
-        this.tempSinkXSpinVariables = new boolean[candidateSinks.size()];
-        this.sinkXSpinVariables = new boolean[candidateSinks.size()];
-        this.controllerXSpinVariables = new boolean[candidateControllers.size()];
+        resetDynamicVariables();
 
         // Generate Initial Solution
         generateInitialSpinVariablesAndEnergy();
@@ -95,8 +90,7 @@ public class SimulatedAnnealing extends BaseAlgorithm {
                 if (energy < prevEnergy) {
                     // If energy has decreased: accept solution
                     prevEnergy = energy;
-                    sinkXSpinVariables = tempSinkXSpinVariables.clone();
-                    controllerXSpinVariables = tempControllerXSpinVariables.clone();
+                    acceptSolution();
                 } else {
                     // Else with given probability decide to accept or not   
                     double baseProb = Math.exp((prevEnergy - energy) / temperature);
@@ -106,8 +100,7 @@ public class SimulatedAnnealing extends BaseAlgorithm {
                     double rand = Math.random();
                     if (rand < baseProb) {
                         prevEnergy = energy;
-                        sinkXSpinVariables = tempSinkXSpinVariables.clone();
-                        controllerXSpinVariables = tempControllerXSpinVariables.clone();
+                        acceptSolution();
                     }
                 }
                 lineChartEx.addToEnergySeries(
@@ -133,6 +126,20 @@ public class SimulatedAnnealing extends BaseAlgorithm {
 
         Utils.printGeneratedSolution(tempSinkXSpinVariables, tempControllerXSpinVariables);
         return prevEnergy;
+    }
+
+    private void acceptSolution() {
+        sinkXSpinVariables = tempSinkXSpinVariables.clone();
+        controllerXSpinVariables = tempControllerXSpinVariables.clone();
+    }
+
+    private void resetDynamicVariables() {
+        temperature = temperatureInitial;
+        prevEnergy = 0;
+        this.tempControllerXSpinVariables = new boolean[candidateControllers.size()];
+        this.tempSinkXSpinVariables = new boolean[candidateSinks.size()];
+        this.sinkXSpinVariables = new boolean[candidateSinks.size()];
+        this.controllerXSpinVariables = new boolean[candidateControllers.size()];
     }
 
     private void generateInitialSpinVariablesAndEnergy() {
