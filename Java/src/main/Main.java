@@ -51,13 +51,13 @@ public class Main {
                 main.Parameters.Common.COST_SINK,
                 main.Parameters.Common.COST_CONTROLLER
         );
-
-        for (int i = 0; i < main.Parameters.Common.SIMULATION_COUNT; i++) {
-            double cuckooPotentialEnergy = cuckooTest.execute();
-            chartEx.addToCuckooSeries(i + 1, cuckooPotentialEnergy);
-            cuckooEnergySum += cuckooPotentialEnergy;
-            System.out.println("Cuckoo Energy: " + cuckooPotentialEnergy);
-        }
+//
+//        for (int i = 0; i < main.Parameters.Common.SIMULATION_COUNT; i++) {
+//            double cuckooPotentialEnergy = cuckooTest.execute();
+//            chartEx.addToCuckooSeries(i + 1, cuckooPotentialEnergy);
+//            cuckooEnergySum += cuckooPotentialEnergy;
+//            System.out.println("Cuckoo Energy: " + cuckooPotentialEnergy);
+//        }
 
         Date cuckooTimeB = new Date();
 
@@ -106,12 +106,12 @@ public class Main {
                 main.Parameters.Common.COST_CONTROLLER
         );
 
-        for (int i = 0; i < main.Parameters.Common.SIMULATION_COUNT; i++) {
-            double saPotentialEnergy = saTest.execute();
-            chartEx.addToSASeries(i + 1, saPotentialEnergy);
-            saEnergySum += saPotentialEnergy;
-            System.out.println("SA Energy: " + saPotentialEnergy);
-        }
+//        for (int i = 0; i < main.Parameters.Common.SIMULATION_COUNT; i++) {
+//            double saPotentialEnergy = saTest.execute();
+//            chartEx.addToSASeries(i + 1, saPotentialEnergy);
+//            saEnergySum += saPotentialEnergy;
+//            System.out.println("SA Energy: " + saPotentialEnergy);
+//        }
 
         Date simulatedTimeB = new Date();
 

@@ -33,8 +33,8 @@ public class Parameters {
         public static final int CONTROLLER_LOAD = 10;                      // wPrime
         public static final int SENSOR_SINK_MAX_DISTANCE = 3;              // Lmax
         public static final int SENSOR_CONTROLLER_MAX_DISTANCE = 2;        // LPrimeMax
-        public static final int GRAPH_SIZE = 4;
-        public static final int SIMULATION_COUNT = 20;
+        public static final int GRAPH_SIZE = 2;
+        public static final int SIMULATION_COUNT = 5;
         public static final int MAX_SINK_COVERAGE = 6;                      // k
         public static final int MAX_CONTROLLER_COVERAGE = 6;                // kPrime
         public static final int MAX_SINK_LOAD = 30;                         // W
