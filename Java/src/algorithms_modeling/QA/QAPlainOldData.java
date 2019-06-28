@@ -1,4 +1,4 @@
-package problem_modelings.algorithms_modeling.QA;
+package algorithms_modeling.QA;
 
 import javafx.util.Pair;
 

@@ -2,9 +2,9 @@ package main;
 
 import main.model.Graph;
 import main.model.Vertex;
-import problem_modelings.algorithms_modeling.QA.QAAlgorithm;
-import problem_modelings.algorithms_modeling.QA.QAModelingInterface;
-import problem_modelings.algorithms_modeling.QA.QAPlainOldData;
+import algorithms_modeling.QA.QAAlgorithm;
+import algorithms_modeling.QA.QAModelingInterface;
+import algorithms_modeling.QA.QAPlainOldData;
 import problem_modelings.first_modeling.QAFirstModeling;
 
 import java.util.ArrayList;

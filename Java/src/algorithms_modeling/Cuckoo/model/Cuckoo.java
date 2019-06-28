@@ -1,4 +1,4 @@
-package algorithms.cuckoo.model;
+package algorithms_modeling.Cuckoo.model;
 
 import java.util.*;
 

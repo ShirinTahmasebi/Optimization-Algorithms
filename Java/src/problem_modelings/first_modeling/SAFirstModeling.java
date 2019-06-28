@@ -2,7 +2,7 @@ package problem_modelings.first_modeling;
 
 import main.model.Graph;
 import main.model.Vertex;
-import problem_modelings.algorithms_modeling.SAModelingInterface;
+import algorithms_modeling.SA.SAModelingInterface;
 import problem_modelings.modeling_types.FirstModelAbstract;
 
 import java.util.List;

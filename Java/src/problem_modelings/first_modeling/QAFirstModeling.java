@@ -4,8 +4,8 @@ import javafx.util.Pair;
 import main.Utils;
 import main.model.Graph;
 import main.model.Vertex;
-import problem_modelings.algorithms_modeling.QA.QAModelingInterface;
-import problem_modelings.algorithms_modeling.QA.QAPlainOldData;
+import algorithms_modeling.QA.QAModelingInterface;
+import algorithms_modeling.QA.QAPlainOldData;
 import problem_modelings.modeling_types.FirstModelAbstract;
 
 import java.util.List;

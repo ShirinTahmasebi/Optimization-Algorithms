@@ -1,6 +1,6 @@
-package algorithms.cuckoo;
+package algorithms_modeling.Cuckoo;
 
-import algorithms.cuckoo.model.Cuckoo;
+import algorithms_modeling.Cuckoo.model.Cuckoo;
 
 import java.util.Comparator;
 

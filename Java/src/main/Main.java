@@ -3,7 +3,6 @@ package main;
 import algorithms.cuckoo.TestCuckooAlgorithm;
 import main.model.Graph;
 import main.model.Vertex;
-import algorithms.quantum_annealing.TestQuantumAnnealingAlgorithm;
 import algorithms.simulated_annealing.TestSimulatedAnnealingAlgorithm;
 
 import java.util.ArrayList;
@@ -63,28 +62,28 @@ public class Main {
 
         Date quantumTimeA = new Date();
 
-        TestQuantumAnnealingAlgorithm qaTest = new TestQuantumAnnealingAlgorithm(
-                m.graph,
-                m.candidateSinks,
-                m.candidateControllers,
-                m.sinkYSpinVariables,
-                m.controllerYSpinVariables,
-                main.Parameters.Common.SENSOR_SINK_MAX_DISTANCE,
-                main.Parameters.Common.SENSOR_CONTROLLER_MAX_DISTANCE,
-                main.Parameters.Common.MAX_SINK_COVERAGE,
-                main.Parameters.Common.MAX_CONTROLLER_COVERAGE,
-                main.Parameters.Common.MAX_SINK_LOAD,
-                main.Parameters.Common.MAX_CONTROLLER_LOAD,
-                main.Parameters.Common.COST_SINK,
-                main.Parameters.Common.COST_CONTROLLER
-        );
-
-        for (int i = 0; i < main.Parameters.Common.SIMULATION_COUNT; i++) {
-            double qaPotentialEnergy = qaTest.execute();
-            chartEx.addToQASeries(i + 1, qaPotentialEnergy);
-            qaEnergySum += qaPotentialEnergy;
-            System.out.println("QA Energy: " + qaPotentialEnergy);
-        }
+//        TestQuantumAnnealingAlgorithm qaTest = new TestQuantumAnnealingAlgorithm(
+//                m.graph,
+//                m.candidateSinks,
+//                m.candidateControllers,
+//                m.sinkYSpinVariables,
+//                m.controllerYSpinVariables,
+//                main.Parameters.Common.SENSOR_SINK_MAX_DISTANCE,
+//                main.Parameters.Common.SENSOR_CONTROLLER_MAX_DISTANCE,
+//                main.Parameters.Common.MAX_SINK_COVERAGE,
+//                main.Parameters.Common.MAX_CONTROLLER_COVERAGE,
+//                main.Parameters.Common.MAX_SINK_LOAD,
+//                main.Parameters.Common.MAX_CONTROLLER_LOAD,
+//                main.Parameters.Common.COST_SINK,
+//                main.Parameters.Common.COST_CONTROLLER
+//        );
+//
+//        for (int i = 0; i < main.Parameters.Common.SIMULATION_COUNT; i++) {
+//            double qaPotentialEnergy = qaTest.execute();
+//            chartEx.addToQASeries(i + 1, qaPotentialEnergy);
+//            qaEnergySum += qaPotentialEnergy;
+//            System.out.println("QA Energy: " + qaPotentialEnergy);
+//        }
 
         Date quantumTimeB = new Date();
 

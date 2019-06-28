@@ -1,6 +1,6 @@
 package problem_modelings.budget_constrained_modeling;
 
-import problem_modelings.algorithms_modeling.SAModelingInterface;
+import algorithms_modeling.SA.SAModelingInterface;
 import problem_modelings.modeling_types.BudgetConstrainedModelAbstract;
 
 public class SABudgetConstrainedModeling extends BudgetConstrainedModelAbstract implements SAModelingInterface {

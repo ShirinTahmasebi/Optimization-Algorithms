@@ -1,8 +1,8 @@
 package problem_modelings.budget_constrained_modeling;
 
 import javafx.util.Pair;
-import problem_modelings.algorithms_modeling.QA.QAModelingInterface;
-import problem_modelings.algorithms_modeling.QA.QAPlainOldData;
+import algorithms_modeling.QA.QAModelingInterface;
+import algorithms_modeling.QA.QAPlainOldData;
 import problem_modelings.modeling_types.BudgetConstrainedModelAbstract;
 
 public class QABudgetConstrainedModeling extends BudgetConstrainedModelAbstract implements QAModelingInterface {
