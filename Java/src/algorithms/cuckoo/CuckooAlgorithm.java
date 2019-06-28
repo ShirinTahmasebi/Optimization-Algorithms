@@ -1,6 +1,6 @@
-package cuckoo;
+package algorithms.cuckoo;
 
-import cuckoo.model.Cuckoo;
+import algorithms.cuckoo.model.Cuckoo;
 import main.BaseAlgorithm;
 import main.Parameters;
 import main.Utils;

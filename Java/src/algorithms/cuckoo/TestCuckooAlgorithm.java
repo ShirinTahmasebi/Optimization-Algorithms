@@ -1,4 +1,4 @@
-package cuckoo;
+package algorithms.cuckoo;
 
 import main.model.Graph;
 import main.model.Vertex;

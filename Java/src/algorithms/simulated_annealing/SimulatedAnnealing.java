@@ -1,4 +1,4 @@
-package simulated.anealing;
+package algorithms.simulated_annealing;
 
 import main.BaseAlgorithm;
 import main.model.Graph;

@@ -1,15 +1,16 @@
-package quantum.anealing;
+package algorithms.simulated_annealing;
 
+import main.Parameters;
 import main.model.Vertex;
 import main.model.Graph;
 
 import java.util.List;
 
-public class TestQuantumAnnealingAlgorithm {
+public class TestSimulatedAnnealingAlgorithm {
 
-    QuantumAnnealing qa;
+    SimulatedAnnealing sa;
 
-    public TestQuantumAnnealingAlgorithm(
+    public TestSimulatedAnnealingAlgorithm(
             Graph graph,
             List<Vertex> candidateSinks,
             List<Vertex> candidateControllers,
@@ -23,7 +24,7 @@ public class TestQuantumAnnealingAlgorithm {
             int maxControllerLoad,
             int costSink,
             int costController) {
-        qa = new QuantumAnnealing(
+        sa = new SimulatedAnnealing(
                 graph,
                 candidateSinks,
                 candidateControllers,
@@ -37,17 +38,15 @@ public class TestQuantumAnnealingAlgorithm {
                 maxControllerLoad,
                 costSink,
                 costController,
-                main.Parameters.Common.COST_REDUCTION_FACTOR,
-                main.Parameters.QuantumAnnealing.TROTTER_REPLICAS,
-                main.Parameters.QuantumAnnealing.TEMPERATURE,
-                main.Parameters.QuantumAnnealing.MONTE_CARLO_STEP,
-                main.Parameters.QuantumAnnealing.TUNNELING_FIELD_INITIAL,
-                main.Parameters.QuantumAnnealing.TUNNELING_FIELD_FINAL,
-                main.Parameters.QuantumAnnealing.TUNNELING_FIELD_EVAPORATION
+                Parameters.Common.COST_REDUCTION_FACTOR,
+                main.Parameters.SimulatedAnnealing.TEMPERATURE_INITIAL,
+                main.Parameters.SimulatedAnnealing.TEMPERATURE_FINAL,
+                main.Parameters.SimulatedAnnealing.TEMPERATURE_COOLING_RATE,
+                main.Parameters.SimulatedAnnealing.MONTE_CARLO_STEP
         );
     }
 
     public double execute() {
-        return qa.execute();
+        return sa.execute();
     }
 }

@@ -1,10 +1,10 @@
 package main;
 
-import cuckoo.TestCuckooAlgorithm;
+import algorithms.cuckoo.TestCuckooAlgorithm;
 import main.model.Graph;
 import main.model.Vertex;
-import quantum.anealing.TestQuantumAnnealingAlgorithm;
-import simulated.anealing.TestSimulatedAnnealingAlgorithm;
+import algorithms.quantum_annealing.TestQuantumAnnealingAlgorithm;
+import algorithms.simulated_annealing.TestSimulatedAnnealingAlgorithm;
 
 import java.util.ArrayList;
 import java.util.Date;
