@@ -3,7 +3,7 @@ package main;
 import algorithms.cuckoo.TestCuckooAlgorithm;
 import main.model.Graph;
 import main.model.Vertex;
-import algorithms.simulated_annealing.TestSimulatedAnnealingAlgorithm;
+
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -60,70 +60,12 @@ public class Main {
 
         Date cuckooTimeB = new Date();
 
-        Date quantumTimeA = new Date();
-
-//        TestQuantumAnnealingAlgorithm qaTest = new TestQuantumAnnealingAlgorithm(
-//                m.graph,
-//                m.candidateSinks,
-//                m.candidateControllers,
-//                m.sinkYSpinVariables,
-//                m.controllerYSpinVariables,
-//                main.Parameters.Common.SENSOR_SINK_MAX_DISTANCE,
-//                main.Parameters.Common.SENSOR_CONTROLLER_MAX_DISTANCE,
-//                main.Parameters.Common.MAX_SINK_COVERAGE,
-//                main.Parameters.Common.MAX_CONTROLLER_COVERAGE,
-//                main.Parameters.Common.MAX_SINK_LOAD,
-//                main.Parameters.Common.MAX_CONTROLLER_LOAD,
-//                main.Parameters.Common.COST_SINK,
-//                main.Parameters.Common.COST_CONTROLLER
-//        );
-//
-//        for (int i = 0; i < main.Parameters.Common.SIMULATION_COUNT; i++) {
-//            double qaPotentialEnergy = qaTest.execute();
-//            chartEx.addToQASeries(i + 1, qaPotentialEnergy);
-//            qaEnergySum += qaPotentialEnergy;
-//            System.out.println("QA Energy: " + qaPotentialEnergy);
-//        }
-
-        Date quantumTimeB = new Date();
-
-        Date simulatedTimeA = new Date();
-
-        TestSimulatedAnnealingAlgorithm saTest = new TestSimulatedAnnealingAlgorithm(
-                m.graph,
-                m.candidateSinks,
-                m.candidateControllers,
-                m.sinkYSpinVariables,
-                m.controllerYSpinVariables,
-                main.Parameters.Common.SENSOR_SINK_MAX_DISTANCE,
-                main.Parameters.Common.SENSOR_CONTROLLER_MAX_DISTANCE,
-                main.Parameters.Common.MAX_SINK_COVERAGE,
-                main.Parameters.Common.MAX_CONTROLLER_COVERAGE,
-                main.Parameters.Common.MAX_SINK_LOAD,
-                main.Parameters.Common.MAX_CONTROLLER_LOAD,
-                main.Parameters.Common.COST_SINK,
-                main.Parameters.Common.COST_CONTROLLER
-        );
-
-//        for (int i = 0; i < main.Parameters.Common.SIMULATION_COUNT; i++) {
-//            double saPotentialEnergy = saTest.execute();
-//            chartEx.addToSASeries(i + 1, saPotentialEnergy);
-//            saEnergySum += saPotentialEnergy;
-//            System.out.println("SA Energy: " + saPotentialEnergy);
-//        }
-
-        Date simulatedTimeB = new Date();
 
         chartEx.drawChart();
         System.out.println();
         System.out.println("Cuckoo average potential energy is: " + cuckooEnergySum / main.Parameters.Common.SIMULATION_COUNT);
         System.out.println("Cuckoo average time is: " + (double) (cuckooTimeB.getTime() - cuckooTimeA.getTime()) / main.Parameters.Common.SIMULATION_COUNT);
         System.out.println();
-        System.out.println("QA average potential energy is: " + qaEnergySum / main.Parameters.Common.SIMULATION_COUNT);
-        System.out.println("QA average time is: " + (double) (quantumTimeB.getTime() - quantumTimeA.getTime()) / main.Parameters.Common.SIMULATION_COUNT);
-        System.out.println();
-        System.out.println("SA average potential energy is: " + saEnergySum / main.Parameters.Common.SIMULATION_COUNT);
-        System.out.println("SA average time is: " + (double) (simulatedTimeB.getTime() - simulatedTimeA.getTime()) / main.Parameters.Common.SIMULATION_COUNT);
     }
 
     private void retrieveVariablesFromFile(Main m) {
