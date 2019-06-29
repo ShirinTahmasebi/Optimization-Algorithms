@@ -7,12 +7,13 @@ import main.model.Vertex;
 import java.util.List;
 
 public class BudgetConstrainedModelPlainOldData {
+
     // Problem Specifications
     public Graph graph;
     public List<Vertex> candidateControllers;           //AC
     public int sensorControllerMaxDistance;             // LMax
     public int[][] controllerY;                         // Y (Number of Hops)
-    public boolean[][] controllerYSpinVariable;         // Y Spin Variabls (is distance favorable?)
+    public boolean[][] controllerYSpinVariable;         // Y Spin Variables (is distance favorable?)
 
     // Solution Spin Variables
     public boolean[] controllerXSpinVariables;          // SX (X Spin Variable)
@@ -24,7 +25,7 @@ public class BudgetConstrainedModelPlainOldData {
     public int maxControllerCoverage;                   // K
     public int maxControllerLoad;                       // W
     public int costController;
-    public float costReductionFactor;
+    public int totalBudget;
     public LineChartEx lineChartEx;
 
     public BudgetConstrainedModelPlainOldData(
@@ -35,7 +36,7 @@ public class BudgetConstrainedModelPlainOldData {
             int maxControllerCoverage,
             int maxControllerLoad,
             int costController,
-            float costReductionFactor) {
+            int totalBudget) {
         this.controllerY = controllerY;
         this.tempControllerXSpinVariables = new boolean[candidateControllers.size()];
         this.controllerXSpinVariables = new boolean[candidateControllers.size()];
@@ -47,7 +48,7 @@ public class BudgetConstrainedModelPlainOldData {
         this.maxControllerCoverage = maxControllerCoverage;
         this.maxControllerLoad = maxControllerLoad;
         this.costController = costController;
-        this.costReductionFactor = costReductionFactor;
+        this.totalBudget = totalBudget;
         this.lineChartEx = new LineChartEx();
     }
 }

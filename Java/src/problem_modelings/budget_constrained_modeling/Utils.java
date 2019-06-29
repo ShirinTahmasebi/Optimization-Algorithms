@@ -2,6 +2,7 @@ package problem_modelings.budget_constrained_modeling;
 
 import main.model.Graph;
 import main.model.Vertex;
+import problem_modelings.budget_constrained_modeling.model_specifications.BudgetConstrainedModelAbstract;
 
 import java.util.List;
 
@@ -36,7 +37,7 @@ public interface Utils {
         );
     }
 
-    public static boolean[][] calculateSpinVariableFromControllerY(int[][] controllerY, int maxL) {
+    static boolean[][] calculateSpinVariableFromControllerY(int[][] controllerY, int maxL) {
         boolean[][] controllerYSpinVariables = new boolean[controllerY.length][controllerY[0].length];
         for (int i = 0; i < controllerY.length; i++) {
             for (int j = 0; j < controllerY[i].length; j++) {
@@ -153,5 +154,9 @@ public interface Utils {
             }
         }
         return score;
+    }
+
+    static double getMaxLEnergy(int maxL) {
+        return (maxL < 0 ? maxL * -1 : maxL) * BudgetConstrainedModelAbstract.L_MAX_COEFFICIENT;
     }
 }

@@ -11,6 +11,7 @@ import main.model.Vertex;
 import algorithms.quantum_annealing.QAAlgorithm;
 import algorithms.quantum_annealing.QAModelingInterface;
 import algorithms.quantum_annealing.QAPlainOldData;
+import problem_modelings.budget_constrained_modeling.algorithms.QABudgetConstrainedModeling;
 import problem_modelings.budget_constrained_modeling.model_specifications.BudgetConstrainedModelPlainOldData;
 import problem_modelings.first_modeling.algorithms.QAFirstModeling;
 import problem_modelings.first_modeling.algorithms.SAFirstModeling;
@@ -36,7 +37,7 @@ public class FactoryClient {
     public static void main(String[] args) {
         FactoryClient client = new FactoryClient();
 
-        client.executeAlgorithmsOnFirstModel();
+//        client.executeAlgorithmsOnFirstModel();
         client.executeAlgorithmsOnBudgetConstrainedModel();
 
     }
@@ -57,10 +58,36 @@ public class FactoryClient {
                 main.Parameters.Common.MAX_CONTROLLER_COVERAGE,
                 main.Parameters.Common.MAX_CONTROLLER_LOAD,
                 main.Parameters.Common.COST_CONTROLLER,
-                main.Parameters.Common.COST_REDUCTION_FACTOR
+                (candidateControllers.size() / 3) * Parameters.Common.COST_CONTROLLER
         );
 
+        Date quantumTimeA = new Date();
 
+        QAPlainOldData qaPlainOldData = new QAPlainOldData(
+                main.Parameters.QuantumAnnealing.TROTTER_REPLICAS,
+                main.Parameters.QuantumAnnealing.TEMPERATURE,
+                main.Parameters.QuantumAnnealing.MONTE_CARLO_STEP,
+                main.Parameters.QuantumAnnealing.TUNNELING_FIELD_INITIAL,
+                main.Parameters.QuantumAnnealing.TUNNELING_FIELD_FINAL,
+                main.Parameters.QuantumAnnealing.TUNNELING_FIELD_EVAPORATION
+        );
+
+        QAModelingInterface qaModelingInterface = new QABudgetConstrainedModeling(
+                budgetConstrainedModelPlainOldData,
+                qaPlainOldData
+        );
+
+        QAAlgorithm qaAlgorithm = new QAAlgorithm(qaModelingInterface);
+
+        for (int i = 0; i < main.Parameters.Common.SIMULATION_COUNT; i++) {
+            double qaPotentialEnergy = qaAlgorithm.execute();
+            chartEx.addToQASeries(i + 1, qaPotentialEnergy);
+            qaEnergySum += qaPotentialEnergy;
+            System.out.println("QA Energy: " + qaPotentialEnergy);
+            System.out.println("QA L Max: " + ((QABudgetConstrainedModeling) qaModelingInterface).calculateMaxL());
+        }
+
+        Date quantumTimeB = new Date();
     }
 
     private void executeAlgorithmsOnFirstModel() {

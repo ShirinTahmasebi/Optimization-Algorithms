@@ -1,6 +1,7 @@
 package problem_modelings.budget_constrained_modeling.model_specifications;
 
 import main.Parameters;
+import main.Utils;
 import main.model.Graph;
 import main.model.Vertex;
 import problem_modelings.BaseProblemModeling;
@@ -8,6 +9,8 @@ import problem_modelings.BaseProblemModeling;
 import java.util.List;
 
 public abstract class BudgetConstrainedModelAbstract extends BaseProblemModeling {
+
+    public static int L_MAX_COEFFICIENT = 5;
 
     public BudgetConstrainedModelPlainOldData modelPlainOldData;
 
@@ -63,6 +66,40 @@ public abstract class BudgetConstrainedModelAbstract extends BaseProblemModeling
             }
             System.out.println();
         }
+    }
+
+    public int calculateMaxL() {
+
+        final int[] maxL = {Integer.MAX_VALUE};
+
+        List<Vertex> vertexes = modelPlainOldData.graph.getVertexes();
+        vertexes.forEach(vertex -> {
+
+            int distanceToNearestController = Integer.MAX_VALUE;
+
+            for (int i = 0; i < modelPlainOldData.candidateControllers.size(); i++) {
+
+                if (modelPlainOldData.tempControllerXSpinVariables[i]) {
+
+                    int distance = Utils.getDistance(
+                            modelPlainOldData.graph,
+                            vertex.getId(),
+                            modelPlainOldData.candidateControllers.get(i).getId());
+
+                    if (distance < distanceToNearestController) {
+                        distanceToNearestController = distance;
+                    }
+                }
+
+            }
+
+            if (distanceToNearestController > maxL[0]) {
+                maxL[0] = distanceToNearestController;
+            }
+
+        });
+
+        return maxL[0];
     }
 
 }

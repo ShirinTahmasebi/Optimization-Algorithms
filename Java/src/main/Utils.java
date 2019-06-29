@@ -27,6 +27,13 @@ public class Utils implements
         return (path == null) ? 0 : path.size() - 1;
     }
 
+    public static int getDistance(Graph graph, String firstNodeId, String secondNodeId){
+        int firstIndex = graph.getVertexIndexById(firstNodeId);
+        int secondIndex = graph.getVertexIndexById(secondNodeId);
+
+        return getDistance(graph, firstIndex, secondIndex);
+    }
+
     public static boolean isDistanceFavorable(Graph graph, int firstNodeIndex, int secondNodeIndex, int maxDistance) {
         return getDistance(graph, firstNodeIndex, secondNodeIndex) <= maxDistance;
     }

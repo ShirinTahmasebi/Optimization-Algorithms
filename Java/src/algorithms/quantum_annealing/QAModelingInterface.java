@@ -14,6 +14,8 @@ public interface QAModelingInterface {
 
     void generateNeighbor();
 
+    double getKineticEnergy(int currentReplicaNum);
+
     Pair<Double, Double> calculateCost(int currentReplicaNum);
 
     double calculateEnergyFromPair(Pair<Double, Double> energyPair);

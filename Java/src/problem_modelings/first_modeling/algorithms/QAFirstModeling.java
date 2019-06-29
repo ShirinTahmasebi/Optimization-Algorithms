@@ -23,12 +23,12 @@ public class QAFirstModeling extends FirstModelAbstract implements QAModelingInt
     public void resetDynamicVariables() {
         qaDataStructure.temperature = qaDataStructure.temperatureInitial;
         qaDataStructure.tunnelingField = qaDataStructure.tunnelingFieldInitial;
-        this.modelPlainOldData.tempControllerXSpinVariables = new boolean[modelPlainOldData.candidateControllers.size()];
-        this.modelPlainOldData.tempSinkXSpinVariables = new boolean[modelPlainOldData.candidateSinks.size()];
-        this.modelPlainOldData.sinkXSpinVariables = new boolean[modelPlainOldData.candidateSinks.size()];
-        this.modelPlainOldData.controllerXSpinVariables = new boolean[modelPlainOldData.candidateControllers.size()];
-        this.modelPlainOldData.replicasOfSinkXSpinVariables = new boolean[qaDataStructure.trotterReplicas][modelPlainOldData.candidateSinks.size()];
-        this.modelPlainOldData.replicasOfControllerXSpinVariables = new boolean[qaDataStructure.trotterReplicas][modelPlainOldData.candidateControllers.size()];
+        modelPlainOldData.tempControllerXSpinVariables = new boolean[modelPlainOldData.candidateControllers.size()];
+        modelPlainOldData.tempSinkXSpinVariables = new boolean[modelPlainOldData.candidateSinks.size()];
+        modelPlainOldData.sinkXSpinVariables = new boolean[modelPlainOldData.candidateSinks.size()];
+        modelPlainOldData.controllerXSpinVariables = new boolean[modelPlainOldData.candidateControllers.size()];
+        modelPlainOldData.replicasOfSinkXSpinVariables = new boolean[qaDataStructure.trotterReplicas][modelPlainOldData.candidateSinks.size()];
+        modelPlainOldData.replicasOfControllerXSpinVariables = new boolean[qaDataStructure.trotterReplicas][modelPlainOldData.candidateControllers.size()];
     }
 
     @Override
@@ -120,11 +120,7 @@ public class QAFirstModeling extends FirstModelAbstract implements QAModelingInt
     }
 
     @Override
-    public double calculateEnergyFromPair(Pair<Double, Double> energyPair) {
-        return energyPair.getKey() + energyPair.getValue();
-    }
-
-    private double getKineticEnergy(int currentReplicaNum) {
+    public double getKineticEnergy(int currentReplicaNum) {
         if (currentReplicaNum + 1 >= qaDataStructure.trotterReplicas || currentReplicaNum < 0) {
             return 0;
         }
@@ -152,6 +148,11 @@ public class QAFirstModeling extends FirstModelAbstract implements QAModelingInt
 
         // Multiply sum of two final results with coupling
         return coupling * (sinkReplicaCoupling + controllerReplicaCoupling);
+    }
+
+    @Override
+    public double calculateEnergyFromPair(Pair<Double, Double> energyPair) {
+        return energyPair.getKey() + energyPair.getValue();
     }
 
     @Override
