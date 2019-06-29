@@ -403,7 +403,7 @@ public class Utils {
     public static void writeObjectToFile(Object object, String fileName) {
         try {
             File f = new File(fileName + ".txt");
-            FileOutputStream fos = null;
+            FileOutputStream fos;
             fos = new FileOutputStream(f);
             ObjectOutputStream oos = new ObjectOutputStream(fos);
             oos.writeObject(object);

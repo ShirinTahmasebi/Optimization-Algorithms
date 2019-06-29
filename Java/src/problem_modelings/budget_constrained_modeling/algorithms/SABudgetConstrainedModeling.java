@@ -1,8 +1,8 @@
-package problem_modelings.budget_constrained_modeling;
+package problem_modelings.budget_constrained_modeling.algorithms;
 
 import algorithms.simulated_annealing.SAModelingInterface;
 import algorithms.simulated_annealing.SAPlainOldData;
-import problem_modelings.modeling_types.BudgetConstrainedModelAbstract;
+import problem_modelings.budget_constrained_modeling.model_specifications.BudgetConstrainedModelAbstract;
 
 public class SABudgetConstrainedModeling extends BudgetConstrainedModelAbstract implements SAModelingInterface {
     @Override

@@ -1,4 +1,4 @@
-package problem_modelings.modeling_types.first_modeling;
+package problem_modelings.first_modeling.model_specifications;
 
 import main.LineChartEx;
 import main.model.Graph;

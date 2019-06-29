@@ -1,4 +1,4 @@
-package problem_modelings.modeling_types;
+package problem_modelings.budget_constrained_modeling.model_specifications;
 
 import problem_modelings.BaseProblemModeling;
 

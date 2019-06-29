@@ -11,10 +11,10 @@ import main.model.Vertex;
 import algorithms.quantum_annealing.QAAlgorithm;
 import algorithms.quantum_annealing.QAModelingInterface;
 import algorithms.quantum_annealing.QAPlainOldData;
-import problem_modelings.first_modeling.QAFirstModeling;
-import problem_modelings.first_modeling.SAFirstModeling;
-import problem_modelings.first_modeling.cuckoo.CuckooFirstModeling;
-import problem_modelings.modeling_types.first_modeling.FirstModelPlainOldData;
+import problem_modelings.first_modeling.algorithms.QAFirstModeling;
+import problem_modelings.first_modeling.algorithms.SAFirstModeling;
+import problem_modelings.first_modeling.algorithms.cuckoo.CuckooFirstModeling;
+import problem_modelings.first_modeling.model_specifications.FirstModelPlainOldData;
 
 import java.util.ArrayList;
 import java.util.Date;
