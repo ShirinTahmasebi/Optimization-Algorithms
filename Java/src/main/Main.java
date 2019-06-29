@@ -30,8 +30,6 @@ public class Main {
 
         LineChartEx chartEx = new LineChartEx();
         double cuckooEnergySum = 0;
-        double qaEnergySum = 0;
-        double saEnergySum = 0;
 
         Date cuckooTimeA = new Date();
 
@@ -50,13 +48,13 @@ public class Main {
                 main.Parameters.Common.COST_SINK,
                 main.Parameters.Common.COST_CONTROLLER
         );
-//
-//        for (int i = 0; i < main.Parameters.Common.SIMULATION_COUNT; i++) {
-//            double cuckooPotentialEnergy = cuckooTest.execute();
-//            chartEx.addToCuckooSeries(i + 1, cuckooPotentialEnergy);
-//            cuckooEnergySum += cuckooPotentialEnergy;
-//            System.out.println("Cuckoo Energy: " + cuckooPotentialEnergy);
-//        }
+
+        for (int i = 0; i < main.Parameters.Common.SIMULATION_COUNT; i++) {
+            double cuckooPotentialEnergy = cuckooTest.execute();
+            chartEx.addToCuckooSeries(i + 1, cuckooPotentialEnergy);
+            cuckooEnergySum += cuckooPotentialEnergy;
+            System.out.println("Cuckoo Energy: " + cuckooPotentialEnergy);
+        }
 
         Date cuckooTimeB = new Date();
 

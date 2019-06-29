@@ -1,16 +1,13 @@
 package algorithms.cuckoo;
 
-import algorithms_modeling.cuckoo.CuckooComparator;
-import algorithms_modeling.cuckoo.model.Cuckoo;
+import algorithms.cuckoo.model.Cuckoo;
 import main.BaseAlgorithm;
 import main.Parameters;
 import main.Utils;
 import main.model.Graph;
 import main.model.Vertex;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class CuckooAlgorithm extends BaseAlgorithm {
 
@@ -93,7 +90,7 @@ public class CuckooAlgorithm extends BaseAlgorithm {
             for (int i = 0; i < 10; i++) {
                 for (Cuckoo matureCuckoo : matureCuckoos) {
                     try {
-                        eggs.addAll(matureCuckoo.generateEggs());
+                        eggs.addAll(generateEggs(matureCuckoo));
                     } catch (Exception ignored) {
 
                     }
@@ -118,6 +115,57 @@ public class CuckooAlgorithm extends BaseAlgorithm {
         }
 
         return matureCuckoos.get(0).getCost();
+    }
+
+    private List<Cuckoo> generateEggs(Cuckoo matureCuckoo) throws Exception {
+        if (!matureCuckoo.isMature()) {
+            throw new Exception("Using generateEggs is not valid for not mature cuckoos!");
+        }
+        List<Cuckoo> eggs = new ArrayList<>();
+        matureCuckoo.getMatureCuckoo().setELR(
+                Math.min(matureCuckoo.getControllerXSpinVariables().length, matureCuckoo.getSinkXSpinVariables().length) / 2
+        );
+        for (int i = 0; i < matureCuckoo.getMatureCuckoo().getNumberOfEggs(); i++) {
+            eggs.add(generateEggByElr(matureCuckoo));
+        }
+        return eggs;
+    }
+
+    private Cuckoo generateEggByElr(Cuckoo matureCuckoo) throws Exception {
+        if (!matureCuckoo.isMature()) {
+            throw new Exception("Using generateEggByElr is not valid for not mature cuckoos!");
+        }
+
+        Random random = new Random();
+
+        boolean[] tempCandidateSink = matureCuckoo.getSinkXSpinVariables().clone();
+        boolean[] tempCandidateController = matureCuckoo.getControllerXSpinVariables().clone();
+
+        int maxElr = matureCuckoo.getMatureCuckoo().getELR();
+
+        int sinkElr = random.nextInt(Math.min(maxElr, tempCandidateSink.length));
+        int candidateElr = random.nextInt(Math.min(maxElr, tempCandidateController.length));
+
+        Set<Integer> sinkInversionIndices = new HashSet<>();
+        Set<Integer> controllerInversionIndices = new HashSet<>();
+
+        while (sinkInversionIndices.size() < sinkElr) {
+            int index = random.nextInt(tempCandidateSink.length);
+            sinkInversionIndices.add(index);
+
+            boolean prevValue = tempCandidateSink[index];
+            tempCandidateSink[index] = !prevValue;
+        }
+
+        while (controllerInversionIndices.size() < candidateElr) {
+            int index = random.nextInt(tempCandidateController.length);
+            controllerInversionIndices.add(index);
+
+            boolean prevValue = tempCandidateController[index];
+            tempCandidateController[index] = !prevValue;
+        }
+
+        return new Cuckoo(false, tempCandidateSink, tempCandidateController);
     }
 
     private Cuckoo generateInitialRandomCuckoos() {

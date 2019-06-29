@@ -1,5 +1,8 @@
 package main;
 
+import algorithms_modeling.Cuckoo.CuckooAlgorithm;
+import algorithms_modeling.Cuckoo.CuckooModelingInterface;
+import algorithms_modeling.Cuckoo.CuckooPlainOldData;
 import algorithms_modeling.simulated_annealing.SAAlgorithm;
 import algorithms_modeling.simulated_annealing.SAModelingInterface;
 import algorithms_modeling.simulated_annealing.SAPlainOldData;
@@ -10,6 +13,7 @@ import algorithms_modeling.quantum_annealing.QAModelingInterface;
 import algorithms_modeling.quantum_annealing.QAPlainOldData;
 import problem_modelings.first_modeling.QAFirstModeling;
 import problem_modelings.first_modeling.SAFirstModeling;
+import problem_modelings.first_modeling.cuckoo.CuckooFirstModeling;
 import problem_modelings.modeling_types.first_modeling.FirstModelPlainOldData;
 
 import java.util.ArrayList;
@@ -56,7 +60,18 @@ public class FactoryClient {
 
         Date cuckooTimeA = new Date();
 
-        // TODO: Execute Cuckoo Algorithm
+        CuckooPlainOldData cuckooPlainOldData = new CuckooPlainOldData();
+
+        CuckooModelingInterface cuckooModelingInterface = new CuckooFirstModeling(firstModelPlainOldData, cuckooPlainOldData);
+
+        CuckooAlgorithm cuckooAlgorithm = new CuckooAlgorithm(cuckooModelingInterface);
+
+        for (int i = 0; i < main.Parameters.Common.SIMULATION_COUNT; i++) {
+            double cuckooPotentialEnergy = cuckooAlgorithm.execute();
+            chartEx.addToCuckooSeries(i + 1, cuckooPotentialEnergy);
+            cuckooEnergySum += cuckooPotentialEnergy;
+            System.out.println("Cuckoo Energy: " + cuckooPotentialEnergy);
+        }
 
         Date cuckooTimeB = new Date();
 
