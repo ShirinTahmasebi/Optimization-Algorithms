@@ -1,7 +1,7 @@
 package problem_modelings.first_modeling;
 
-import algorithms_modeling.simulated_annealing.SAModelingInterface;
-import algorithms_modeling.simulated_annealing.SAPlainOldData;
+import algorithms.simulated_annealing.SAModelingInterface;
+import algorithms.simulated_annealing.SAPlainOldData;
 import main.Utils;
 import problem_modelings.modeling_types.first_modeling.FirstModelAbstract;
 import problem_modelings.modeling_types.first_modeling.FirstModelPlainOldData;

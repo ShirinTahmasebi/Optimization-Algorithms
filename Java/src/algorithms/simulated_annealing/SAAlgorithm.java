@@ -1,4 +1,4 @@
-package algorithms_modeling.simulated_annealing;
+package algorithms.simulated_annealing;
 
 import main.LineChartEx;
 

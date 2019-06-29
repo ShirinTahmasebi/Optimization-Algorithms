@@ -1,10 +1,10 @@
 package problem_modelings.budget_constrained_modeling;
 
 
-import algorithms_modeling.Cuckoo.CuckooModelingInterface;
-import algorithms_modeling.Cuckoo.CuckooPlainOldData;
-import algorithms_modeling.Cuckoo.model.Cuckoo;
-import algorithms_modeling.Cuckoo.model.CuckooDataAndBehaviour;
+import algorithms.Cuckoo.CuckooModelingInterface;
+import algorithms.Cuckoo.CuckooPlainOldData;
+import algorithms.Cuckoo.model.Cuckoo;
+import algorithms.Cuckoo.model.CuckooDataAndBehaviour;
 import problem_modelings.modeling_types.BudgetConstrainedModelAbstract;
 
 import java.util.List;
