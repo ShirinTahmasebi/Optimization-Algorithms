@@ -16,6 +16,8 @@ public class InitializeGraph {
     private final List<Vertex> candidateControllers = new ArrayList<>();      // AC
     private Graph graph;
 
+    private int[][] sinkY;           // Y (Number of Hops)
+    private int[][] controllerY;     // YPrime (Number of Hops)
     private boolean[][] sinkYSpinVariables;           // SY (Y Spin Variable)
     private boolean[][] controllerYSpinVariables;     // SYPrime (Y Spin Variable)
 
@@ -29,7 +31,9 @@ public class InitializeGraph {
         writeObjectToFile(graph, Utils.FILE_NAME_GRAPH + main.Parameters.Common.GRAPH_SIZE);
         writeObjectToFile(candidateSinks, Utils.FILE_NAME_CANDIDATE_SINKS + main.Parameters.Common.GRAPH_SIZE);
         writeObjectToFile(candidateControllers, Utils.FILE_NAME_CANDIDATE_CONTROLLERS + main.Parameters.Common.GRAPH_SIZE);
+        writeObjectToFile(sinkY, Utils.FILE_NAME_SINK_Y + main.Parameters.Common.GRAPH_SIZE);
         writeObjectToFile(sinkYSpinVariables, Utils.FILE_NAME_SINK_Y_SPIN_VARIABLES + main.Parameters.Common.GRAPH_SIZE);
+        writeObjectToFile(controllerY, Utils.FILE_NAME_CONTROLLER_Y + main.Parameters.Common.GRAPH_SIZE);
         writeObjectToFile(controllerYSpinVariables, Utils.FILE_NAME_CONTROLLER_Y_SPIN_VARIABLES + main.Parameters.Common.GRAPH_SIZE);
     }
 
@@ -130,6 +134,8 @@ public class InitializeGraph {
     private Graph initialize() {
         Graph graph = initializeGraph(main.Parameters.Common.GRAPH_SIZE);
 
+        this.controllerY = new int[graph.getVertexes().size()][candidateControllers.size()];
+        this.sinkY = new int[graph.getVertexes().size()][candidateSinks.size()];
         this.controllerYSpinVariables = new boolean[graph.getVertexes().size()][candidateControllers.size()];
         this.sinkYSpinVariables = new boolean[graph.getVertexes().size()][candidateSinks.size()];
 
@@ -139,7 +145,9 @@ public class InitializeGraph {
                 candidateControllers,
                 main.Parameters.Common.SENSOR_SINK_MAX_DISTANCE,
                 main.Parameters.Common.SENSOR_CONTROLLER_MAX_DISTANCE,
+                sinkY,
                 sinkYSpinVariables,
+                controllerY,
                 controllerYSpinVariables
         );
 
