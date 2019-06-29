@@ -6,9 +6,6 @@ import main.model.Vertex;
 
 import java.util.List;
 
-/**
- * Created by shirin on 6/28/19.
- */
 public class FirstModelPlainOldData {
 
     // Problem Specifications

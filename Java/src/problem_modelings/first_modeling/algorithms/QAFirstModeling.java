@@ -2,7 +2,7 @@ package problem_modelings.first_modeling.algorithms;
 
 import javafx.util.Pair;
 import main.Parameters;
-import main.Utils;
+import problem_modelings.first_modeling.Utils;
 import algorithms.quantum_annealing.QAModelingInterface;
 import algorithms.quantum_annealing.QAPlainOldData;
 import problem_modelings.first_modeling.model_specifications.FirstModelAbstract;

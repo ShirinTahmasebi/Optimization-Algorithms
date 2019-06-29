@@ -4,8 +4,16 @@ import javafx.util.Pair;
 import algorithms.quantum_annealing.QAModelingInterface;
 import algorithms.quantum_annealing.QAPlainOldData;
 import problem_modelings.budget_constrained_modeling.model_specifications.BudgetConstrainedModelAbstract;
+import problem_modelings.budget_constrained_modeling.model_specifications.BudgetConstrainedModelPlainOldData;
 
 public class QABudgetConstrainedModeling extends BudgetConstrainedModelAbstract implements QAModelingInterface {
+
+    private QAPlainOldData qaDataStructure;
+
+    public QABudgetConstrainedModeling(BudgetConstrainedModelPlainOldData modelPlainOldData, QAPlainOldData qaDataStructure) {
+        super(modelPlainOldData);
+        this.qaDataStructure = qaDataStructure;
+    }
 
     @Override
     public void resetDynamicVariables() {

@@ -1,8 +1,11 @@
 package problem_modelings.first_modeling.model_specifications;
 
 import main.Parameters;
-import main.Utils;
+import main.model.Graph;
+import main.model.Vertex;
 import problem_modelings.BaseProblemModeling;
+
+import java.util.List;
 
 public abstract class FirstModelAbstract extends BaseProblemModeling {
 
@@ -12,7 +15,7 @@ public abstract class FirstModelAbstract extends BaseProblemModeling {
         this.modelPlainOldData = modelPlainOldData;
 
         if (Parameters.Common.DO_PRINT_STEPS) {
-            Utils.printProblemSpecifications(
+            printProblemSpecifications(
                     modelPlainOldData.graph,
                     modelPlainOldData.candidateSinks,
                     modelPlainOldData.sinkYSpinVariables,
@@ -39,5 +42,54 @@ public abstract class FirstModelAbstract extends BaseProblemModeling {
         System.out.println();
         System.out.println();
         // ---
+    }
+
+    public void printProblemSpecifications(
+            Graph graph,
+            List<Vertex> candidateSinks, boolean[][] sinkYSpinVariables,
+            List<Vertex> candidateControllers, boolean[][] controllerYSpinVariables) {
+        // Print graph
+        graph.getVertexes().stream().forEach((vertex) -> System.out.println("Vertex: " + vertex.toString()));
+
+        System.out.println();
+
+        graph.getEdges().stream().forEach((edge) -> System.out.println("Edge: " + edge.toString()));
+
+        System.out.println();
+
+        // Print candidate sinks
+        System.out.print("Candidate sink vertexes are: ");
+        candidateSinks.stream().forEach((candidateSinkVertex) -> System.out.print(candidateSinkVertex.toString() + ", "));
+
+        System.out.println();
+        System.out.println();
+
+        // Print candidate controllers
+        System.out.print("Candidate controller vertexes are: ");
+        candidateControllers.stream().forEach((candidateControllerVertex) -> System.out.print(candidateControllerVertex.toString() + ", "));
+
+        System.out.println();
+        System.out.println();
+
+        System.out.println("Sink Y: ");
+
+        for (int i = 0; i < graph.getVertexes().size(); i++) {
+            for (int j = 0; j < candidateSinks.size(); j++) {
+                System.out.print(sinkYSpinVariables[i][j] + ", ");
+            }
+            System.out.println();
+        }
+
+        System.out.println();
+        System.out.println();
+
+        System.out.println("Controller Y: ");
+
+        for (int i = 0; i < graph.getVertexes().size(); i++) {
+            for (int j = 0; j < candidateControllers.size(); j++) {
+                System.out.print(controllerYSpinVariables[i][j] + ", ");
+            }
+            System.out.println();
+        }
     }
 }

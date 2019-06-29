@@ -11,6 +11,7 @@ import main.model.Vertex;
 import algorithms.quantum_annealing.QAAlgorithm;
 import algorithms.quantum_annealing.QAModelingInterface;
 import algorithms.quantum_annealing.QAPlainOldData;
+import problem_modelings.budget_constrained_modeling.model_specifications.BudgetConstrainedModelPlainOldData;
 import problem_modelings.first_modeling.algorithms.QAFirstModeling;
 import problem_modelings.first_modeling.algorithms.SAFirstModeling;
 import problem_modelings.first_modeling.algorithms.cuckoo.CuckooFirstModeling;
@@ -28,25 +29,54 @@ public class FactoryClient {
     private List<Vertex> candidateControllers = new ArrayList<>();      // AC
     private Graph graph;
 
-    private boolean[][] sinkYSpinVariables;           // SY (Y Spin Variable)
-    private boolean[][] controllerYSpinVariables;     // SYPrime (Y Spin Variable)
+    private int[][] controllerY;                    // YPrime (Y Number of Hops)
+    private boolean[][] sinkYSpinVariables;         // SY (Y Spin Variable)
+    private boolean[][] controllerYSpinVariables;   // SYPrime (Y Spin Variable)
 
     public static void main(String[] args) {
         FactoryClient client = new FactoryClient();
 
-        client.retrieveVariablesFromFile(client);
+        client.executeAlgorithmsOnFirstModel();
+        client.executeAlgorithmsOnBudgetConstrainedModel();
 
+    }
+
+    private void executeAlgorithmsOnBudgetConstrainedModel() {
         LineChartEx chartEx = new LineChartEx();
         double cuckooEnergySum = 0;
         double qaEnergySum = 0;
         double saEnergySum = 0;
 
+        retrieveVariablesFromFile(2);
+
+        BudgetConstrainedModelPlainOldData budgetConstrainedModelPlainOldData = new BudgetConstrainedModelPlainOldData(
+                graph,
+                candidateControllers,
+                controllerY,
+                main.Parameters.Common.SENSOR_CONTROLLER_MAX_DISTANCE,
+                main.Parameters.Common.MAX_CONTROLLER_COVERAGE,
+                main.Parameters.Common.MAX_CONTROLLER_LOAD,
+                main.Parameters.Common.COST_CONTROLLER,
+                main.Parameters.Common.COST_REDUCTION_FACTOR
+        );
+
+
+    }
+
+    private void executeAlgorithmsOnFirstModel() {
+        LineChartEx chartEx = new LineChartEx();
+        double cuckooEnergySum = 0;
+        double qaEnergySum = 0;
+        double saEnergySum = 0;
+
+        retrieveVariablesFromFile(1);
+
         FirstModelPlainOldData firstModelPlainOldData = new FirstModelPlainOldData(
-                client.graph,
-                client.candidateSinks,
-                client.candidateControllers,
-                client.sinkYSpinVariables,
-                client.controllerYSpinVariables,
+                graph,
+                candidateSinks,
+                candidateControllers,
+                sinkYSpinVariables,
+                controllerYSpinVariables,
                 main.Parameters.Common.SENSOR_SINK_MAX_DISTANCE,
                 main.Parameters.Common.SENSOR_CONTROLLER_MAX_DISTANCE,
                 main.Parameters.Common.MAX_SINK_COVERAGE,
@@ -140,14 +170,19 @@ public class FactoryClient {
         System.out.println("SA average potential energy is: " + saEnergySum / main.Parameters.Common.SIMULATION_COUNT);
         System.out.println("SA average time is: " + (double) (simulatedTimeB.getTime() - simulatedTimeA.getTime()) / main.Parameters.Common.SIMULATION_COUNT);
 
-
     }
 
-    private void retrieveVariablesFromFile(FactoryClient m) {
-        m.graph = (Graph) readObjectFromFile(Utils.FILE_NAME_GRAPH + main.Parameters.Common.GRAPH_SIZE);
-        m.candidateSinks = (List<Vertex>) readObjectFromFile(Utils.FILE_NAME_CANDIDATE_SINKS + main.Parameters.Common.GRAPH_SIZE);
-        m.candidateControllers = (List<Vertex>) readObjectFromFile(Utils.FILE_NAME_CANDIDATE_CONTROLLERS + main.Parameters.Common.GRAPH_SIZE);
-        m.sinkYSpinVariables = (boolean[][]) readObjectFromFile(Utils.FILE_NAME_SINK_Y_SPIN_VARIABLES + main.Parameters.Common.GRAPH_SIZE);
-        m.controllerYSpinVariables = (boolean[][]) readObjectFromFile(Utils.FILE_NAME_CONTROLLER_Y_SPIN_VARIABLES + main.Parameters.Common.GRAPH_SIZE);
+    private void retrieveVariablesFromFile(int modelNo) {
+        if (modelNo == 1) {
+            graph = (Graph) readObjectFromFile(Utils.FILE_NAME_GRAPH + main.Parameters.Common.GRAPH_SIZE);
+            candidateSinks = (List<Vertex>) readObjectFromFile(Utils.FILE_NAME_CANDIDATE_SINKS + main.Parameters.Common.GRAPH_SIZE);
+            candidateControllers = (List<Vertex>) readObjectFromFile(Utils.FILE_NAME_CANDIDATE_CONTROLLERS + main.Parameters.Common.GRAPH_SIZE);
+            sinkYSpinVariables = (boolean[][]) readObjectFromFile(Utils.FILE_NAME_SINK_Y_SPIN_VARIABLES + main.Parameters.Common.GRAPH_SIZE);
+            controllerYSpinVariables = (boolean[][]) readObjectFromFile(Utils.FILE_NAME_CONTROLLER_Y_SPIN_VARIABLES + main.Parameters.Common.GRAPH_SIZE);
+        } else if (modelNo == 2) {
+            graph = (Graph) readObjectFromFile(Utils.FILE_NAME_GRAPH + main.Parameters.Common.GRAPH_SIZE);
+            candidateControllers = (List<Vertex>) readObjectFromFile(Utils.FILE_NAME_CANDIDATE_CONTROLLERS + main.Parameters.Common.GRAPH_SIZE);
+            controllerY = (int[][]) readObjectFromFile(Utils.FILE_NAME_CONTROLLER_Y + main.Parameters.Common.GRAPH_SIZE);
+        }
     }
 }

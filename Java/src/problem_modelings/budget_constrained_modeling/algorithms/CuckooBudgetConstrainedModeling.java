@@ -6,10 +6,19 @@ import algorithms.Cuckoo.CuckooPlainOldData;
 import algorithms.Cuckoo.model.Cuckoo;
 import algorithms.Cuckoo.model.CuckooDataAndBehaviour;
 import problem_modelings.budget_constrained_modeling.model_specifications.BudgetConstrainedModelAbstract;
+import problem_modelings.budget_constrained_modeling.model_specifications.BudgetConstrainedModelPlainOldData;
 
 import java.util.List;
 
 public class CuckooBudgetConstrainedModeling extends BudgetConstrainedModelAbstract implements CuckooModelingInterface {
+
+    CuckooPlainOldData cuckooPlainOldData;
+
+    public CuckooBudgetConstrainedModeling(BudgetConstrainedModelPlainOldData modelPlainOldData, CuckooPlainOldData cuckooPlainOldData) {
+        super(modelPlainOldData);
+        this.cuckooPlainOldData = cuckooPlainOldData;
+    }
+
     @Override
     public double calculateCost(CuckooDataAndBehaviour cuckooDataAndBehaviours) {
         return 0;

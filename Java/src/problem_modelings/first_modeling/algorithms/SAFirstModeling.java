@@ -3,7 +3,7 @@ package problem_modelings.first_modeling.algorithms;
 import algorithms.simulated_annealing.SAModelingInterface;
 import algorithms.simulated_annealing.SAPlainOldData;
 import main.Parameters;
-import main.Utils;
+import problem_modelings.first_modeling.Utils;
 import problem_modelings.first_modeling.model_specifications.FirstModelAbstract;
 import problem_modelings.first_modeling.model_specifications.FirstModelPlainOldData;
 
@@ -94,7 +94,8 @@ public class SAFirstModeling extends FirstModelAbstract implements SAModelingInt
 
     @Override
     public void acceptSolution() {
-
+        modelPlainOldData.sinkXSpinVariables = modelPlainOldData.tempSinkXSpinVariables.clone();
+        modelPlainOldData.controllerXSpinVariables = modelPlainOldData.tempControllerXSpinVariables.clone();
     }
 
     @Override

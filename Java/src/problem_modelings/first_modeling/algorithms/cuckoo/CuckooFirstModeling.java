@@ -4,7 +4,7 @@ import algorithms.Cuckoo.CuckooModelingInterface;
 import algorithms.Cuckoo.CuckooPlainOldData;
 import algorithms.Cuckoo.model.Cuckoo;
 import algorithms.Cuckoo.model.CuckooDataAndBehaviour;
-import main.Utils;
+import problem_modelings.first_modeling.Utils;
 import problem_modelings.first_modeling.model_specifications.FirstModelAbstract;
 import problem_modelings.first_modeling.model_specifications.FirstModelPlainOldData;
 
