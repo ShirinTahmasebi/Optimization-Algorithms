@@ -28,6 +28,8 @@ public class Parameters {
     }
 
     public static class Common {
+        public static final boolean DO_PRINT_INSTANCES = false;
+        public static final boolean DO_PRINT_STEPS = false;
         public static final float COST_REDUCTION_FACTOR = 0.75f;
         public static final int SINK_LOAD = 10;                            // w
         public static final int CONTROLLER_LOAD = 10;                      // wPrime

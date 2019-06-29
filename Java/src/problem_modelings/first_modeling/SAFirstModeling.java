@@ -2,6 +2,7 @@ package problem_modelings.first_modeling;
 
 import algorithms.simulated_annealing.SAModelingInterface;
 import algorithms.simulated_annealing.SAPlainOldData;
+import main.Parameters;
 import main.Utils;
 import problem_modelings.modeling_types.first_modeling.FirstModelAbstract;
 import problem_modelings.modeling_types.first_modeling.FirstModelPlainOldData;
@@ -58,7 +59,7 @@ public class SAFirstModeling extends FirstModelAbstract implements SAModelingInt
             boolean prevValue = modelPlainOldData.tempControllerXSpinVariables[index];
             modelPlainOldData.tempControllerXSpinVariables[index] = !prevValue;
         }
-        if (main.Main.DO_PRINT_STEPS) {
+        if (Parameters.Common.DO_PRINT_STEPS) {
             super.printGeneratedSolution(modelPlainOldData.tempSinkXSpinVariables, modelPlainOldData.tempControllerXSpinVariables);
         }
     }

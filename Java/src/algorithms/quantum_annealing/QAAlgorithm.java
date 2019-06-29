@@ -2,6 +2,7 @@ package algorithms.quantum_annealing;
 
 import javafx.util.Pair;
 import main.LineChartEx;
+import main.Parameters;
 
 public class QAAlgorithm {
 
@@ -50,7 +51,7 @@ public class QAAlgorithm {
                     } else {
                         // Else with given probability decide to accept or not
                         double baseProb = Math.exp((prevEnergy - energy) / qaPlainOldData.temperature);
-                        if (main.Main.DO_PRINT_STEPS) {
+                        if (Parameters.Common.DO_PRINT_STEPS) {
                             System.out.println("BaseProp " + baseProb);
                         }
                         double rand = Math.random();
@@ -73,7 +74,7 @@ public class QAAlgorithm {
             qaPlainOldData.temperature *= qaPlainOldData.coolingRate;
         } while (qaPlainOldData.tunnelingField > qaPlainOldData.tunnelingFiledFinal); // End of do while
 
-        if (main.Main.DO_PRINT_INSTANCES) {
+        if (Parameters.Common.DO_PRINT_INSTANCES) {
             // Final solution is in: sinkXSpinVariables and controllerXSpinVariables
             System.out.println("Counter: " + counter);
             System.out.println("Accepted Energy: " + qaModelingInterface.calculateEnergyFromPair(qaPlainOldData.prevEnergyPair));

@@ -1,5 +1,6 @@
 package problem_modelings.modeling_types.first_modeling;
 
+import main.Parameters;
 import main.Utils;
 import problem_modelings.BaseProblemModeling;
 
@@ -10,7 +11,7 @@ public abstract class FirstModelAbstract extends BaseProblemModeling {
     public FirstModelAbstract(FirstModelPlainOldData modelPlainOldData) {
         this.modelPlainOldData = modelPlainOldData;
 
-        if (main.Main.DO_PRINT_STEPS) {
+        if (Parameters.Common.DO_PRINT_STEPS) {
             Utils.printProblemSpecifications(
                     modelPlainOldData.graph,
                     modelPlainOldData.candidateSinks,

@@ -1,6 +1,7 @@
 package algorithms.simulated_annealing;
 
 import main.LineChartEx;
+import main.Parameters;
 
 public class SAAlgorithm {
     private SAModelingInterface saModelingInterface;
@@ -42,7 +43,7 @@ public class SAAlgorithm {
                 } else {
                     // Else with given probability decide to accept or not
                     double baseProb = Math.exp((saPlainOldData.prevEnergy - energy) / saPlainOldData.temperature);
-                    if (main.Main.DO_PRINT_STEPS) {
+                    if (Parameters.Common.DO_PRINT_STEPS) {
                         System.out.println("BaseProp " + baseProb);
                     }
                     double rand = Math.random();
@@ -63,7 +64,7 @@ public class SAAlgorithm {
             saPlainOldData.temperature *= saPlainOldData.temperatureCoolingRate;
         } while (saPlainOldData.temperature > saPlainOldData.temperatureFinal); // -- End of do while
 
-        if (main.Main.DO_PRINT_INSTANCES) {
+        if (Parameters.Common.DO_PRINT_INSTANCES) {
             // Final solution is in: sinkXSpinVariables and controllerXSpinVariables
             System.out.println("Counter: " + counter);
             System.out.println("Accepted Energy: " + saPlainOldData.prevEnergy);

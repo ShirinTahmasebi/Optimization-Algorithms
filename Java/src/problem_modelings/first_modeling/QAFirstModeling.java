@@ -1,6 +1,7 @@
 package problem_modelings.first_modeling;
 
 import javafx.util.Pair;
+import main.Parameters;
 import main.Utils;
 import algorithms.quantum_annealing.QAModelingInterface;
 import algorithms.quantum_annealing.QAPlainOldData;
@@ -82,7 +83,7 @@ public class QAFirstModeling extends FirstModelAbstract implements QAModelingInt
             boolean prevValue = modelPlainOldData.tempControllerXSpinVariables[index];
             modelPlainOldData.tempControllerXSpinVariables[index] = !prevValue;
         }
-        if (main.Main.DO_PRINT_STEPS) {
+        if (Parameters.Common.DO_PRINT_STEPS) {
             super.printGeneratedSolution(modelPlainOldData.tempSinkXSpinVariables, modelPlainOldData.tempControllerXSpinVariables);
         }
     }
