@@ -19,6 +19,7 @@ public class Utils implements
     public static String FILE_NAME_SINK_Y_SPIN_VARIABLES = "SinkYSpinVariables";
     public static String FILE_NAME_CONTROLLER_Y = "ControllerY";
     public static String FILE_NAME_CONTROLLER_Y_SPIN_VARIABLES = "ControllerYSpinVariables";
+    public static String FILE_NAME_DISTANCES = "Distances";
 
     public static int getDistance(Graph graph, int firstNodeIndex, int secondNodeIndex) {
         DijkstraAlgorithm dijkstra = new DijkstraAlgorithm(graph);
@@ -27,7 +28,7 @@ public class Utils implements
         return (path == null) ? 0 : path.size() - 1;
     }
 
-    public static int getDistance(Graph graph, String firstNodeId, String secondNodeId){
+    public static int getDistance(Graph graph, String firstNodeId, String secondNodeId) {
         int firstIndex = graph.getVertexIndexById(firstNodeId);
         int secondIndex = graph.getVertexIndexById(secondNodeId);
 
@@ -45,21 +46,35 @@ public class Utils implements
             int sensorSinkMaxDistance,
             int sensorControllerMaxDistance,
             int[][] sinkY, boolean[][] sinkYSpinVariables,
-            int[][] controllerY, boolean[][] controllerYSpinVariables) {
+            int[][] controllerY, boolean[][] controllerYSpinVariables, int[][] distances) {
         // --- Initialize Y and YPrime Spin Variables
+        for (int i = 0; i < graph.getVertexes().size(); i++) {
+            for (int j = 0; j < graph.getVertexes().size(); j++) {
+                distances[i][j] = -1;
+            }
+        }
+        for (int i = 0; i < graph.getVertexes().size(); i++) {
+            for (int j = 0; j < graph.getVertexes().size(); j++) {
+                if (distances[i][j] == -1 || distances[j][i] == -1) {
+                    int distance = getDistance(graph, i, j);
+                    distances[i][j] = distance;
+                    distances[j][i] = distance;
+                }
+            }
+        }
         for (int i = 0; i < graph.getVertexes().size(); i++) {
             for (int j = 0; j < candidateSinks.size(); j++) {
                 // The following line can be replaced with vertexIndex = i - but I preferred to write this in the following way for more readability
                 int vertexIndex1 = graph.getVertexIndexById(graph.getVertexes().get(i).getId());
                 int vertexIndex2 = graph.getVertexIndexById(candidateSinks.get(j).getId());
-                sinkY[i][j] = getDistance(graph, vertexIndex1, vertexIndex2);
+                sinkY[i][j] = distances[vertexIndex1][vertexIndex2];
                 sinkYSpinVariables[i][j] = Utils.isDistanceFavorable(graph, vertexIndex1, vertexIndex2, sensorSinkMaxDistance);
             }
             for (int j = 0; j < candidateControllers.size(); j++) {
                 // The following line can be replaced with vertexIndex = i - but I preferred to write this in the following way for more readability
                 int vertexIndex1 = graph.getVertexIndexById(graph.getVertexes().get(i).getId());
                 int vertexIndex2 = graph.getVertexIndexById(candidateControllers.get(j).getId());
-                controllerY[i][j] = getDistance(graph, vertexIndex1, vertexIndex2);
+                controllerY[i][j] = distances[vertexIndex1][vertexIndex2];
                 controllerYSpinVariables[i][j] = Utils.isDistanceFavorable(graph, vertexIndex1, vertexIndex2, sensorControllerMaxDistance);
             }
         }

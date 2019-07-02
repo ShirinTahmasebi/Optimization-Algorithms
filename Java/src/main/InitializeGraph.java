@@ -20,6 +20,7 @@ public class InitializeGraph {
     private int[][] controllerY;     // YPrime (Number of Hops)
     private boolean[][] sinkYSpinVariables;           // SY (Y Spin Variable)
     private boolean[][] controllerYSpinVariables;     // SYPrime (Y Spin Variable)
+    private int[][] distances;
 
     public static void main(String[] args) {
         InitializeGraph initializeGraph = new InitializeGraph();
@@ -35,6 +36,7 @@ public class InitializeGraph {
         writeObjectToFile(sinkYSpinVariables, Utils.FILE_NAME_SINK_Y_SPIN_VARIABLES + main.Parameters.Common.GRAPH_SIZE);
         writeObjectToFile(controllerY, Utils.FILE_NAME_CONTROLLER_Y + main.Parameters.Common.GRAPH_SIZE);
         writeObjectToFile(controllerYSpinVariables, Utils.FILE_NAME_CONTROLLER_Y_SPIN_VARIABLES + main.Parameters.Common.GRAPH_SIZE);
+        writeObjectToFile(distances, Utils.FILE_NAME_DISTANCES + main.Parameters.Common.GRAPH_SIZE);
     }
 
     public Graph initializeGraph(int graphSize) {
@@ -75,7 +77,7 @@ public class InitializeGraph {
         }
 
         for (int i = 0; i < vertexCount; i++) {
-            int ithNodeNeighborsCount = vertexCount / 2;
+            int ithNodeNeighborsCount = vertexCount / 20;
             Set<Integer> neighborsNumberSet = new HashSet<>();
 
             while (neighborsNumberSet.size() < ithNodeNeighborsCount) {
@@ -138,6 +140,7 @@ public class InitializeGraph {
         this.sinkY = new int[graph.getVertexes().size()][candidateSinks.size()];
         this.controllerYSpinVariables = new boolean[graph.getVertexes().size()][candidateControllers.size()];
         this.sinkYSpinVariables = new boolean[graph.getVertexes().size()][candidateSinks.size()];
+        this.distances = new int[graph.getVertexes().size()][graph.getVertexes().size()];
 
         Utils.initializeSpinVariables(
                 graph,
@@ -148,7 +151,8 @@ public class InitializeGraph {
                 sinkY,
                 sinkYSpinVariables,
                 controllerY,
-                controllerYSpinVariables
+                controllerYSpinVariables,
+                distances
         );
 
         this.graph = graph;

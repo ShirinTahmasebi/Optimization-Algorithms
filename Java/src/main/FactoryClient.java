@@ -33,6 +33,7 @@ public class FactoryClient {
     private int[][] controllerY;                    // YPrime (Y Number of Hops)
     private boolean[][] sinkYSpinVariables;         // SY (Y Spin Variable)
     private boolean[][] controllerYSpinVariables;   // SYPrime (Y Spin Variable)
+    private int[][] distances;
 
     public static void main(String[] args) {
         FactoryClient client = new FactoryClient();
@@ -206,10 +207,13 @@ public class FactoryClient {
             candidateControllers = (List<Vertex>) readObjectFromFile(Utils.FILE_NAME_CANDIDATE_CONTROLLERS + main.Parameters.Common.GRAPH_SIZE);
             sinkYSpinVariables = (boolean[][]) readObjectFromFile(Utils.FILE_NAME_SINK_Y_SPIN_VARIABLES + main.Parameters.Common.GRAPH_SIZE);
             controllerYSpinVariables = (boolean[][]) readObjectFromFile(Utils.FILE_NAME_CONTROLLER_Y_SPIN_VARIABLES + main.Parameters.Common.GRAPH_SIZE);
+            distances = (int[][]) readObjectFromFile(Utils.FILE_NAME_DISTANCES + main.Parameters.Common.GRAPH_SIZE);
         } else if (modelNo == 2) {
             graph = (Graph) readObjectFromFile(Utils.FILE_NAME_GRAPH + main.Parameters.Common.GRAPH_SIZE);
             candidateControllers = (List<Vertex>) readObjectFromFile(Utils.FILE_NAME_CANDIDATE_CONTROLLERS + main.Parameters.Common.GRAPH_SIZE);
             controllerY = (int[][]) readObjectFromFile(Utils.FILE_NAME_CONTROLLER_Y + main.Parameters.Common.GRAPH_SIZE);
+            controllerY = (int[][]) readObjectFromFile(Utils.FILE_NAME_CONTROLLER_Y + main.Parameters.Common.GRAPH_SIZE);
+            distances = (int[][]) readObjectFromFile(Utils.FILE_NAME_DISTANCES + main.Parameters.Common.GRAPH_SIZE);
         }
     }
 }
