@@ -1,16 +1,16 @@
 package main;
 
-import algorithms.Cuckoo.CuckooAlgorithm;
-import algorithms.Cuckoo.CuckooModelingInterface;
-import algorithms.Cuckoo.CuckooPlainOldData;
-import algorithms.simulated_annealing.SAAlgorithm;
-import algorithms.simulated_annealing.SAModelingInterface;
-import algorithms.simulated_annealing.SAPlainOldData;
+import base_algorithms.Cuckoo.CuckooAlgorithm;
+import base_algorithms.Cuckoo.CuckooModelingInterface;
+import base_algorithms.Cuckoo.CuckooPlainOldData;
+import base_algorithms.simulated_annealing.SAAlgorithm;
+import base_algorithms.simulated_annealing.SAModelingInterface;
+import base_algorithms.simulated_annealing.SAPlainOldData;
 import main.model.Graph;
 import main.model.Vertex;
-import algorithms.quantum_annealing.QAAlgorithm;
-import algorithms.quantum_annealing.QAModelingInterface;
-import algorithms.quantum_annealing.QAPlainOldData;
+import base_algorithms.quantum_annealing.QAAlgorithm;
+import base_algorithms.quantum_annealing.QAModelingInterface;
+import base_algorithms.quantum_annealing.QAPlainOldData;
 import problem_modelings.budget_constrained_modeling.algorithms.QABudgetConstrainedModeling;
 import problem_modelings.budget_constrained_modeling.algorithms.SABudgetConstrainedModeling;
 import problem_modelings.budget_constrained_modeling.model_specifications.BudgetConstrainedModelPlainOldData;

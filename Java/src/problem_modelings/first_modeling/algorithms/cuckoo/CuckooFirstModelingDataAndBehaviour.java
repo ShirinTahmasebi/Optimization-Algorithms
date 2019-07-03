@@ -1,6 +1,6 @@
 package problem_modelings.first_modeling.algorithms.cuckoo;
 
-import algorithms.Cuckoo.model.CuckooDataAndBehaviour;
+import base_algorithms.Cuckoo.model.CuckooDataAndBehaviour;
 
 public class CuckooFirstModelingDataAndBehaviour extends CuckooDataAndBehaviour {
 

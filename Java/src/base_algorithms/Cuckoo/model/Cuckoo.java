@@ -1,4 +1,4 @@
-package algorithms.Cuckoo.model;
+package base_algorithms.Cuckoo.model;
 
 import java.util.Random;
 

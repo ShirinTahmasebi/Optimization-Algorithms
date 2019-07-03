@@ -1,6 +1,6 @@
-package algorithms.Cuckoo;
+package base_algorithms.Cuckoo;
 
-import algorithms.Cuckoo.model.Cuckoo;
+import base_algorithms.Cuckoo.model.Cuckoo;
 
 import java.util.ArrayList;
 import java.util.List;

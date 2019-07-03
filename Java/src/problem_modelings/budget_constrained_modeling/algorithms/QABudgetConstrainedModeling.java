@@ -1,8 +1,8 @@
 package problem_modelings.budget_constrained_modeling.algorithms;
 
 import javafx.util.Pair;
-import algorithms.quantum_annealing.QAModelingInterface;
-import algorithms.quantum_annealing.QAPlainOldData;
+import base_algorithms.quantum_annealing.QAModelingInterface;
+import base_algorithms.quantum_annealing.QAPlainOldData;
 import main.Parameters;
 import problem_modelings.budget_constrained_modeling.Utils;
 import problem_modelings.budget_constrained_modeling.model_specifications.BudgetConstrainedModelAbstract;

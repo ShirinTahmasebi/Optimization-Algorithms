@@ -1,4 +1,4 @@
-package algorithms.simulated_annealing;
+package base_algorithms.simulated_annealing;
 
 public class SAPlainOldData {
     public float temperature;                    // T0

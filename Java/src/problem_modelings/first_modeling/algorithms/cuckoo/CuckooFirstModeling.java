@@ -1,9 +1,9 @@
 package problem_modelings.first_modeling.algorithms.cuckoo;
 
-import algorithms.Cuckoo.CuckooModelingInterface;
-import algorithms.Cuckoo.CuckooPlainOldData;
-import algorithms.Cuckoo.model.Cuckoo;
-import algorithms.Cuckoo.model.CuckooDataAndBehaviour;
+import base_algorithms.Cuckoo.CuckooModelingInterface;
+import base_algorithms.Cuckoo.CuckooPlainOldData;
+import base_algorithms.Cuckoo.model.Cuckoo;
+import base_algorithms.Cuckoo.model.CuckooDataAndBehaviour;
 import problem_modelings.first_modeling.Utils;
 import problem_modelings.first_modeling.model_specifications.FirstModelAbstract;
 import problem_modelings.first_modeling.model_specifications.FirstModelPlainOldData;

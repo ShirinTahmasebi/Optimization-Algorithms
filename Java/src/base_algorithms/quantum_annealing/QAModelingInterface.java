@@ -1,4 +1,4 @@
-package algorithms.quantum_annealing;
+package base_algorithms.quantum_annealing;
 
 import javafx.util.Pair;
 
