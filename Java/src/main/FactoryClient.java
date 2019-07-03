@@ -13,6 +13,7 @@ import base_algorithms.quantum_annealing.QAModelingInterface;
 import base_algorithms.quantum_annealing.QAPlainOldData;
 import problem_modelings.budget_constrained_modeling.algorithms.QABudgetConstrainedModeling;
 import problem_modelings.budget_constrained_modeling.algorithms.SABudgetConstrainedModeling;
+import problem_modelings.budget_constrained_modeling.algorithms.cuckoo.CuckooBudgetConstrainedModeling;
 import problem_modelings.budget_constrained_modeling.model_specifications.BudgetConstrainedModelPlainOldData;
 import problem_modelings.first_modeling.algorithms.QAFirstModeling;
 import problem_modelings.first_modeling.algorithms.SAFirstModeling;
@@ -63,6 +64,24 @@ public class FactoryClient {
                 (candidateControllers.size() / 3) * Parameters.Common.COST_CONTROLLER,
                 distances
         );
+
+        Date cuckooTimeA = new Date();
+
+        CuckooPlainOldData cuckooPlainOldData = new CuckooPlainOldData();
+
+        CuckooModelingInterface cuckooModelingInterface = new CuckooBudgetConstrainedModeling(budgetConstrainedModelPlainOldData, cuckooPlainOldData);
+
+        CuckooAlgorithm cuckooAlgorithm = new CuckooAlgorithm(cuckooModelingInterface);
+
+        for (int i = 0; i < main.Parameters.Common.SIMULATION_COUNT; i++) {
+            double cuckooPotentialEnergy = cuckooAlgorithm.execute();
+            chartEx.addToCuckooSeries(i + 1, cuckooPotentialEnergy);
+            cuckooEnergySum += cuckooPotentialEnergy;
+            System.out.println("Cuckoo Energy: " + cuckooPotentialEnergy);
+            System.out.println("Cuckoo L Max: " + ((CuckooBudgetConstrainedModeling) cuckooModelingInterface).calculateMaxL());
+        }
+
+        Date cuckooTimeB = new Date();
 
         Date quantumTimeA = new Date();
 
