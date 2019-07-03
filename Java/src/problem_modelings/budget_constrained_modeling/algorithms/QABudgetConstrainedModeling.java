@@ -116,6 +116,7 @@ public class QABudgetConstrainedModeling extends BudgetConstrainedModelAbstract 
     @Override
     public Pair<Double, Double> calculateCost(int currentReplicaNum) {
         int maxL = super.calculateMaxL();
+
         int reliabilityEnergy = Utils.getReliabilityEnergy(
                 modelPlainOldData.graph,
                 modelPlainOldData.controllerY,

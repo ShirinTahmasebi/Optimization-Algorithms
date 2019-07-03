@@ -12,6 +12,7 @@ import algorithms.quantum_annealing.QAAlgorithm;
 import algorithms.quantum_annealing.QAModelingInterface;
 import algorithms.quantum_annealing.QAPlainOldData;
 import problem_modelings.budget_constrained_modeling.algorithms.QABudgetConstrainedModeling;
+import problem_modelings.budget_constrained_modeling.algorithms.SABudgetConstrainedModeling;
 import problem_modelings.budget_constrained_modeling.model_specifications.BudgetConstrainedModelPlainOldData;
 import problem_modelings.first_modeling.algorithms.QAFirstModeling;
 import problem_modelings.first_modeling.algorithms.SAFirstModeling;
@@ -90,6 +91,32 @@ public class FactoryClient {
         }
 
         Date quantumTimeB = new Date();
+
+        Date simulatedTimeA = new Date();
+
+        SAPlainOldData saPlainOldData = new SAPlainOldData(
+                Parameters.SimulatedAnnealing.TEMPERATURE_INITIAL,
+                Parameters.SimulatedAnnealing.TEMPERATURE_FINAL,
+                Parameters.SimulatedAnnealing.TEMPERATURE_COOLING_RATE,
+                Parameters.SimulatedAnnealing.MONTE_CARLO_STEP
+        );
+
+        SAModelingInterface saModelingInterface = new SABudgetConstrainedModeling(
+                budgetConstrainedModelPlainOldData,
+                saPlainOldData
+        );
+
+        SAAlgorithm saAlgorithm = new SAAlgorithm(saModelingInterface);
+
+        for (int i = 0; i < main.Parameters.Common.SIMULATION_COUNT; i++) {
+            double saPotentialEnergy = saAlgorithm.execute();
+            chartEx.addToSASeries(i + 1, saPotentialEnergy);
+            saEnergySum += saPotentialEnergy;
+            System.out.println("SA Energy: " + saPotentialEnergy);
+            System.out.println("SA L Max: " + ((SABudgetConstrainedModeling) saModelingInterface).calculateMaxL());
+        }
+
+        Date simulatedTimeB = new Date();
     }
 
     private void executeAlgorithmsOnFirstModel() {
