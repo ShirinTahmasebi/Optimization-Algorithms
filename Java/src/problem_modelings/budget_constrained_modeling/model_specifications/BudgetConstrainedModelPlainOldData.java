@@ -13,7 +13,8 @@ public class BudgetConstrainedModelPlainOldData {
     public List<Vertex> candidateControllers;           //AC
     public int sensorControllerMaxDistance;             // LMax
     public int[][] controllerY;                         // Y (Number of Hops)
-    public boolean[][] controllerYSpinVariable;         // Y Spin Variables (is distance favorable?)
+    public boolean[][] controllerYSpinVariable;         // Y Spin Variables (is distances favorable?)
+    public int[][] distances;
 
     // Solution Spin Variables
     public boolean[] controllerXSpinVariables;          // SX (X Spin Variable)
@@ -36,10 +37,12 @@ public class BudgetConstrainedModelPlainOldData {
             int maxControllerCoverage,
             int maxControllerLoad,
             int costController,
-            int totalBudget) {
+            int totalBudget,
+            int[][] distances) {
         this.controllerY = controllerY;
         this.tempControllerXSpinVariables = new boolean[candidateControllers.size()];
         this.controllerXSpinVariables = new boolean[candidateControllers.size()];
+        this.distances = distances;
 
         this.graph = graph;
         this.candidateControllers = candidateControllers;

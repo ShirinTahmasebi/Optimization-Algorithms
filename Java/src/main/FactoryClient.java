@@ -59,7 +59,8 @@ public class FactoryClient {
                 main.Parameters.Common.MAX_CONTROLLER_COVERAGE,
                 main.Parameters.Common.MAX_CONTROLLER_LOAD,
                 main.Parameters.Common.COST_CONTROLLER,
-                (candidateControllers.size() / 3) * Parameters.Common.COST_CONTROLLER
+                (candidateControllers.size() / 3) * Parameters.Common.COST_CONTROLLER,
+                distances
         );
 
         Date quantumTimeA = new Date();

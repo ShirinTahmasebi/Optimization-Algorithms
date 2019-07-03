@@ -1,11 +1,12 @@
 package problem_modelings.budget_constrained_modeling.model_specifications;
 
 import main.Parameters;
-import main.Utils;
 import main.model.Graph;
 import main.model.Vertex;
 import problem_modelings.BaseProblemModeling;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public abstract class BudgetConstrainedModelAbstract extends BaseProblemModeling {
@@ -70,36 +71,33 @@ public abstract class BudgetConstrainedModelAbstract extends BaseProblemModeling
 
     public int calculateMaxL() {
 
-        final int[] maxL = {Integer.MAX_VALUE};
+        List<Integer> nodeMinDistancesToSelectedControllers = new ArrayList<>();
+        List<Integer> controllersIndices = new ArrayList<>();
+
+        for (int i = 0; i < modelPlainOldData.candidateControllers.size(); i++) {
+            if (modelPlainOldData.tempControllerXSpinVariables[i]) {
+                String controllerNodeId = modelPlainOldData.candidateControllers.get(i).getId();
+                int vertexIndexById = modelPlainOldData.graph.getVertexIndexById(controllerNodeId);
+                controllersIndices.add(vertexIndexById);
+            }
+        }
 
         List<Vertex> vertexes = modelPlainOldData.graph.getVertexes();
+
         vertexes.forEach(vertex -> {
 
-            int distanceToNearestController = Integer.MAX_VALUE;
+            List<Integer> nodeDistancesToSelectedControllers = new ArrayList<>();
+            nodeDistancesToSelectedControllers.add(Integer.MAX_VALUE);
 
-            for (int i = 0; i < modelPlainOldData.candidateControllers.size(); i++) {
-
-                if (modelPlainOldData.tempControllerXSpinVariables[i]) {
-
-                    int distance = Utils.getDistance(
-                            modelPlainOldData.graph,
-                            vertex.getId(),
-                            modelPlainOldData.candidateControllers.get(i).getId());
-
-                    if (distance < distanceToNearestController) {
-                        distanceToNearestController = distance;
-                    }
-                }
-
+            for (int i = 0; i < controllersIndices.size(); i++) {
+                int vertexIndex1 = modelPlainOldData.graph.getVertexIndexById(vertex.getId());
+                nodeDistancesToSelectedControllers.add(modelPlainOldData.distances[vertexIndex1][controllersIndices.get(i)]);
             }
 
-            if (distanceToNearestController > maxL[0]) {
-                maxL[0] = distanceToNearestController;
-            }
-
+            nodeMinDistancesToSelectedControllers.add(Collections.min(nodeDistancesToSelectedControllers));
         });
 
-        return maxL[0];
+        return Collections.max(nodeMinDistancesToSelectedControllers);
     }
 
 }
