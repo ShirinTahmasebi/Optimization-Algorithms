@@ -14,4 +14,9 @@ public class CuckooBudgetConstrainedModelingDataAndBehaviour extends CuckooDataA
     public int getEggsNumberLowerBound() {
         return controllerXSpinVariables.length / 3;
     }
+
+    @Override
+    public int getMaxELR() {
+        return controllerXSpinVariables.length / 2;
+    }
 }

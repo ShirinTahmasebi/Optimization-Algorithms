@@ -22,9 +22,10 @@ public class CuckooBudgetConstrainedModeling extends BudgetConstrainedModelAbstr
 
     @Override
     public double calculateCost(CuckooDataAndBehaviour cuckooDataAndBehaviours) {
-        int maxL = super.calculateMaxL();
+        CuckooBudgetConstrainedModelingDataAndBehaviour castedCuckooDataAndBehaviours = (CuckooBudgetConstrainedModelingDataAndBehaviour) cuckooDataAndBehaviours;
+        int maxL = super.calculateMaxL(castedCuckooDataAndBehaviours);
 
-        boolean[] controllerXSpinVariables = ((CuckooBudgetConstrainedModelingDataAndBehaviour) cuckooDataAndBehaviours).controllerXSpinVariables;
+        boolean[] controllerXSpinVariables = castedCuckooDataAndBehaviours.controllerXSpinVariables;
 
         int reliabilityEnergy = Utils.getReliabilityEnergy(
                 modelPlainOldData.graph,
@@ -53,7 +54,7 @@ public class CuckooBudgetConstrainedModeling extends BudgetConstrainedModelAbstr
         }
         List<Cuckoo> eggs = new ArrayList<>();
         CuckooBudgetConstrainedModelingDataAndBehaviour dataAndBehaviour = (CuckooBudgetConstrainedModelingDataAndBehaviour) matureCuckoo.getCuckooDataAndBehaviour();
-        matureCuckoo.getMatureCuckoo().setELR(dataAndBehaviour.controllerXSpinVariables.length / 2);
+        matureCuckoo.getMatureCuckoo().setELR(dataAndBehaviour.getMaxELR());
 
         for (int i = 0; i < matureCuckoo.getMatureCuckoo().getNumberOfEggs(); i++) {
             eggs.add(generateEggByElr(matureCuckoo));
@@ -74,7 +75,7 @@ public class CuckooBudgetConstrainedModeling extends BudgetConstrainedModelAbstr
 
         boolean[] tempCandidateController = dataAndBehaviour.controllerXSpinVariables.clone();
         int maxElr = matureCuckoo.getMatureCuckoo().getELR();
-        int candidateElr = random.nextInt(Math.min(maxElr, tempCandidateController.length));
+        int candidateElr = random.nextInt(Math.min(maxElr, modelPlainOldData.totalBudget / modelPlainOldData.costController));
         Set<Integer> controllerInversionIndices = new HashSet<>();
 
         while (controllerInversionIndices.size() < candidateElr) {

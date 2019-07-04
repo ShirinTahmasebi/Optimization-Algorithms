@@ -78,7 +78,7 @@ public class FactoryClient {
             chartEx.addToCuckooSeries(i + 1, cuckooPotentialEnergy);
             cuckooEnergySum += cuckooPotentialEnergy;
             System.out.println("Cuckoo Energy: " + cuckooPotentialEnergy);
-            System.out.println("Cuckoo L Max: " + ((CuckooBudgetConstrainedModeling) cuckooModelingInterface).calculateMaxL());
+            System.out.println("Cuckoo L Max: " + ((CuckooBudgetConstrainedModeling) cuckooModelingInterface).calculateMaxL(cuckooAlgorithm.getSelectedCuckooDataAndBehavior()));
         }
 
         Date cuckooTimeB = new Date();

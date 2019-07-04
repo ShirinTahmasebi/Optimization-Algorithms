@@ -1,9 +1,11 @@
 package problem_modelings.budget_constrained_modeling.model_specifications;
 
+import base_algorithms.Cuckoo.model.CuckooDataAndBehaviour;
 import main.Parameters;
 import main.model.Graph;
 import main.model.Vertex;
 import problem_modelings.BaseProblemModeling;
+import problem_modelings.budget_constrained_modeling.algorithms.cuckoo.CuckooBudgetConstrainedModelingDataAndBehaviour;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -100,4 +102,42 @@ public abstract class BudgetConstrainedModelAbstract extends BaseProblemModeling
         return Collections.max(nodeMinDistancesToSelectedControllers);
     }
 
+    public int calculateMaxL(CuckooDataAndBehaviour cuckooDataAndBehaviour) {
+        if (cuckooDataAndBehaviour instanceof CuckooBudgetConstrainedModelingDataAndBehaviour) {
+            return calculateMaxL((CuckooBudgetConstrainedModelingDataAndBehaviour) cuckooDataAndBehaviour);
+        } else {
+            return Integer.MAX_VALUE;
+        }
+    }
+
+    private int calculateMaxL(CuckooBudgetConstrainedModelingDataAndBehaviour cuckooDataAndBehaviour) {
+
+        List<Integer> nodeMinDistancesToSelectedControllers = new ArrayList<>();
+        List<Integer> controllersIndices = new ArrayList<>();
+
+        for (int i = 0; i < modelPlainOldData.candidateControllers.size(); i++) {
+            if (cuckooDataAndBehaviour.controllerXSpinVariables[i]) {
+                String controllerNodeId = modelPlainOldData.candidateControllers.get(i).getId();
+                int vertexIndexById = modelPlainOldData.graph.getVertexIndexById(controllerNodeId);
+                controllersIndices.add(vertexIndexById);
+            }
+        }
+
+        List<Vertex> vertexes = modelPlainOldData.graph.getVertexes();
+
+        vertexes.forEach(vertex -> {
+
+            List<Integer> nodeDistancesToSelectedControllers = new ArrayList<>();
+            nodeDistancesToSelectedControllers.add(Integer.MAX_VALUE);
+
+            for (int i = 0; i < controllersIndices.size(); i++) {
+                int vertexIndex1 = modelPlainOldData.graph.getVertexIndexById(vertex.getId());
+                nodeDistancesToSelectedControllers.add(modelPlainOldData.distances[vertexIndex1][controllersIndices.get(i)]);
+            }
+
+            nodeMinDistancesToSelectedControllers.add(Collections.min(nodeDistancesToSelectedControllers));
+        });
+
+        return Collections.max(nodeMinDistancesToSelectedControllers);
+    }
 }

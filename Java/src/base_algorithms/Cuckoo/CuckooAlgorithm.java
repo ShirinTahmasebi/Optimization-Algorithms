@@ -1,6 +1,7 @@
 package base_algorithms.Cuckoo;
 
 import base_algorithms.Cuckoo.model.Cuckoo;
+import base_algorithms.Cuckoo.model.CuckooDataAndBehaviour;
 import main.LineChartEx;
 import main.Parameters;
 
@@ -54,5 +55,9 @@ public class CuckooAlgorithm {
         }
 
         return cuckooPlainOldData.matureCuckoos.get(0).getCost();
+    }
+
+    public CuckooDataAndBehaviour getSelectedCuckooDataAndBehavior(){
+        return cuckooPlainOldData.matureCuckoos.get(0).getCuckooDataAndBehaviour();
     }
 }

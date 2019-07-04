@@ -16,4 +16,9 @@ public class CuckooFirstModelingDataAndBehaviour extends CuckooDataAndBehaviour 
     public int getEggsNumberLowerBound() {
         return (controllerXSpinVariables.length + sinkXSpinVariables.length) / 3;
     }
+
+    @Override
+    public int getMaxELR() {
+        return Math.min(controllerXSpinVariables.length, sinkXSpinVariables.length) / 2;
+    }
 }

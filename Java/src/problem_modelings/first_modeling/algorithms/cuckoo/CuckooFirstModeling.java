@@ -56,9 +56,7 @@ public class CuckooFirstModeling extends FirstModelAbstract implements CuckooMod
         }
         List<Cuckoo> eggs = new ArrayList<>();
         CuckooFirstModelingDataAndBehaviour dataAndBehaviour = (CuckooFirstModelingDataAndBehaviour) matureCuckoo.getCuckooDataAndBehaviour();
-        matureCuckoo.getMatureCuckoo().setELR(
-                Math.min(dataAndBehaviour.controllerXSpinVariables.length, dataAndBehaviour.sinkXSpinVariables.length) / 2
-        );
+        matureCuckoo.getMatureCuckoo().setELR(dataAndBehaviour.getMaxELR());
         for (int i = 0; i < matureCuckoo.getMatureCuckoo().getNumberOfEggs(); i++) {
             eggs.add(generateEggByElr(matureCuckoo));
         }
