@@ -117,20 +117,18 @@ public class QABudgetConstrainedModeling extends BudgetConstrainedModelAbstract 
     public Pair<Double, Double> calculateCost(int currentReplicaNum) {
         int maxL = super.calculateMaxL();
 
-        // TODO: Remove last argument (0) - Replace with appropriate value
         int reliabilityEnergy = Utils.getReliabilityEnergy(
                 modelPlainOldData.graph,
                 modelPlainOldData.controllerY,
                 modelPlainOldData.candidateControllers, modelPlainOldData.tempControllerXSpinVariables,
-                modelPlainOldData.maxControllerCoverage, 0
+                modelPlainOldData.maxControllerCoverage, maxL
         );
 
-        // TODO: Remove last argument (0) - Replace with appropriate value
         double loadBalancingEnergy = Utils.getLoadBalancingEnergy(
                 modelPlainOldData.graph,
                 modelPlainOldData.controllerY,
                 modelPlainOldData.candidateControllers, modelPlainOldData.tempControllerXSpinVariables,
-                modelPlainOldData.maxControllerLoad, modelPlainOldData.maxControllerCoverage, 0
+                modelPlainOldData.maxControllerLoad, modelPlainOldData.maxControllerCoverage, maxL
         );
 
         double lMaxEnergy = Utils.getMaxLEnergy(maxL);

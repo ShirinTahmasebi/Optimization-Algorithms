@@ -26,20 +26,18 @@ public class CuckooBudgetConstrainedModeling extends BudgetConstrainedModelAbstr
 
         boolean[] controllerXSpinVariables = ((CuckooBudgetConstrainedModelingDataAndBehaviour) cuckooDataAndBehaviours).controllerXSpinVariables;
 
-        // TODO: Remove last argument (0) - Replace with appropriate value
         int reliabilityEnergy = Utils.getReliabilityEnergy(
                 modelPlainOldData.graph,
                 modelPlainOldData.controllerY,
                 modelPlainOldData.candidateControllers, controllerXSpinVariables,
-                modelPlainOldData.maxControllerCoverage, 0
+                modelPlainOldData.maxControllerCoverage, maxL
         );
 
-        // TODO: Remove last argument (0) - Replace with appropriate value
         double loadBalancingEnergy = Utils.getLoadBalancingEnergy(
                 modelPlainOldData.graph,
                 modelPlainOldData.controllerY,
                 modelPlainOldData.candidateControllers, modelPlainOldData.tempControllerXSpinVariables,
-                modelPlainOldData.maxControllerLoad, modelPlainOldData.maxControllerCoverage, 0
+                modelPlainOldData.maxControllerLoad, modelPlainOldData.maxControllerCoverage, maxL
         );
 
         double lMaxEnergy = Utils.getMaxLEnergy(maxL);
