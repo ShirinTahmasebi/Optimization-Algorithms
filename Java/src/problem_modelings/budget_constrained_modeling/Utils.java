@@ -159,4 +159,8 @@ public interface Utils {
     static double getMaxLEnergy(int maxL) {
         return (maxL < 0 ? maxL * -1 : maxL) * BudgetConstrainedModelAbstract.L_MAX_COEFFICIENT;
     }
+
+    static double getSummationOfMaxLEnergy(int summationOfLMax) {
+        return (summationOfLMax < 0 ? summationOfLMax * -1 : summationOfLMax) * BudgetConstrainedModelAbstract.SUMMATION_OFL_MAX_COEFFICIENT;
+    }
 }

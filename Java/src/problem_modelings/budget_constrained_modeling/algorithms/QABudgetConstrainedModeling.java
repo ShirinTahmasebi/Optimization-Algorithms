@@ -116,6 +116,7 @@ public class QABudgetConstrainedModeling extends BudgetConstrainedModelAbstract 
     @Override
     public Pair<Double, Double> calculateCost(int currentReplicaNum) {
         int maxL = super.calculateMaxL();
+        int summationOfLMax = super.calculateDistanceToNearestControllerEnergy();
 
         int reliabilityEnergy = Utils.getReliabilityEnergy(
                 modelPlainOldData.graph,
@@ -132,8 +133,9 @@ public class QABudgetConstrainedModeling extends BudgetConstrainedModelAbstract 
         );
 
         double lMaxEnergy = Utils.getMaxLEnergy(maxL);
+        double distanceToNearestControllerEnergy = Utils.getSummationOfMaxLEnergy(summationOfLMax);
 
-        double potentialEnergy = reliabilityEnergy + loadBalancingEnergy + lMaxEnergy;
+        double potentialEnergy = reliabilityEnergy + loadBalancingEnergy + lMaxEnergy + distanceToNearestControllerEnergy;
         double kineticEnergy = getKineticEnergy(currentReplicaNum);
 
         return new Pair<>(potentialEnergy, kineticEnergy);

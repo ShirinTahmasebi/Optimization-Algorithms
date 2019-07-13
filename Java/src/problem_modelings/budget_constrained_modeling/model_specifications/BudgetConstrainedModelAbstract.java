@@ -13,7 +13,8 @@ import java.util.List;
 
 public abstract class BudgetConstrainedModelAbstract extends BaseProblemModeling {
 
-    public static int L_MAX_COEFFICIENT = 5;
+    public static int L_MAX_COEFFICIENT = 0;
+    public static int SUMMATION_OFL_MAX_COEFFICIENT = 100;
 
     public BudgetConstrainedModelPlainOldData modelPlainOldData;
 
@@ -91,9 +92,9 @@ public abstract class BudgetConstrainedModelAbstract extends BaseProblemModeling
             List<Integer> nodeDistancesToSelectedControllers = new ArrayList<>();
             nodeDistancesToSelectedControllers.add(Integer.MAX_VALUE);
 
-            for (int i = 0; i < controllersIndices.size(); i++) {
+            for (Integer controllersIndex : controllersIndices) {
                 int vertexIndex1 = modelPlainOldData.graph.getVertexIndexById(vertex.getId());
-                nodeDistancesToSelectedControllers.add(modelPlainOldData.distances[vertexIndex1][controllersIndices.get(i)]);
+                nodeDistancesToSelectedControllers.add(modelPlainOldData.distances[vertexIndex1][controllersIndex]);
             }
 
             nodeMinDistancesToSelectedControllers.add(Collections.min(nodeDistancesToSelectedControllers));
@@ -105,6 +106,15 @@ public abstract class BudgetConstrainedModelAbstract extends BaseProblemModeling
     public int calculateMaxL(CuckooDataAndBehaviour cuckooDataAndBehaviour) {
         if (cuckooDataAndBehaviour instanceof CuckooBudgetConstrainedModelingDataAndBehaviour) {
             return calculateMaxL((CuckooBudgetConstrainedModelingDataAndBehaviour) cuckooDataAndBehaviour);
+        } else {
+            return Integer.MAX_VALUE;
+        }
+    }
+
+
+    public int calculateDistanceToNearestControllerEnergy(CuckooDataAndBehaviour cuckooDataAndBehaviour) {
+        if (cuckooDataAndBehaviour instanceof CuckooBudgetConstrainedModelingDataAndBehaviour) {
+            return calculateDistanceToNearestControllerEnergy((CuckooBudgetConstrainedModelingDataAndBehaviour) cuckooDataAndBehaviour);
         } else {
             return Integer.MAX_VALUE;
         }
@@ -130,14 +140,74 @@ public abstract class BudgetConstrainedModelAbstract extends BaseProblemModeling
             List<Integer> nodeDistancesToSelectedControllers = new ArrayList<>();
             nodeDistancesToSelectedControllers.add(Integer.MAX_VALUE);
 
-            for (int i = 0; i < controllersIndices.size(); i++) {
+            for (Integer controllersIndex : controllersIndices) {
                 int vertexIndex1 = modelPlainOldData.graph.getVertexIndexById(vertex.getId());
-                nodeDistancesToSelectedControllers.add(modelPlainOldData.distances[vertexIndex1][controllersIndices.get(i)]);
+                nodeDistancesToSelectedControllers.add(modelPlainOldData.distances[vertexIndex1][controllersIndex]);
             }
 
             nodeMinDistancesToSelectedControllers.add(Collections.min(nodeDistancesToSelectedControllers));
         });
 
         return Collections.max(nodeMinDistancesToSelectedControllers);
+    }
+
+    public int calculateDistanceToNearestControllerEnergy() {
+        List<Integer> nodeMinDistancesToSelectedControllers = new ArrayList<>();
+        List<Integer> controllersIndices = new ArrayList<>();
+
+        for (int i = 0; i < modelPlainOldData.candidateControllers.size(); i++) {
+            if (modelPlainOldData.tempControllerXSpinVariables[i]) {
+                String controllerNodeId = modelPlainOldData.candidateControllers.get(i).getId();
+                int vertexIndexById = modelPlainOldData.graph.getVertexIndexById(controllerNodeId);
+                controllersIndices.add(vertexIndexById);
+            }
+        }
+
+        List<Vertex> vertexes = modelPlainOldData.graph.getVertexes();
+
+        vertexes.forEach(vertex -> {
+            List<Integer> nodeDistancesToSelectedControllers = new ArrayList<>();
+            nodeDistancesToSelectedControllers.add(Integer.MAX_VALUE);
+
+            for (Integer controllersIndex : controllersIndices) {
+                int vertexIndex = modelPlainOldData.graph.getVertexIndexById(vertex.getId());
+                nodeDistancesToSelectedControllers.add(modelPlainOldData.distances[vertexIndex][controllersIndex]);
+            }
+
+            nodeMinDistancesToSelectedControllers.add(Collections.min(nodeDistancesToSelectedControllers));
+        });
+
+        return nodeMinDistancesToSelectedControllers.stream().mapToInt(Integer::intValue).sum();
+    }
+
+    private int calculateDistanceToNearestControllerEnergy(CuckooBudgetConstrainedModelingDataAndBehaviour cuckooDataAndBehaviour) {
+
+        List<Integer> nodeMinDistancesToSelectedControllers = new ArrayList<>();
+        List<Integer> controllersIndices = new ArrayList<>();
+
+        for (int i = 0; i < modelPlainOldData.candidateControllers.size(); i++) {
+            if (cuckooDataAndBehaviour.controllerXSpinVariables[i]) {
+                String controllerNodeId = modelPlainOldData.candidateControllers.get(i).getId();
+                int vertexIndexById = modelPlainOldData.graph.getVertexIndexById(controllerNodeId);
+                controllersIndices.add(vertexIndexById);
+            }
+        }
+
+        List<Vertex> vertexes = modelPlainOldData.graph.getVertexes();
+
+        vertexes.forEach(vertex -> {
+
+            List<Integer> nodeDistancesToSelectedControllers = new ArrayList<>();
+            nodeDistancesToSelectedControllers.add(Integer.MAX_VALUE);
+
+            for (Integer controllersIndex : controllersIndices) {
+                int vertexIndex = modelPlainOldData.graph.getVertexIndexById(vertex.getId());
+                nodeDistancesToSelectedControllers.add(modelPlainOldData.distances[vertexIndex][controllersIndex]);
+            }
+
+            nodeMinDistancesToSelectedControllers.add(Collections.min(nodeDistancesToSelectedControllers));
+        });
+
+        return nodeMinDistancesToSelectedControllers.stream().mapToInt(Integer::intValue).sum();
     }
 }

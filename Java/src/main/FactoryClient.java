@@ -6,6 +6,7 @@ import base_algorithms.Cuckoo.CuckooPlainOldData;
 import base_algorithms.simulated_annealing.SAAlgorithm;
 import base_algorithms.simulated_annealing.SAModelingInterface;
 import base_algorithms.simulated_annealing.SAPlainOldData;
+import javafx.util.Pair;
 import main.model.Graph;
 import main.model.Vertex;
 import base_algorithms.quantum_annealing.QAAlgorithm;
@@ -20,9 +21,7 @@ import problem_modelings.first_modeling.algorithms.SAFirstModeling;
 import problem_modelings.first_modeling.algorithms.cuckoo.CuckooFirstModeling;
 import problem_modelings.first_modeling.model_specifications.FirstModelPlainOldData;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import static main.Utils.readObjectFromFile;
 
@@ -79,6 +78,7 @@ public class FactoryClient {
             cuckooEnergySum += cuckooPotentialEnergy;
             System.out.println("Cuckoo Energy: " + cuckooPotentialEnergy);
             System.out.println("Cuckoo L Max: " + ((CuckooBudgetConstrainedModeling) cuckooModelingInterface).calculateMaxL(cuckooAlgorithm.getSelectedCuckooDataAndBehavior()));
+            System.out.println("Cuckoo Summation of L Max: " + ((CuckooBudgetConstrainedModeling) cuckooModelingInterface).calculateDistanceToNearestControllerEnergy(cuckooAlgorithm.getSelectedCuckooDataAndBehavior()));
         }
 
         Date cuckooTimeB = new Date();
@@ -107,6 +107,7 @@ public class FactoryClient {
             qaEnergySum += qaPotentialEnergy;
             System.out.println("QA Energy: " + qaPotentialEnergy);
             System.out.println("QA L Max: " + ((QABudgetConstrainedModeling) qaModelingInterface).calculateMaxL());
+            System.out.println("QA Summation of L Max: " + ((QABudgetConstrainedModeling) qaModelingInterface).calculateDistanceToNearestControllerEnergy());
         }
 
         Date quantumTimeB = new Date();
@@ -132,10 +133,23 @@ public class FactoryClient {
             chartEx.addToSASeries(i + 1, saPotentialEnergy);
             saEnergySum += saPotentialEnergy;
             System.out.println("SA Energy: " + saPotentialEnergy);
-            System.out.println("SA L Max: " + ((SABudgetConstrainedModeling) saModelingInterface).calculateMaxL());
+            System.out.println("SA Summation of L Max: " + ((SABudgetConstrainedModeling) saModelingInterface).calculateDistanceToNearestControllerEnergy());
         }
 
         Date simulatedTimeB = new Date();
+
+        Map<String, Pair<Double, Pair<Date, Date>>> algorithmEnergyTimePairMap = new HashMap<>();
+
+        Pair<Double, Pair<Date, Date>> cuckooInfoPair = new Pair<>(cuckooEnergySum, new Pair<>(cuckooTimeA, cuckooTimeB));
+        algorithmEnergyTimePairMap.put(OptimizationAlgorithmsEnum.CUCKOO.name(), cuckooInfoPair);
+
+        Pair<Double, Pair<Date, Date>> qaInfoPair = new Pair<>(qaEnergySum, new Pair<>(quantumTimeA, quantumTimeB));
+        algorithmEnergyTimePairMap.put(OptimizationAlgorithmsEnum.QUANTUM_ANNEALING.name(), qaInfoPair);
+
+        Pair<Double, Pair<Date, Date>> saInfoPair = new Pair<>(saEnergySum, new Pair<>(simulatedTimeA, simulatedTimeB));
+        algorithmEnergyTimePairMap.put(OptimizationAlgorithmsEnum.SIMULATED_ANNEALING.name(), saInfoPair);
+
+        printResults(chartEx, algorithmEnergyTimePairMap);
     }
 
     private void executeAlgorithmsOnFirstModel() {
@@ -234,17 +248,18 @@ public class FactoryClient {
 
         Date simulatedTimeB = new Date();
 
-        chartEx.drawChart();
-        System.out.println();
-        System.out.println("Cuckoo average potential energy is: " + cuckooEnergySum / main.Parameters.Common.SIMULATION_COUNT);
-        System.out.println("Cuckoo average time is: " + (double) (cuckooTimeB.getTime() - cuckooTimeA.getTime()) / main.Parameters.Common.SIMULATION_COUNT);
-        System.out.println();
-        System.out.println("QA average potential energy is: " + qaEnergySum / main.Parameters.Common.SIMULATION_COUNT);
-        System.out.println("QA average time is: " + (double) (quantumTimeB.getTime() - quantumTimeA.getTime()) / main.Parameters.Common.SIMULATION_COUNT);
-        System.out.println();
-        System.out.println("SA average potential energy is: " + saEnergySum / main.Parameters.Common.SIMULATION_COUNT);
-        System.out.println("SA average time is: " + (double) (simulatedTimeB.getTime() - simulatedTimeA.getTime()) / main.Parameters.Common.SIMULATION_COUNT);
+        Map<String, Pair<Double, Pair<Date, Date>>> algorithmEnergyTimePairMap = new HashMap<>();
 
+        Pair<Double, Pair<Date, Date>> cuckooInfoPair = new Pair<>(cuckooEnergySum, new Pair<>(cuckooTimeA, cuckooTimeB));
+        algorithmEnergyTimePairMap.put(OptimizationAlgorithmsEnum.CUCKOO.name(), cuckooInfoPair);
+
+        Pair<Double, Pair<Date, Date>> qaInfoPair = new Pair<>(qaEnergySum, new Pair<>(quantumTimeA, quantumTimeB));
+        algorithmEnergyTimePairMap.put(OptimizationAlgorithmsEnum.QUANTUM_ANNEALING.name(), qaInfoPair);
+
+        Pair<Double, Pair<Date, Date>> saInfoPair = new Pair<>(saEnergySum, new Pair<>(simulatedTimeA, simulatedTimeB));
+        algorithmEnergyTimePairMap.put(OptimizationAlgorithmsEnum.SIMULATED_ANNEALING.name(), saInfoPair);
+
+        printResults(chartEx, algorithmEnergyTimePairMap);
     }
 
     private void retrieveVariablesFromFile(int modelNo) {
@@ -261,6 +276,23 @@ public class FactoryClient {
             controllerY = (int[][]) readObjectFromFile(Utils.FILE_NAME_CONTROLLER_Y + main.Parameters.Common.GRAPH_SIZE);
             controllerY = (int[][]) readObjectFromFile(Utils.FILE_NAME_CONTROLLER_Y + main.Parameters.Common.GRAPH_SIZE);
             distances = (int[][]) readObjectFromFile(Utils.FILE_NAME_DISTANCES + main.Parameters.Common.GRAPH_SIZE);
+        }
+    }
+
+    private void printResults(LineChartEx chartEx, Map<String, Pair<Double, Pair<Date, Date>>> algorithmEnergyTimePairMap) {
+        chartEx.drawChart();
+        System.out.println();
+
+        List<OptimizationAlgorithmsEnum> optimizationAlgorithmsEnums = Arrays.asList(OptimizationAlgorithmsEnum.values());
+
+        for (OptimizationAlgorithmsEnum optimizationAlgorithm : optimizationAlgorithmsEnums) {
+            Pair<Double, Pair<Date, Date>> algorithmInfoPair = algorithmEnergyTimePairMap.get(optimizationAlgorithm.name());
+            System.out.println(optimizationAlgorithm.name() + " potential energy is: " + algorithmInfoPair.getKey() / main.Parameters.Common.SIMULATION_COUNT);
+            System.out.println(optimizationAlgorithm.name() + " average time is: " +
+                            (double) (algorithmInfoPair.getValue().getValue().getTime() - algorithmInfoPair.getValue().getKey().getTime())
+                                    / main.Parameters.Common.SIMULATION_COUNT
+            );
+            System.out.println();
         }
     }
 }

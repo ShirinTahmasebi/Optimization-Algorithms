@@ -99,7 +99,8 @@ public class SABudgetConstrainedModeling extends BudgetConstrainedModelAbstract 
 
         double lMaxEnergy = Utils.getMaxLEnergy(maxL);
 
-        return reliabilityEnergy + loadBalancingEnergy + lMaxEnergy;
+        double distanceToNearestControllerEnergy = super.calculateDistanceToNearestControllerEnergy();
+        return reliabilityEnergy + loadBalancingEnergy + lMaxEnergy + distanceToNearestControllerEnergy;
     }
 
     @Override

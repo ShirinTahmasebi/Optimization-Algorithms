@@ -24,6 +24,7 @@ public class CuckooBudgetConstrainedModeling extends BudgetConstrainedModelAbstr
     public double calculateCost(CuckooDataAndBehaviour cuckooDataAndBehaviours) {
         CuckooBudgetConstrainedModelingDataAndBehaviour castedCuckooDataAndBehaviours = (CuckooBudgetConstrainedModelingDataAndBehaviour) cuckooDataAndBehaviours;
         int maxL = super.calculateMaxL(castedCuckooDataAndBehaviours);
+        int summationOfLMax = super.calculateDistanceToNearestControllerEnergy(castedCuckooDataAndBehaviours);
 
         boolean[] controllerXSpinVariables = castedCuckooDataAndBehaviours.controllerXSpinVariables;
 
@@ -42,7 +43,9 @@ public class CuckooBudgetConstrainedModeling extends BudgetConstrainedModelAbstr
         );
 
         double lMaxEnergy = Utils.getMaxLEnergy(maxL);
-        return reliabilityEnergy + loadBalancingEnergy + lMaxEnergy;
+        double distanceToNearestControllerEnergy = Utils.getSummationOfMaxLEnergy(summationOfLMax);
+
+        return reliabilityEnergy + loadBalancingEnergy + lMaxEnergy + distanceToNearestControllerEnergy;
     }
 
     // TODO: Revise generateEggs and generateEggsByElr
