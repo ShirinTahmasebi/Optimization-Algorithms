@@ -56,7 +56,8 @@ public class CuckooBudgetConstrainedModeling extends BudgetConstrainedModelAbstr
             throw new Exception("Using generateEggs is not valid for not mature cuckoos!");
         }
         List<Cuckoo> eggs = new ArrayList<>();
-        CuckooBudgetConstrainedModelingDataAndBehaviour dataAndBehaviour = (CuckooBudgetConstrainedModelingDataAndBehaviour) matureCuckoo.getCuckooDataAndBehaviour();
+        CuckooBudgetConstrainedModelingDataAndBehaviour dataAndBehaviour =
+                (CuckooBudgetConstrainedModelingDataAndBehaviour) matureCuckoo.getCuckooDataAndBehaviour();
         matureCuckoo.getMatureCuckoo().setELR(dataAndBehaviour.getMaxELR());
 
         for (int i = 0; i < matureCuckoo.getMatureCuckoo().getNumberOfEggs(); i++) {
@@ -78,16 +79,35 @@ public class CuckooBudgetConstrainedModeling extends BudgetConstrainedModelAbstr
 
         boolean[] tempCandidateController = dataAndBehaviour.controllerXSpinVariables.clone();
         int maxElr = matureCuckoo.getMatureCuckoo().getELR();
-        int candidateElr = random.nextInt(Math.min(maxElr, modelPlainOldData.totalBudget / modelPlainOldData.costController));
-        Set<Integer> controllerInversionIndices = new HashSet<>();
+        int candidateElr = random.nextInt(maxElr);
+        int reverseFromFalseToTrueCount = random.nextInt(Math.min(candidateElr, modelPlainOldData.totalBudget / modelPlainOldData.costController));
 
-        while (controllerInversionIndices.size() < candidateElr) {
-            int index = random.nextInt(tempCandidateController.length);
-            controllerInversionIndices.add(index);
+        List<Integer> trueIndices = new ArrayList<>();
+        List<Integer> falseIndices = new ArrayList<>();
 
-            boolean prevValue = tempCandidateController[index];
-            tempCandidateController[index] = !prevValue;
+        for (int i = 0; i < modelPlainOldData.tempControllerXSpinVariables.length; i++) {
+            if (modelPlainOldData.tempControllerXSpinVariables[i]) {
+                trueIndices.add(i);
+            } else {
+                falseIndices.add(i);
+            }
         }
+
+        Set<Integer> controllerInversionIndicesFromFalseToTrue = new HashSet<>();
+        Set<Integer> controllerInversionIndicesFromTrueToFalse = new HashSet<>();
+
+        while (controllerInversionIndicesFromFalseToTrue.size() < reverseFromFalseToTrueCount) {
+            int index = random.nextInt(falseIndices.size());
+            controllerInversionIndicesFromFalseToTrue.add(index);
+        }
+
+        while (controllerInversionIndicesFromTrueToFalse.size() < reverseFromFalseToTrueCount) {
+            int index = random.nextInt(trueIndices.size());
+            controllerInversionIndicesFromTrueToFalse.add(index);
+        }
+
+        controllerInversionIndicesFromFalseToTrue.forEach(index -> tempCandidateController[index] = true);
+        controllerInversionIndicesFromTrueToFalse.forEach(index -> tempCandidateController[index] = false);
 
         CuckooDataAndBehaviour cuckooDataAndBehaviour = new CuckooBudgetConstrainedModelingDataAndBehaviour(tempCandidateController);
 
@@ -97,10 +117,16 @@ public class CuckooBudgetConstrainedModeling extends BudgetConstrainedModelAbstr
     @Override
     public Cuckoo generateInitialRandomCuckoos() {
         boolean[] controllersSpinVariables = new boolean[modelPlainOldData.candidateControllers.size()];
-        for (int i = 0; i < modelPlainOldData.candidateControllers.size(); i++) {
-            double probability = Math.random();
-            controllersSpinVariables[i] = (probability < .5);
+        Set<Integer> trueIndices = new HashSet<>();
+
+        while (trueIndices.size() < modelPlainOldData.totalBudget / modelPlainOldData.costController) {
+            Random random = new Random();
+            int randTrueIndex = random.nextInt(controllersSpinVariables.length);
+            trueIndices.add(randTrueIndex);
         }
+
+        trueIndices.forEach(trueIndex -> controllersSpinVariables[trueIndex] = true);
+
         CuckooDataAndBehaviour cuckooDataAndBehaviour = new CuckooBudgetConstrainedModelingDataAndBehaviour(controllersSpinVariables);
         Cuckoo cuckoo = new Cuckoo(true, cuckooDataAndBehaviour);
         cuckoo.setCost(calculateCost(cuckooDataAndBehaviour));
