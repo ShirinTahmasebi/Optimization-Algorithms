@@ -22,6 +22,9 @@ public class InitializeGraph {
     private boolean[][] controllerYSpinVariables;     // SYPrime (Y Spin Variable)
     private int[][] distances;
 
+    @SuppressWarnings("FieldCanBeLocal")
+    private int isZeroIndexed = 1; // 1 = True 0 = False
+
     public static void main(String[] args) {
         InitializeGraph initializeGraph = new InitializeGraph();
         initializeGraph.initialize();
@@ -40,6 +43,121 @@ public class InitializeGraph {
     }
 
     public Graph initializeGraph(int graphSize) {
+        if (Parameters.Common.USE_RANDOM_GRAPH) {
+            return initializeRandomGraph(graphSize);
+        }
+
+        return initializeSpecialGraph(graphSize);
+    }
+
+    private Graph initializeSpecialGraph(int graphSize) {
+        int vertexCount = 0;
+        int candidateSinksNumber = 0;
+        int candidateControllersNumber = 0;
+        ArrayList<Pair<String, Pair<Integer, Integer>>> edgesPairList = new ArrayList<>();
+        if (graphSize == 1) {
+            throw new RuntimeException("Special graph size 1 is not implemented");
+        } else if (graphSize == 2) {
+            throw new RuntimeException("Special graph size 1 is not implemented");
+        } else if (graphSize == 3) {
+            // Candidate Sink = 6 * 2
+            // Candidate Controller = 6 * 2
+            vertexCount = 102;
+            candidateSinksNumber = 12;
+            candidateControllersNumber = 12;
+        } else if (graphSize == 4) {
+            // Candidate Sink = 9 * 2
+            // Candidate Controller = 9 * 2
+            vertexCount = 153;
+            candidateSinksNumber = 18;
+            candidateControllersNumber = 18;
+        } else if (graphSize == 5) {
+            // Candidate Sink = 12 * 2
+            // Candidate Controller = 12 * 2
+            vertexCount = 204;
+            candidateSinksNumber = 24;
+            candidateControllersNumber = 24;
+        }
+
+        List<Integer> A = new ArrayList<>();
+        List<Integer> B = new ArrayList<>();
+        List<Integer> C = new ArrayList<>();
+        List<Integer> D = new ArrayList<>();
+
+        for (int i = 0; i < candidateControllersNumber / 2; i++) {
+            A.add(i);
+        }
+
+        for (int i = 0; i < A.size(); i++) {
+            int sourceNumber = A.get(i);
+            int neighborNumber = A.size() + i;
+            edgesPairList.add(new Pair<>("Edge_" + sourceNumber + "_To_" + neighborNumber, new Pair<>(sourceNumber, neighborNumber)));
+            System.out.println("from: " + sourceNumber + " to: " + neighborNumber);
+            B.add(i, neighborNumber);
+        }
+
+        for (int i = 0; i < B.size(); i++) {
+            int index = i + isZeroIndexed;
+            int sourceNumber = B.get(i);
+            int baseIndex = A.size() + B.size() + (index - 1) * 3 - isZeroIndexed;
+            int[] destinationNumbers = {baseIndex + 1, baseIndex + 2, baseIndex + 3};
+
+            for (int des : destinationNumbers) {
+                edgesPairList.add(new Pair<>("Edge_" + sourceNumber + "_To_" + des, new Pair<>(sourceNumber, des)));
+                System.out.println("from: " + sourceNumber + " to: " + des);
+                C.add(des);
+            }
+        }
+
+        for (int i = 0; i < C.size(); i++) {
+            int index = i + isZeroIndexed;
+            int sourceNumber = C.get(i);
+            int baseIndex = A.size() + B.size() + C.size() + (index - 1) * 4 - isZeroIndexed;
+            int[] destinationNumbers = {baseIndex + 1, baseIndex + 2, baseIndex + 3, baseIndex + 4};
+
+            for (int des : destinationNumbers) {
+                edgesPairList.add(new Pair<>("Edge_" + sourceNumber + "_To_" + des, new Pair<>(sourceNumber, des)));
+                System.out.println("from: " + sourceNumber + " to: " + des);
+                D.add(des);
+            }
+        }
+
+        for (int i = 0; i < A.size() - 1; i++) {
+            edgesPairList.add(new Pair<>("Edge_" + A.get(i) + "_To_" + A.get(i + 1), new Pair<>(A.get(i), A.get(i + 1))));
+        }
+
+        for (int i = 0; i < B.size() - 1; i++) {
+            edgesPairList.add(new Pair<>("Edge_" + B.get(i) + "_To_" + B.get(i + 1), new Pair<>(B.get(i), B.get(i + 1))));
+        }
+
+        for (int i = 0; i < vertexCount; i++) {
+            Vertex location = new Vertex("Node_" + i, "Node_" + i, main.Parameters.Common.SINK_LOAD, main.Parameters.Common.CONTROLLER_LOAD);
+            nodes.add(location);
+        }
+
+        edgesPairList.stream().forEach((edge) -> addLane(edge.getKey(), edge.getValue().getKey(), edge.getValue().getValue()));
+
+        Set<Integer> candidateSinksNumberSet = new HashSet<>();
+        Set<Integer> candidateControllerNumberSet = new HashSet<>();
+
+        A.forEach(integer -> {
+            candidateSinksNumberSet.add(integer);
+            candidateControllerNumberSet.add(integer);
+        });
+
+        B.forEach(integer -> {
+            candidateSinksNumberSet.add(integer);
+            candidateControllerNumberSet.add(integer);
+        });
+
+        candidateControllerNumberSet.stream().forEach((candidateControllerNumber) -> candidateControllers.add(nodes.get(candidateControllerNumber)));
+
+        candidateSinksNumberSet.stream().forEach((candidateSinkNumber) -> candidateSinks.add(nodes.get(candidateSinkNumber)));
+
+        return new Graph(nodes, edges);
+    }
+
+    private Graph initializeRandomGraph(int graphSize) {
         int vertexCount = 0;
         int candidateSinksNumber = 0;
         int candidateControllersNumber = 0;

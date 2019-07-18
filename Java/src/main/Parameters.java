@@ -43,5 +43,14 @@ public class Parameters {
         public static final int MAX_CONTROLLER_LOAD = 30;                   // WPrime
         public static final int COST_SINK = 1;
         public static final int COST_CONTROLLER = 3;
+        public static final boolean USE_RANDOM_GRAPH = false;
+    }
+
+    public static class ResultInfoConstants {
+        public static final String START_TIME = "START_TIME";
+        public static final String END_TIME = "END_TIME";
+        public static final String ENERGY = "ENERGY";
+        public static final String LMAX = "LMAX";
+        public static final String SUMMATION_OF_LMAX = "SUMMATION_OF_LMAX";
     }
 }
