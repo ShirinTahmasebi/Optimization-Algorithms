@@ -14,7 +14,7 @@ public interface CuckooModelingInterface {
 
     Cuckoo generateInitialRandomCuckoos();
 
-    void printGeneratedSolution();
+    void printGeneratedSolution(CuckooDataAndBehaviour cuckooDataAndBehaviour);
 
     CuckooPlainOldData getData();
 }

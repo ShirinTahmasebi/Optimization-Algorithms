@@ -124,7 +124,7 @@ public class CuckooFirstModeling extends FirstModelAbstract implements CuckooMod
     }
 
     @Override
-    public void printGeneratedSolution() {
+    public void printGeneratedSolution(CuckooDataAndBehaviour cuckooDataAndBehaviour) {
         super.printGeneratedSolution(modelPlainOldData.tempSinkXSpinVariables, modelPlainOldData.tempControllerXSpinVariables);
     }
 

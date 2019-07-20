@@ -80,15 +80,14 @@ public class CuckooBudgetConstrainedModeling extends BudgetConstrainedModelAbstr
         boolean[] tempCandidateController = dataAndBehaviour.controllerXSpinVariables.clone();
         int maxElr = matureCuckoo.getMatureCuckoo().getELR();
         int candidateElr = random.nextInt(maxElr);
-        int reverseFromFalseToTrueCount = random.nextInt(Math.min(candidateElr, modelPlainOldData.totalBudget / modelPlainOldData.costController));
+//        int reverseFromFalseToTrueCount = random.nextInt(Math.min(candidateElr, modelPlainOldData.totalBudget / modelPlainOldData.costController));
+        int reverseFromFalseToTrueCount = Math.min(maxElr, tempCandidateController.length);
 
         List<Integer> trueIndices = new ArrayList<>();
         List<Integer> falseIndices = new ArrayList<>();
 
-        for (int i = 0; i < modelPlainOldData.tempControllerXSpinVariables.length; i++) {
-            if (modelPlainOldData.tempControllerXSpinVariables[i]) {
-                trueIndices.add(i);
-            } else {
+        for (int i = 0; i < tempCandidateController.length; i++) {
+            if (!tempCandidateController[i]) {
                 falseIndices.add(i);
             }
         }
@@ -96,17 +95,28 @@ public class CuckooBudgetConstrainedModeling extends BudgetConstrainedModelAbstr
         Set<Integer> controllerInversionIndicesFromFalseToTrue = new HashSet<>();
         Set<Integer> controllerInversionIndicesFromTrueToFalse = new HashSet<>();
 
-        while (controllerInversionIndicesFromFalseToTrue.size() < reverseFromFalseToTrueCount) {
-            int index = random.nextInt(falseIndices.size());
-            controllerInversionIndicesFromFalseToTrue.add(index);
-        }
-
-        while (controllerInversionIndicesFromTrueToFalse.size() < reverseFromFalseToTrueCount) {
-            int index = random.nextInt(trueIndices.size());
-            controllerInversionIndicesFromTrueToFalse.add(index);
+        if (falseIndices.size() > 0) {
+            while (controllerInversionIndicesFromFalseToTrue.size() < reverseFromFalseToTrueCount) {
+                int index = random.nextInt(falseIndices.size());
+                controllerInversionIndicesFromFalseToTrue.add(falseIndices.get(index));
+            }
         }
 
         controllerInversionIndicesFromFalseToTrue.forEach(index -> tempCandidateController[index] = true);
+
+        for (int i = 0; i < tempCandidateController.length; i++) {
+            if (tempCandidateController[i]) {
+                trueIndices.add(i);
+            }
+        }
+
+        int extraTrueCount = Math.max(trueIndices.size() - modelPlainOldData.totalBudget / modelPlainOldData.costController, 0);
+
+        while (controllerInversionIndicesFromTrueToFalse.size() < extraTrueCount) {
+            int index = random.nextInt(trueIndices.size());
+            controllerInversionIndicesFromTrueToFalse.add(trueIndices.get(index));
+        }
+
         controllerInversionIndicesFromTrueToFalse.forEach(index -> tempCandidateController[index] = false);
 
         CuckooDataAndBehaviour cuckooDataAndBehaviour = new CuckooBudgetConstrainedModelingDataAndBehaviour(tempCandidateController);
@@ -134,8 +144,9 @@ public class CuckooBudgetConstrainedModeling extends BudgetConstrainedModelAbstr
     }
 
     @Override
-    public void printGeneratedSolution() {
-        super.printGeneratedSolution(modelPlainOldData.tempControllerXSpinVariables);
+    public void printGeneratedSolution(CuckooDataAndBehaviour cuckooDataAndBehaviour) {
+        CuckooBudgetConstrainedModelingDataAndBehaviour dataAndBehaviour = (CuckooBudgetConstrainedModelingDataAndBehaviour) cuckooDataAndBehaviour;
+        super.printGeneratedSolution(dataAndBehaviour.controllerXSpinVariables);
     }
 
     @Override

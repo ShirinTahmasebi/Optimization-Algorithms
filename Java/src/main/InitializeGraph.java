@@ -6,6 +6,8 @@ import main.model.Graph;
 import main.model.Vertex;
 
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static main.Utils.writeObjectToFile;
 
@@ -47,10 +49,10 @@ public class InitializeGraph {
             return initializeRandomGraph(graphSize);
         }
 
-        return initializeSpecialGraph(graphSize);
+        return initializeSpecialGraph2(graphSize);
     }
 
-    private Graph initializeSpecialGraph(int graphSize) {
+    private Graph initializeSpecialGraph1(int graphSize) {
         int vertexCount = 0;
         int candidateSinksNumber = 0;
         int candidateControllersNumber = 0;
@@ -149,6 +151,141 @@ public class InitializeGraph {
             candidateSinksNumberSet.add(integer);
             candidateControllerNumberSet.add(integer);
         });
+
+        candidateControllerNumberSet.stream().forEach((candidateControllerNumber) -> candidateControllers.add(nodes.get(candidateControllerNumber)));
+
+        candidateSinksNumberSet.stream().forEach((candidateSinkNumber) -> candidateSinks.add(nodes.get(candidateSinkNumber)));
+
+        return new Graph(nodes, edges);
+    }
+
+    @SuppressWarnings("PointlessArithmeticExpression")
+    private Graph initializeSpecialGraph2(int graphSize) {
+        List<Pair<Integer, Integer>> srcDes = new ArrayList<>();
+        int vertexCount = 0;
+        int candidateSinksNumber = 0;
+        int candidateControllersNumber = 0;
+        ArrayList<Pair<String, Pair<Integer, Integer>>> edgesPairList = new ArrayList<>();
+        if (graphSize == 1) {
+            throw new RuntimeException("Special graph size 1 is not implemented");
+        } else if (graphSize == 2) {
+            throw new RuntimeException("Special graph size 2 is not implemented");
+        } else if (graphSize == 3) {
+            // Candidate Sink = 8 * 2
+            // Candidate Controller = 8 * 2
+            vertexCount = 104;
+            candidateSinksNumber = 16;
+            candidateControllersNumber = 16;
+        } else if (graphSize == 4) {
+            // Candidate Sink = 13 * 2
+            // Candidate Controller = 13 * 2
+            vertexCount = 169;
+            candidateSinksNumber = 26;
+            candidateControllersNumber = 26;
+        } else if (graphSize == 5) {
+
+        }
+
+        List<Integer> A = new ArrayList<>();
+        List<Integer> B = new ArrayList<>();
+        List<Integer> C = new ArrayList<>();
+        List<Integer> D = new ArrayList<>();
+        List<Integer> E = new ArrayList<>();
+        List<Integer> F = new ArrayList<>();
+
+        for (int i = 1; i <= candidateControllersNumber; i++) {
+            A.add(i);
+        }
+
+        for (int i = 0; i < A.size(); i++) {
+            int sourceNumber = A.get(i);
+            int neighbor = A.size() + (i + 1);
+            B.add(i, neighbor);
+            srcDes.add(new Pair<>(sourceNumber, neighbor));
+        }
+
+        for (int i = 0; i < B.size(); i++) {
+            int sourceNumber = B.get(i);
+            int neighbor = A.size() + B.size() + (i + 1);
+            C.add(i, neighbor);
+            srcDes.add(new Pair<>(sourceNumber, neighbor));
+        }
+
+        for (int i = 0; i < C.size(); i++) {
+            if (i % 2 == 0) {
+                continue;
+            }
+            int index = i + 1;
+            int sourceNumber = C.get(i);
+            int base = A.size() + B.size() + C.size() + ((index / 2) - 1) * 1;
+            int[] neighbors = {base + 1};
+
+            for (int neighbor : neighbors) {
+                D.add(neighbor);
+                srcDes.add(new Pair<>(sourceNumber, neighbor));
+            }
+        }
+
+        for (int i = 0; i < D.size(); i++) {
+            int index = i + 1;
+            int sourceNumber = D.get(i);
+            int base = A.size() + B.size() + C.size() + D.size() + (index - 1) * 2;
+            int[] neighbors = {base + 1, base + 2};
+
+            for (int neighbor : neighbors) {
+                E.add(neighbor);
+                srcDes.add(new Pair<>(sourceNumber, neighbor));
+            }
+        }
+
+        for (int i = 0; i < E.size(); i++) {
+            int index = i + 1;
+            int sourceNumber = E.get(i);
+            int base = A.size() + B.size() + C.size() + D.size() + E.size() + (index - 1) * 2;
+            int[] neighbors = {base + 1, base + 2};
+
+            for (int neighbor : neighbors) {
+                F.add(neighbor);
+                srcDes.add(new Pair<>(sourceNumber, neighbor));
+            }
+        }
+
+        for (int i = 0; i < A.size() - 1; i++) {
+            srcDes.add(new Pair<>(A.get(i), A.get(i + 1)));
+        }
+
+        for (int i = 0; i < B.size() - 1; i++) {
+            srcDes.add(new Pair<>(B.get(i), B.get(i + 1)));
+        }
+
+        for (int i = 0; i < C.size() - 1; i++) {
+            srcDes.add(new Pair<>(C.get(i), C.get(i + 1)));
+        }
+
+        srcDes.forEach(sourceDestination -> {
+            int sourceIndex = sourceDestination.getKey() - 1;
+            int destIndex = sourceDestination.getValue() - 1;
+            edgesPairList.add(new Pair<>("Edge_" + sourceIndex + "_To_" + destIndex, new Pair<>(sourceIndex, destIndex)));
+        });
+
+        for (int i = 0; i < vertexCount; i++) {
+            Vertex location = new Vertex("Node_" + i, "Node_" + i, main.Parameters.Common.SINK_LOAD, main.Parameters.Common.CONTROLLER_LOAD);
+            nodes.add(location);
+        }
+
+        edgesPairList.stream().forEach((edge) -> addLane(edge.getKey(), edge.getValue().getKey(), edge.getValue().getValue()));
+
+        Set<Integer> candidateSinksNumberSet = new HashSet<>();
+        Set<Integer> candidateControllerNumberSet = new HashSet<>();
+
+        IntStream.range(0, A.size())
+                .filter(i -> i % 2 == 0)
+                .forEach(i -> {
+                    candidateControllerNumberSet.add(A.get(i) - 1);
+                    candidateControllerNumberSet.add(C.get(i) - 1);
+                    candidateSinksNumberSet.add(A.get(i) - 1);
+                    candidateSinksNumberSet.add(C.get(i) - 1);
+                });
 
         candidateControllerNumberSet.stream().forEach((candidateControllerNumber) -> candidateControllers.add(nodes.get(candidateControllerNumber)));
 

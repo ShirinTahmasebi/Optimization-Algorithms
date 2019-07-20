@@ -12,14 +12,14 @@ public class Utils implements
         problem_modelings.budget_constrained_modeling.Utils,
         problem_modelings.first_modeling.Utils {
 
-    public static String FILE_NAME_GRAPH = "Graph" + (Parameters.Common.USE_RANDOM_GRAPH ? "" : "_SEPC_");
-    public static String FILE_NAME_CANDIDATE_SINKS = "CandidateSinks" + (Parameters.Common.USE_RANDOM_GRAPH ? "" : "_SEPC_");
-    public static String FILE_NAME_CANDIDATE_CONTROLLERS = "CandidateControllers" + (Parameters.Common.USE_RANDOM_GRAPH ? "" : "_SEPC_");
-    public static String FILE_NAME_SINK_Y = "SinkYS" + (Parameters.Common.USE_RANDOM_GRAPH ? "" : "_SEPC_");
-    public static String FILE_NAME_SINK_Y_SPIN_VARIABLES = "SinkYSpinVariables" + (Parameters.Common.USE_RANDOM_GRAPH ? "" : "_SEPC_");
-    public static String FILE_NAME_CONTROLLER_Y = "ControllerY" + (Parameters.Common.USE_RANDOM_GRAPH ? "" : "_SEPC_");
-    public static String FILE_NAME_CONTROLLER_Y_SPIN_VARIABLES = "ControllerYSpinVariables" + (Parameters.Common.USE_RANDOM_GRAPH ? "" : "_SEPC_");
-    public static String FILE_NAME_DISTANCES = "Distances" + (Parameters.Common.USE_RANDOM_GRAPH ? "" : "_SEPC_");
+    public static String FILE_NAME_GRAPH = "Graph" + (Parameters.Common.USE_RANDOM_GRAPH ? "" : "_SEPC_") + Parameters.Common.GRAPH_SPEC_MODEL_NO;
+    public static String FILE_NAME_CANDIDATE_SINKS = "CandidateSinks" + (Parameters.Common.USE_RANDOM_GRAPH ? "" : "_SEPC_") + Parameters.Common.GRAPH_SPEC_MODEL_NO;
+    public static String FILE_NAME_CANDIDATE_CONTROLLERS = "CandidateControllers" + (Parameters.Common.USE_RANDOM_GRAPH ? "" : "_SEPC_") + Parameters.Common.GRAPH_SPEC_MODEL_NO;
+    public static String FILE_NAME_SINK_Y = "SinkYS" + (Parameters.Common.USE_RANDOM_GRAPH ? "" : "_SEPC_") + Parameters.Common.GRAPH_SPEC_MODEL_NO;
+    public static String FILE_NAME_SINK_Y_SPIN_VARIABLES = "SinkYSpinVariables" + (Parameters.Common.USE_RANDOM_GRAPH ? "" : "_SEPC_") + Parameters.Common.GRAPH_SPEC_MODEL_NO;
+    public static String FILE_NAME_CONTROLLER_Y = "ControllerY" + (Parameters.Common.USE_RANDOM_GRAPH ? "" : "_SEPC_") + Parameters.Common.GRAPH_SPEC_MODEL_NO;
+    public static String FILE_NAME_CONTROLLER_Y_SPIN_VARIABLES = "ControllerYSpinVariables" + (Parameters.Common.USE_RANDOM_GRAPH ? "" : "_SEPC_") + Parameters.Common.GRAPH_SPEC_MODEL_NO;
+    public static String FILE_NAME_DISTANCES = "Distances" + (Parameters.Common.USE_RANDOM_GRAPH ? "" : "_SEPC_") + Parameters.Common.GRAPH_SPEC_MODEL_NO;
 
     public static int getDistance(Graph graph, int firstNodeIndex, int secondNodeIndex) {
         DijkstraAlgorithm dijkstra = new DijkstraAlgorithm(graph);

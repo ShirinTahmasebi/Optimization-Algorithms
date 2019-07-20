@@ -53,11 +53,11 @@ public class CuckooAlgorithm {
 
             }
         }
-
+        cuckooModelingInterface.printGeneratedSolution((cuckooPlainOldData.matureCuckoos.get(0)).getCuckooDataAndBehaviour());
         return cuckooPlainOldData.matureCuckoos.get(0).getCost();
     }
 
-    public CuckooDataAndBehaviour getSelectedCuckooDataAndBehavior(){
+    public CuckooDataAndBehaviour getSelectedCuckooDataAndBehavior() {
         return cuckooPlainOldData.matureCuckoos.get(0).getCuckooDataAndBehaviour();
     }
 }
