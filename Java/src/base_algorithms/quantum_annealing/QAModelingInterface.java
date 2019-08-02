@@ -25,4 +25,6 @@ public interface QAModelingInterface {
     void printGeneratedSolution();
 
     QAPlainOldData getData();
+
+    QAResultBase getResult();
 }

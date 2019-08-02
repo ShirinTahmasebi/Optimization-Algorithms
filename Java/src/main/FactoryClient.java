@@ -6,15 +6,17 @@ import base_algorithms.Cuckoo.CuckooPlainOldData;
 import base_algorithms.quantum_annealing.QAAlgorithm;
 import base_algorithms.quantum_annealing.QAModelingInterface;
 import base_algorithms.quantum_annealing.QAPlainOldData;
+import base_algorithms.quantum_annealing.QAResultBase;
 import base_algorithms.simulated_annealing.SAAlgorithm;
 import base_algorithms.simulated_annealing.SAModelingInterface;
 import base_algorithms.simulated_annealing.SAPlainOldData;
+import javafx.util.Pair;
 import main.model.Graph;
 import main.model.Vertex;
 import problem_modelings.budget_constrained_modeling.algorithms.QABudgetConstrainedModeling;
-import problem_modelings.budget_constrained_modeling.algorithms.SABudgetConstrainedModeling;
 import problem_modelings.budget_constrained_modeling.algorithms.cuckoo.CuckooBudgetConstrainedModeling;
 import problem_modelings.budget_constrained_modeling.model_specifications.BudgetConstrainedModelPlainOldData;
+import problem_modelings.budget_constrained_modeling.model_specifications.BudgetConstrainedQAResult;
 import problem_modelings.first_modeling.algorithms.QAFirstModeling;
 import problem_modelings.first_modeling.algorithms.SAFirstModeling;
 import problem_modelings.first_modeling.algorithms.cuckoo.CuckooFirstModeling;
@@ -118,55 +120,53 @@ public class FactoryClient {
 
         for (int i = 0; i < main.Parameters.Common.SIMULATION_COUNT; i++) {
 
-            double qaPotentialEnergy = qaAlgorithm.execute();
-            double lmax = ((QABudgetConstrainedModeling) qaModelingInterface).calculateMaxL();
-            double summationOfLMAx = ((QABudgetConstrainedModeling) qaModelingInterface).calculateDistanceToNearestControllerEnergy();
+            Pair<Double, QAResultBase> qaResultPair = qaAlgorithm.execute();
 
-            chartEx.addToQASeries(i + 1, qaPotentialEnergy);
+            chartEx.addToQASeries(i + 1, qaResultPair.getKey());
 
-            qaEnergySum += qaPotentialEnergy;
-            qaLMaxSum += lmax;
-            qaSummationOfLMaxSum += summationOfLMAx;
+            qaEnergySum += qaResultPair.getKey();
+            qaLMaxSum += ((BudgetConstrainedQAResult) qaResultPair.getValue()).lMax;
+            qaSummationOfLMaxSum += ((BudgetConstrainedQAResult) qaResultPair.getValue()).summationOfDistanceToNearestControllers;
 
-            System.out.println("QA Energy: " + qaPotentialEnergy);
-            System.out.println("QA L Max: " + lmax);
-            System.out.println("QA Summation of L Max: " + summationOfLMAx);
+            System.out.println("QA Energy: " + qaResultPair.getKey());
+            System.out.println("QA L Max: " + ((BudgetConstrainedQAResult) qaResultPair.getValue()).lMax);
+            System.out.println("QA Summation of L Max: " + ((BudgetConstrainedQAResult) qaResultPair.getValue()).summationOfDistanceToNearestControllers);
         }
 
         Date quantumTimeB = new Date();
 
         Date simulatedTimeA = new Date();
 
-        SAPlainOldData saPlainOldData = new SAPlainOldData(
-                Parameters.SimulatedAnnealing.TEMPERATURE_INITIAL,
-                Parameters.SimulatedAnnealing.TEMPERATURE_FINAL,
-                Parameters.SimulatedAnnealing.TEMPERATURE_COOLING_RATE,
-                Parameters.SimulatedAnnealing.MONTE_CARLO_STEP
-        );
-
-        SAModelingInterface saModelingInterface = new SABudgetConstrainedModeling(
-                budgetConstrainedModelPlainOldData,
-                saPlainOldData
-        );
-
-        SAAlgorithm saAlgorithm = new SAAlgorithm(saModelingInterface);
-
-        for (int i = 0; i < main.Parameters.Common.SIMULATION_COUNT; i++) {
-
-            double saPotentialEnergy = saAlgorithm.execute();
-            double lmax = ((SABudgetConstrainedModeling) saModelingInterface).calculateMaxL();
-            double summationOfLMax = ((SABudgetConstrainedModeling) saModelingInterface).calculateDistanceToNearestControllerEnergy();
-
-            chartEx.addToSASeries(i + 1, saPotentialEnergy);
-
-            saEnergySum += saPotentialEnergy;
-            saLMaxSum += lmax;
-            saSummationOfLMaxSum += summationOfLMax;
-
-            System.out.println("SA Energy: " + saPotentialEnergy);
-            System.out.println("SA L Max: " + lmax);
-            System.out.println("SA Summation of L Max: " + summationOfLMax);
-        }
+//        SAPlainOldData saPlainOldData = new SAPlainOldData(
+//                Parameters.SimulatedAnnealing.TEMPERATURE_INITIAL,
+//                Parameters.SimulatedAnnealing.TEMPERATURE_FINAL,
+//                Parameters.SimulatedAnnealing.TEMPERATURE_COOLING_RATE,
+//                Parameters.SimulatedAnnealing.MONTE_CARLO_STEP
+//        );
+//
+//        SAModelingInterface saModelingInterface = new SABudgetConstrainedModeling(
+//                budgetConstrainedModelPlainOldData,
+//                saPlainOldData
+//        );
+//
+//        SAAlgorithm saAlgorithm = new SAAlgorithm(saModelingInterface);
+//
+//        for (int i = 0; i < main.Parameters.Common.SIMULATION_COUNT; i++) {
+//
+//            double saPotentialEnergy = saAlgorithm.execute();
+//            double lmax = ((SABudgetConstrainedModeling) saModelingInterface).calculateMaxL();
+//            double summationOfLMax = ((SABudgetConstrainedModeling) saModelingInterface).calculateDistanceToNearestControllerEnergy();
+//
+//            chartEx.addToSASeries(i + 1, saPotentialEnergy);
+//
+//            saEnergySum += saPotentialEnergy;
+//            saLMaxSum += lmax;
+//            saSummationOfLMaxSum += summationOfLMax;
+//
+//            System.out.println("SA Energy: " + saPotentialEnergy);
+//            System.out.println("SA L Max: " + lmax);
+//            System.out.println("SA Summation of L Max: " + summationOfLMax);
+//        }
 
         Date simulatedTimeB = new Date();
 
@@ -263,9 +263,9 @@ public class FactoryClient {
         QAAlgorithm qaAlgorithm = new QAAlgorithm(qaModelingInterface);
 
         for (int i = 0; i < main.Parameters.Common.SIMULATION_COUNT; i++) {
-            double qaPotentialEnergy = qaAlgorithm.execute();
-            chartEx.addToQASeries(i + 1, qaPotentialEnergy);
-            qaEnergySum += qaPotentialEnergy;
+            Pair<Double, QAResultBase> qaPotentialEnergy = qaAlgorithm.execute();
+            chartEx.addToQASeries(i + 1, qaPotentialEnergy.getKey());
+            qaEnergySum += qaPotentialEnergy.getKey();
             System.out.println("QA Energy: " + qaPotentialEnergy);
         }
 

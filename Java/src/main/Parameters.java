@@ -19,7 +19,7 @@ public class Parameters {
     }
 
     public static class Cuckoo {
-        public static final int POPULATION = 400;      // Npop
+        public static final int POPULATION = 200;      // Npop
         public static final int MONTE_CARLO_STEP = 5;
         public static final int MAX_EGG_NUMBER = 201;
         public static final int MIN_EGG_NUMBER = 150;

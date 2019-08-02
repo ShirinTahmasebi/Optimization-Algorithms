@@ -1,5 +1,6 @@
 package problem_modelings.budget_constrained_modeling.algorithms;
 
+import base_algorithms.quantum_annealing.QAResultBase;
 import javafx.util.Pair;
 import base_algorithms.quantum_annealing.QAModelingInterface;
 import base_algorithms.quantum_annealing.QAPlainOldData;
@@ -7,6 +8,7 @@ import main.Parameters;
 import problem_modelings.budget_constrained_modeling.Utils;
 import problem_modelings.budget_constrained_modeling.model_specifications.BudgetConstrainedModelAbstract;
 import problem_modelings.budget_constrained_modeling.model_specifications.BudgetConstrainedModelPlainOldData;
+import problem_modelings.budget_constrained_modeling.model_specifications.BudgetConstrainedQAResult;
 
 import java.util.*;
 
@@ -55,7 +57,8 @@ public class QABudgetConstrainedModeling extends BudgetConstrainedModelAbstract 
         }
 
         modelPlainOldData.tempControllerXSpinVariables = modelPlainOldData.controllerXSpinVariables.clone();
-        qaDataStructure.prevEnergyPair = calculateCost(-1);
+        // TODO: Check This Line - calculateCost(-1)
+        qaDataStructure.prevEnergyPair = new Pair(Double.MAX_VALUE, Double.MAX_VALUE);
     }
 
     @Override
@@ -115,8 +118,8 @@ public class QABudgetConstrainedModeling extends BudgetConstrainedModelAbstract 
 
     @Override
     public Pair<Double, Double> calculateCost(int currentReplicaNum) {
-        int maxL = super.calculateMaxL();
-        int summationOfLMax = super.calculateDistanceToNearestControllerEnergy();
+        int maxL = super.calculateMaxL(modelPlainOldData.tempControllerXSpinVariables);
+        int summationOfLMax = super.calculateDistanceToNearestControllerEnergy(modelPlainOldData.tempControllerXSpinVariables);
 
         int reliabilityEnergy = Utils.getReliabilityEnergy(
                 modelPlainOldData.graph,
@@ -159,5 +162,12 @@ public class QABudgetConstrainedModeling extends BudgetConstrainedModelAbstract 
     @Override
     public QAPlainOldData getData() {
         return qaDataStructure;
+    }
+
+    @Override
+    public QAResultBase getResult() {
+        int maxL = super.calculateMaxL(modelPlainOldData.controllerXSpinVariables);
+        int toNearestControllerEnergy = super.calculateDistanceToNearestControllerEnergy(modelPlainOldData.controllerXSpinVariables);
+        return new BudgetConstrainedQAResult(maxL, toNearestControllerEnergy);
     }
 }

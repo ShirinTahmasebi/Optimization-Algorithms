@@ -6,7 +6,6 @@ import main.model.Graph;
 import main.model.Vertex;
 
 import java.util.*;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static main.Utils.writeObjectToFile;

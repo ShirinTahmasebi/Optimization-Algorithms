@@ -13,8 +13,8 @@ import java.util.List;
 
 public abstract class BudgetConstrainedModelAbstract extends BaseProblemModeling {
 
-    public static int L_MAX_COEFFICIENT = 0;
-    public static int SUMMATION_OFL_MAX_COEFFICIENT = 100;
+    public static int L_MAX_COEFFICIENT = 100;
+    public static int SUMMATION_OFL_MAX_COEFFICIENT = 10;
 
     public BudgetConstrainedModelPlainOldData modelPlainOldData;
 
@@ -72,13 +72,12 @@ public abstract class BudgetConstrainedModelAbstract extends BaseProblemModeling
         }
     }
 
-    public int calculateMaxL() {
-
+    public int calculateMaxL(boolean[] controllerXSpinVariable) {
         List<Integer> nodeMinDistancesToSelectedControllers = new ArrayList<>();
         List<Integer> controllersIndices = new ArrayList<>();
 
         for (int i = 0; i < modelPlainOldData.candidateControllers.size(); i++) {
-            if (modelPlainOldData.tempControllerXSpinVariables[i]) {
+            if (controllerXSpinVariable[i]) {
                 String controllerNodeId = modelPlainOldData.candidateControllers.get(i).getId();
                 int vertexIndexById = modelPlainOldData.graph.getVertexIndexById(controllerNodeId);
                 controllersIndices.add(vertexIndexById);
@@ -151,12 +150,12 @@ public abstract class BudgetConstrainedModelAbstract extends BaseProblemModeling
         return Collections.max(nodeMinDistancesToSelectedControllers);
     }
 
-    public int calculateDistanceToNearestControllerEnergy() {
+    public int calculateDistanceToNearestControllerEnergy(boolean[] controllerXSpinVariable) {
         List<Integer> nodeMinDistancesToSelectedControllers = new ArrayList<>();
         List<Integer> controllersIndices = new ArrayList<>();
 
         for (int i = 0; i < modelPlainOldData.candidateControllers.size(); i++) {
-            if (modelPlainOldData.tempControllerXSpinVariables[i]) {
+            if (controllerXSpinVariable[i]) {
                 String controllerNodeId = modelPlainOldData.candidateControllers.get(i).getId();
                 int vertexIndexById = modelPlainOldData.graph.getVertexIndexById(controllerNodeId);
                 controllersIndices.add(vertexIndexById);

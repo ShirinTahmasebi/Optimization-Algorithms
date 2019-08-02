@@ -1,5 +1,6 @@
 package problem_modelings.first_modeling.algorithms;
 
+import base_algorithms.quantum_annealing.QAResultBase;
 import javafx.util.Pair;
 import main.Parameters;
 import problem_modelings.first_modeling.Utils;
@@ -7,6 +8,7 @@ import base_algorithms.quantum_annealing.QAModelingInterface;
 import base_algorithms.quantum_annealing.QAPlainOldData;
 import problem_modelings.first_modeling.model_specifications.FirstModelAbstract;
 import problem_modelings.first_modeling.model_specifications.FirstModelPlainOldData;
+import problem_modelings.first_modeling.model_specifications.FirstModelQAResult;
 
 import java.util.Random;
 
@@ -169,6 +171,11 @@ public class QAFirstModeling extends FirstModelAbstract implements QAModelingInt
     @Override
     public QAPlainOldData getData() {
         return qaDataStructure;
+    }
+
+    @Override
+    public QAResultBase getResult() {
+        return new FirstModelQAResult();
     }
 
     @SuppressWarnings("unused")

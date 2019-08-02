@@ -81,7 +81,7 @@ public class SABudgetConstrainedModeling extends BudgetConstrainedModelAbstract 
 
     @Override
     public double calculateCost() {
-        int maxL = super.calculateMaxL();
+        int maxL = super.calculateMaxL(modelPlainOldData.tempControllerXSpinVariables);
 
         int reliabilityEnergy = Utils.getReliabilityEnergy(
                 modelPlainOldData.graph,
@@ -99,7 +99,7 @@ public class SABudgetConstrainedModeling extends BudgetConstrainedModelAbstract 
 
         double lMaxEnergy = Utils.getMaxLEnergy(maxL);
 
-        double distanceToNearestControllerEnergy = super.calculateDistanceToNearestControllerEnergy();
+        double distanceToNearestControllerEnergy = super.calculateDistanceToNearestControllerEnergy(modelPlainOldData.tempControllerXSpinVariables);
         return reliabilityEnergy + loadBalancingEnergy + lMaxEnergy + distanceToNearestControllerEnergy;
     }
 

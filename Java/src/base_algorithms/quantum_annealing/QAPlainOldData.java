@@ -34,5 +34,6 @@ public class QAPlainOldData {
         this.tunnelingFieldInitial = tunnelingFieldInitial;
         this.tunnelingFiledFinal = tunnelingFieldFinal;
         this.tunnelingFiledEvaporation = tunnelingFieldEvaporation;
+        prevEnergyPair = new Pair<>(Double.MAX_VALUE, Double.MAX_VALUE);
     }
 }
