@@ -1,10 +1,10 @@
 package problem_modelings.budget_constrained_lmax_optimization.algorithms.cuckoo;
 
 
-import base_algorithms.cuckoo.CuckooModelingInterface;
-import base_algorithms.cuckoo.CuckooPlainOldData;
-import base_algorithms.cuckoo.model.Cuckoo;
-import base_algorithms.cuckoo.model.CuckooDataAndBehaviour;
+import base_algorithms.Cuckoo.CuckooModelingInterface;
+import base_algorithms.Cuckoo.CuckooPlainOldData;
+import base_algorithms.Cuckoo.model.Cuckoo;
+import base_algorithms.Cuckoo.model.CuckooDataAndBehaviour;
 import problem_modelings.budget_constrained_lmax_optimization.Utils;
 import problem_modelings.budget_constrained_lmax_optimization.model_specifications.BudgetConstrainedLmaxOptimizationModelingAbstract;
 import problem_modelings.budget_constrained_lmax_optimization.model_specifications.BudgetConstrainedLmaxOptimizationModelingPlainOldData;

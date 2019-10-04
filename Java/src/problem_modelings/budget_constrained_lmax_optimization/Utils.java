@@ -157,6 +157,7 @@ public interface Utils {
     }
 
     static double getMaxLEnergy(int maxL) {
+        if (maxL == Integer.MAX_VALUE) return maxL;
         return (maxL < 0 ? maxL * -1 : maxL) * BudgetConstrainedLmaxOptimizationModelingAbstract.L_MAX_COEFFICIENT;
     }
 

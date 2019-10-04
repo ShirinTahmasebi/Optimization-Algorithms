@@ -1,6 +1,6 @@
 package problem_modelings.budget_constrained_lmax_optimization.model_specifications;
 
-import base_algorithms.cuckoo.model.CuckooDataAndBehaviour;
+import base_algorithms.Cuckoo.model.CuckooDataAndBehaviour;
 import main.Parameters;
 import main.model.Graph;
 import main.model.Vertex;

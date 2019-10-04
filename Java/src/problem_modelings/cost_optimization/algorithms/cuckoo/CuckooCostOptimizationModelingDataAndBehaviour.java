@@ -1,6 +1,6 @@
 package problem_modelings.cost_optimization.algorithms.cuckoo;
 
-import base_algorithms.cuckoo.model.CuckooDataAndBehaviour;
+import base_algorithms.Cuckoo.model.CuckooDataAndBehaviour;
 
 public class CuckooCostOptimizationModelingDataAndBehaviour extends CuckooDataAndBehaviour {
 

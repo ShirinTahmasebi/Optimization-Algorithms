@@ -1,8 +1,8 @@
 package main;
 
-import base_algorithms.cuckoo.CuckooAlgorithm;
-import base_algorithms.cuckoo.CuckooModelingInterface;
-import base_algorithms.cuckoo.CuckooPlainOldData;
+import base_algorithms.Cuckoo.CuckooAlgorithm;
+import base_algorithms.Cuckoo.CuckooModelingInterface;
+import base_algorithms.Cuckoo.CuckooPlainOldData;
 import base_algorithms.quantum_annealing.QAAlgorithm;
 import base_algorithms.quantum_annealing.QAModelingInterface;
 import base_algorithms.quantum_annealing.QAPlainOldData;
