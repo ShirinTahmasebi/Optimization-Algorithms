@@ -1,4 +1,4 @@
-package problem_modelings.first_modeling.model_specifications;
+package problem_modelings.cost_optimization.model_specifications;
 
 import main.LineChartEx;
 import main.model.Graph;
@@ -6,7 +6,7 @@ import main.model.Vertex;
 
 import java.util.List;
 
-public class FirstModelPlainOldData {
+public class CostOptimizationModelingPlainOldData {
 
     // Problem Specifications
     public Graph graph;
@@ -39,7 +39,7 @@ public class FirstModelPlainOldData {
     public float costReductionFactor;
     public LineChartEx lineChartEx;
 
-    public FirstModelPlainOldData(
+    public CostOptimizationModelingPlainOldData(
             Graph graph,
             List<Vertex> candidateSinks,
             List<Vertex> candidateControllers,

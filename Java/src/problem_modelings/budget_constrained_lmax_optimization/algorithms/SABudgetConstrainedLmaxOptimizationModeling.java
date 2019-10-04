@@ -1,19 +1,21 @@
-package problem_modelings.budget_constrained_modeling.algorithms;
+package problem_modelings.budget_constrained_lmax_optimization.algorithms;
 
 import base_algorithms.simulated_annealing.SAModelingInterface;
 import base_algorithms.simulated_annealing.SAPlainOldData;
+import base_algorithms.simulated_annealing.SAResultBase;
 import main.Parameters;
-import problem_modelings.budget_constrained_modeling.Utils;
-import problem_modelings.budget_constrained_modeling.model_specifications.BudgetConstrainedModelAbstract;
-import problem_modelings.budget_constrained_modeling.model_specifications.BudgetConstrainedModelPlainOldData;
+import problem_modelings.budget_constrained_lmax_optimization.Utils;
+import problem_modelings.budget_constrained_lmax_optimization.model_specifications.BudgetConstrainedLmaxOptimizationModelignSAResult;
+import problem_modelings.budget_constrained_lmax_optimization.model_specifications.BudgetConstrainedLmaxOptimizationModelingAbstract;
+import problem_modelings.budget_constrained_lmax_optimization.model_specifications.BudgetConstrainedLmaxOptimizationModelingPlainOldData;
 
 import java.util.*;
 
-public class SABudgetConstrainedModeling extends BudgetConstrainedModelAbstract implements SAModelingInterface {
+public class SABudgetConstrainedLmaxOptimizationModeling extends BudgetConstrainedLmaxOptimizationModelingAbstract implements SAModelingInterface {
 
     private SAPlainOldData saPlainOldData;
 
-    public SABudgetConstrainedModeling(BudgetConstrainedModelPlainOldData modelPlainOldData, SAPlainOldData saPlainOldData) {
+    public SABudgetConstrainedLmaxOptimizationModeling(BudgetConstrainedLmaxOptimizationModelingPlainOldData modelPlainOldData, SAPlainOldData saPlainOldData) {
         super(modelPlainOldData);
         this.saPlainOldData = saPlainOldData;
     }
@@ -116,5 +118,12 @@ public class SABudgetConstrainedModeling extends BudgetConstrainedModelAbstract 
     @Override
     public SAPlainOldData getData() {
         return saPlainOldData;
+    }
+
+    @Override
+    public SAResultBase getResult() {
+        int maxL = super.calculateMaxL(modelPlainOldData.controllerXSpinVariables);
+        int toNearestControllerEnergy = super.calculateDistanceToNearestControllerEnergy(modelPlainOldData.controllerXSpinVariables);
+        return new BudgetConstrainedLmaxOptimizationModelignSAResult(maxL, toNearestControllerEnergy);
     }
 }

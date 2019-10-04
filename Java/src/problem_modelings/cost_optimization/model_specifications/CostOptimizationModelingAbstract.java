@@ -1,4 +1,4 @@
-package problem_modelings.first_modeling.model_specifications;
+package problem_modelings.cost_optimization.model_specifications;
 
 import main.Parameters;
 import main.model.Graph;
@@ -7,11 +7,11 @@ import problem_modelings.BaseProblemModeling;
 
 import java.util.List;
 
-public abstract class FirstModelAbstract extends BaseProblemModeling {
+public abstract class CostOptimizationModelingAbstract extends BaseProblemModeling {
 
-    public FirstModelPlainOldData modelPlainOldData;
+    public CostOptimizationModelingPlainOldData modelPlainOldData;
 
-    public FirstModelAbstract(FirstModelPlainOldData modelPlainOldData) {
+    public CostOptimizationModelingAbstract(CostOptimizationModelingPlainOldData modelPlainOldData) {
         this.modelPlainOldData = modelPlainOldData;
 
         if (Parameters.Common.DO_PRINT_STEPS) {

@@ -1,4 +1,4 @@
-package problem_modelings.budget_constrained_modeling.model_specifications;
+package problem_modelings.budget_constrained_lmax_optimization.model_specifications;
 
 import main.LineChartEx;
 import main.model.Graph;
@@ -6,7 +6,7 @@ import main.model.Vertex;
 
 import java.util.List;
 
-public class BudgetConstrainedModelPlainOldData {
+public class BudgetConstrainedLmaxOptimizationModelingPlainOldData {
 
     // Problem Specifications
     public Graph graph;
@@ -29,7 +29,7 @@ public class BudgetConstrainedModelPlainOldData {
     public int totalBudget;
     public LineChartEx lineChartEx;
 
-    public BudgetConstrainedModelPlainOldData(
+    public BudgetConstrainedLmaxOptimizationModelingPlainOldData(
             Graph graph,
             List<Vertex> candidateControllers,
             int[][] controllerY,

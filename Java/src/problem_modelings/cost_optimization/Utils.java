@@ -1,4 +1,4 @@
-package problem_modelings.first_modeling;
+package problem_modelings.cost_optimization;
 
 import main.model.Graph;
 import main.model.Vertex;

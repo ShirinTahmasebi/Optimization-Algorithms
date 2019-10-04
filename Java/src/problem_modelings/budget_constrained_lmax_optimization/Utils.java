@@ -1,8 +1,8 @@
-package problem_modelings.budget_constrained_modeling;
+package problem_modelings.budget_constrained_lmax_optimization;
 
 import main.model.Graph;
 import main.model.Vertex;
-import problem_modelings.budget_constrained_modeling.model_specifications.BudgetConstrainedModelAbstract;
+import problem_modelings.budget_constrained_lmax_optimization.model_specifications.BudgetConstrainedLmaxOptimizationModelingAbstract;
 
 import java.util.List;
 
@@ -157,10 +157,10 @@ public interface Utils {
     }
 
     static double getMaxLEnergy(int maxL) {
-        return (maxL < 0 ? maxL * -1 : maxL) * BudgetConstrainedModelAbstract.L_MAX_COEFFICIENT;
+        return (maxL < 0 ? maxL * -1 : maxL) * BudgetConstrainedLmaxOptimizationModelingAbstract.L_MAX_COEFFICIENT;
     }
 
     static double getSummationOfMaxLEnergy(int summationOfLMax) {
-        return (summationOfLMax < 0 ? summationOfLMax * -1 : summationOfLMax) * BudgetConstrainedModelAbstract.SUMMATION_OFL_MAX_COEFFICIENT;
+        return (summationOfLMax < 0 ? summationOfLMax * -1 : summationOfLMax) * BudgetConstrainedLmaxOptimizationModelingAbstract.SUMMATION_OFL_MAX_COEFFICIENT;
     }
 }

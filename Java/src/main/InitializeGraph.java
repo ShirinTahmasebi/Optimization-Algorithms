@@ -182,7 +182,17 @@ public class InitializeGraph {
             candidateSinksNumber = 26;
             candidateControllersNumber = 26;
         } else if (graphSize == 5) {
-
+            // Candidate Sink = 13 * 2
+            // Candidate Controller = 13 * 2
+            vertexCount = 195;
+            candidateSinksNumber = 30;
+            candidateControllersNumber = 30;
+        } else if (graphSize == 6) {
+            // Candidate Sink = 13 * 2
+            // Candidate Controller = 13 * 2
+            vertexCount = 143;
+            candidateSinksNumber = 22;
+            candidateControllersNumber = 22;
         }
 
         List<Integer> A = new ArrayList<>();

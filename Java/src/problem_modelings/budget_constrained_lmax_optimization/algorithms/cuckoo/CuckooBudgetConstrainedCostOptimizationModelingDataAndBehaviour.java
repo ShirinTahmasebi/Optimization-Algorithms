@@ -1,12 +1,12 @@
-package problem_modelings.budget_constrained_modeling.algorithms.cuckoo;
+package problem_modelings.budget_constrained_lmax_optimization.algorithms.cuckoo;
 
 
-import base_algorithms.Cuckoo.model.CuckooDataAndBehaviour;
+import base_algorithms.cuckoo.model.CuckooDataAndBehaviour;
 
-public class CuckooBudgetConstrainedModelingDataAndBehaviour extends CuckooDataAndBehaviour {
+public class CuckooBudgetConstrainedCostOptimizationModelingDataAndBehaviour extends CuckooDataAndBehaviour {
     public boolean[] controllerXSpinVariables;       // SXPrime (X Spin Variable)
 
-    public CuckooBudgetConstrainedModelingDataAndBehaviour(boolean[] controllerXSpinVariables) {
+    public CuckooBudgetConstrainedCostOptimizationModelingDataAndBehaviour(boolean[] controllerXSpinVariables) {
         this.controllerXSpinVariables = controllerXSpinVariables;
     }
 

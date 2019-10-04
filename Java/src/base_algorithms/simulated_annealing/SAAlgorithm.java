@@ -1,5 +1,6 @@
 package base_algorithms.simulated_annealing;
 
+import javafx.util.Pair;
 import main.LineChartEx;
 import main.Parameters;
 
@@ -14,7 +15,7 @@ public class SAAlgorithm {
         this.lineChartEx = new LineChartEx();
     }
 
-    public double execute() {
+    public Pair<Double, SAResultBase> execute() {
         // Reset Dynamic Variables
         saModelingInterface.resetDynamicVariables();
 
@@ -74,6 +75,6 @@ public class SAAlgorithm {
         }
 
         saModelingInterface.printGeneratedSolution();
-        return saPlainOldData.prevEnergy;
+        return new Pair(saPlainOldData.prevEnergy, saModelingInterface.getResult());
     }
 }

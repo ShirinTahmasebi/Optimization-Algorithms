@@ -9,8 +9,8 @@ import main.model.Graph;
 import main.model.Vertex;
 
 public class Utils implements
-        problem_modelings.budget_constrained_modeling.Utils,
-        problem_modelings.first_modeling.Utils {
+        problem_modelings.budget_constrained_lmax_optimization.Utils,
+        problem_modelings.cost_optimization.Utils {
 
     public static String FILE_NAME_GRAPH = "Graph" + (Parameters.Common.USE_RANDOM_GRAPH ? "" : "_SEPC_") + Parameters.Common.GRAPH_SPEC_MODEL_NO;
     public static String FILE_NAME_CANDIDATE_SINKS = "CandidateSinks" + (Parameters.Common.USE_RANDOM_GRAPH ? "" : "_SEPC_") + Parameters.Common.GRAPH_SPEC_MODEL_NO;

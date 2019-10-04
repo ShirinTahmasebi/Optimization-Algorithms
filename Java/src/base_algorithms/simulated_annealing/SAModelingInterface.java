@@ -1,5 +1,6 @@
 package base_algorithms.simulated_annealing;
 
+
 public interface SAModelingInterface {
 
     void resetDynamicVariables();
@@ -15,4 +16,6 @@ public interface SAModelingInterface {
     void printGeneratedSolution();
 
     SAPlainOldData getData();
+
+    SAResultBase getResult();
 }

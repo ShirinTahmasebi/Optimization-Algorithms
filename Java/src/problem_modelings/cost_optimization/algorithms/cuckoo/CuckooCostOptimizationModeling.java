@@ -1,28 +1,28 @@
-package problem_modelings.first_modeling.algorithms.cuckoo;
+package problem_modelings.cost_optimization.algorithms.cuckoo;
 
-import base_algorithms.Cuckoo.CuckooModelingInterface;
-import base_algorithms.Cuckoo.CuckooPlainOldData;
-import base_algorithms.Cuckoo.model.Cuckoo;
-import base_algorithms.Cuckoo.model.CuckooDataAndBehaviour;
-import problem_modelings.first_modeling.Utils;
-import problem_modelings.first_modeling.model_specifications.FirstModelAbstract;
-import problem_modelings.first_modeling.model_specifications.FirstModelPlainOldData;
+import base_algorithms.cuckoo.CuckooModelingInterface;
+import base_algorithms.cuckoo.CuckooPlainOldData;
+import base_algorithms.cuckoo.model.Cuckoo;
+import base_algorithms.cuckoo.model.CuckooDataAndBehaviour;
+import problem_modelings.cost_optimization.Utils;
+import problem_modelings.cost_optimization.model_specifications.CostOptimizationModelingAbstract;
+import problem_modelings.cost_optimization.model_specifications.CostOptimizationModelingPlainOldData;
 
 import java.util.*;
 
-public class CuckooFirstModeling extends FirstModelAbstract implements CuckooModelingInterface {
+public class CuckooCostOptimizationModeling extends CostOptimizationModelingAbstract implements CuckooModelingInterface {
 
     private CuckooPlainOldData cuckooPlainOldData;
 
-    public CuckooFirstModeling(FirstModelPlainOldData firstModelPlainOldData, CuckooPlainOldData cuckooPlainOldData) {
-        super(firstModelPlainOldData);
+    public CuckooCostOptimizationModeling(CostOptimizationModelingPlainOldData costOptimizationModelingPlainOldData, CuckooPlainOldData cuckooPlainOldData) {
+        super(costOptimizationModelingPlainOldData);
         this.cuckooPlainOldData = cuckooPlainOldData;
     }
 
     @Override
     public double calculateCost(CuckooDataAndBehaviour cuckooDataAndBehaviours) {
-        boolean[] sinkXSpinVariables = ((CuckooFirstModelingDataAndBehaviour) cuckooDataAndBehaviours).sinkXSpinVariables;
-        boolean[] controllerXSpinVariables = ((CuckooFirstModelingDataAndBehaviour) cuckooDataAndBehaviours).controllerXSpinVariables;
+        boolean[] sinkXSpinVariables = ((CuckooCostOptimizationModelingDataAndBehaviour) cuckooDataAndBehaviours).sinkXSpinVariables;
+        boolean[] controllerXSpinVariables = ((CuckooCostOptimizationModelingDataAndBehaviour) cuckooDataAndBehaviours).controllerXSpinVariables;
         int reliabilityEnergy = Utils.getReliabilityEnergy(
                 modelPlainOldData.graph,
                 modelPlainOldData.sinkYSpinVariables, modelPlainOldData.controllerYSpinVariables,
@@ -55,7 +55,7 @@ public class CuckooFirstModeling extends FirstModelAbstract implements CuckooMod
             throw new Exception("Using generateEggs is not valid for not mature cuckoos!");
         }
         List<Cuckoo> eggs = new ArrayList<>();
-        CuckooFirstModelingDataAndBehaviour dataAndBehaviour = (CuckooFirstModelingDataAndBehaviour) matureCuckoo.getCuckooDataAndBehaviour();
+        CuckooCostOptimizationModelingDataAndBehaviour dataAndBehaviour = (CuckooCostOptimizationModelingDataAndBehaviour) matureCuckoo.getCuckooDataAndBehaviour();
         matureCuckoo.getMatureCuckoo().setELR(dataAndBehaviour.getMaxELR());
         for (int i = 0; i < matureCuckoo.getMatureCuckoo().getNumberOfEggs(); i++) {
             eggs.add(generateEggByElr(matureCuckoo));
@@ -71,7 +71,7 @@ public class CuckooFirstModeling extends FirstModelAbstract implements CuckooMod
 
         Random random = new Random();
 
-        CuckooFirstModelingDataAndBehaviour dataAndBehaviour = (CuckooFirstModelingDataAndBehaviour) matureCuckoo.getCuckooDataAndBehaviour();
+        CuckooCostOptimizationModelingDataAndBehaviour dataAndBehaviour = (CuckooCostOptimizationModelingDataAndBehaviour) matureCuckoo.getCuckooDataAndBehaviour();
 
         boolean[] tempCandidateSink = dataAndBehaviour.sinkXSpinVariables.clone();
         boolean[] tempCandidateController = dataAndBehaviour.controllerXSpinVariables.clone();
@@ -100,7 +100,7 @@ public class CuckooFirstModeling extends FirstModelAbstract implements CuckooMod
             tempCandidateController[index] = !prevValue;
         }
 
-        CuckooDataAndBehaviour cuckooDataAndBehaviour = new CuckooFirstModelingDataAndBehaviour(tempCandidateSink, tempCandidateController);
+        CuckooDataAndBehaviour cuckooDataAndBehaviour = new CuckooCostOptimizationModelingDataAndBehaviour(tempCandidateSink, tempCandidateController);
 
         return new Cuckoo(false, cuckooDataAndBehaviour);
     }
@@ -117,7 +117,7 @@ public class CuckooFirstModeling extends FirstModelAbstract implements CuckooMod
             double probability = Math.random();
             sinkSpinVariables[i] = (probability < .5);
         }
-        CuckooDataAndBehaviour cuckooDataAndBehaviour = new CuckooFirstModelingDataAndBehaviour(sinkSpinVariables, controllersSpinVariables);
+        CuckooDataAndBehaviour cuckooDataAndBehaviour = new CuckooCostOptimizationModelingDataAndBehaviour(sinkSpinVariables, controllersSpinVariables);
         Cuckoo cuckoo = new Cuckoo(true, cuckooDataAndBehaviour);
         cuckoo.setCost(calculateCost(cuckooDataAndBehaviour));
         return cuckoo;

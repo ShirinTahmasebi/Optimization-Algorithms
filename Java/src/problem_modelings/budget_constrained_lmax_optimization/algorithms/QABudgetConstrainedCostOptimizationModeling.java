@@ -1,22 +1,22 @@
-package problem_modelings.budget_constrained_modeling.algorithms;
+package problem_modelings.budget_constrained_lmax_optimization.algorithms;
 
 import base_algorithms.quantum_annealing.QAResultBase;
 import javafx.util.Pair;
 import base_algorithms.quantum_annealing.QAModelingInterface;
 import base_algorithms.quantum_annealing.QAPlainOldData;
 import main.Parameters;
-import problem_modelings.budget_constrained_modeling.Utils;
-import problem_modelings.budget_constrained_modeling.model_specifications.BudgetConstrainedModelAbstract;
-import problem_modelings.budget_constrained_modeling.model_specifications.BudgetConstrainedModelPlainOldData;
-import problem_modelings.budget_constrained_modeling.model_specifications.BudgetConstrainedQAResult;
+import problem_modelings.budget_constrained_lmax_optimization.Utils;
+import problem_modelings.budget_constrained_lmax_optimization.model_specifications.BudgetConstrainedLmaxOptimizationModelingAbstract;
+import problem_modelings.budget_constrained_lmax_optimization.model_specifications.BudgetConstrainedLmaxOptimizationModelingPlainOldData;
+import problem_modelings.budget_constrained_lmax_optimization.model_specifications.BudgetConstrainedLmaxOptimizationModelignQAResult;
 
 import java.util.*;
 
-public class QABudgetConstrainedModeling extends BudgetConstrainedModelAbstract implements QAModelingInterface {
+public class QABudgetConstrainedCostOptimizationModeling extends BudgetConstrainedLmaxOptimizationModelingAbstract implements QAModelingInterface {
 
     private QAPlainOldData qaDataStructure;
 
-    public QABudgetConstrainedModeling(BudgetConstrainedModelPlainOldData modelPlainOldData, QAPlainOldData qaDataStructure) {
+    public QABudgetConstrainedCostOptimizationModeling(BudgetConstrainedLmaxOptimizationModelingPlainOldData modelPlainOldData, QAPlainOldData qaDataStructure) {
         super(modelPlainOldData);
         this.qaDataStructure = qaDataStructure;
     }
@@ -138,7 +138,8 @@ public class QABudgetConstrainedModeling extends BudgetConstrainedModelAbstract 
         double lMaxEnergy = Utils.getMaxLEnergy(maxL);
         double distanceToNearestControllerEnergy = Utils.getSummationOfMaxLEnergy(summationOfLMax);
 
-        double potentialEnergy = reliabilityEnergy + loadBalancingEnergy + lMaxEnergy + distanceToNearestControllerEnergy;
+        // TODO: Correct this line after test
+        double potentialEnergy = reliabilityEnergy + loadBalancingEnergy + 0.55 * (lMaxEnergy + distanceToNearestControllerEnergy);
         double kineticEnergy = getKineticEnergy(currentReplicaNum);
 
         return new Pair<>(potentialEnergy, kineticEnergy);
@@ -168,6 +169,6 @@ public class QABudgetConstrainedModeling extends BudgetConstrainedModelAbstract 
     public QAResultBase getResult() {
         int maxL = super.calculateMaxL(modelPlainOldData.controllerXSpinVariables);
         int toNearestControllerEnergy = super.calculateDistanceToNearestControllerEnergy(modelPlainOldData.controllerXSpinVariables);
-        return new BudgetConstrainedQAResult(maxL, toNearestControllerEnergy);
+        return new BudgetConstrainedLmaxOptimizationModelignQAResult(maxL, toNearestControllerEnergy);
     }
 }

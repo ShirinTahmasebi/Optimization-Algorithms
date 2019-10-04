@@ -1,20 +1,22 @@
-package problem_modelings.first_modeling.algorithms;
+package problem_modelings.cost_optimization.algorithms;
 
 import base_algorithms.simulated_annealing.SAModelingInterface;
 import base_algorithms.simulated_annealing.SAPlainOldData;
+import base_algorithms.simulated_annealing.SAResultBase;
 import main.Parameters;
-import problem_modelings.first_modeling.Utils;
-import problem_modelings.first_modeling.model_specifications.FirstModelAbstract;
-import problem_modelings.first_modeling.model_specifications.FirstModelPlainOldData;
+import problem_modelings.cost_optimization.Utils;
+import problem_modelings.cost_optimization.model_specifications.CostOptimizationModelingAbstract;
+import problem_modelings.cost_optimization.model_specifications.CostOptimizationModelingPlainOldData;
+import problem_modelings.cost_optimization.model_specifications.CostOptimizationModelingSAResult;
 
 import java.util.Random;
 
-public class SAFirstModeling extends FirstModelAbstract implements SAModelingInterface {
+public class SACostOptimizationModeling extends CostOptimizationModelingAbstract implements SAModelingInterface {
 
     private SAPlainOldData saPlainOldData;
 
-    public SAFirstModeling(FirstModelPlainOldData firstModelPlainOldData, SAPlainOldData saPlainOldData) {
-        super(firstModelPlainOldData);
+    public SACostOptimizationModeling(CostOptimizationModelingPlainOldData costOptimizationModelingPlainOldData, SAPlainOldData saPlainOldData) {
+        super(costOptimizationModelingPlainOldData);
         this.saPlainOldData = saPlainOldData;
     }
 
@@ -106,5 +108,10 @@ public class SAFirstModeling extends FirstModelAbstract implements SAModelingInt
     @Override
     public SAPlainOldData getData() {
         return saPlainOldData;
+    }
+
+    @Override
+    public SAResultBase getResult() {
+        return new CostOptimizationModelingSAResult();
     }
 }
