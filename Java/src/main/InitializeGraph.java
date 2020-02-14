@@ -23,9 +23,6 @@ public class InitializeGraph {
     private boolean[][] controllerYSpinVariables;     // SYPrime (Y Spin Variable)
     private int[][] distances;
 
-    @SuppressWarnings("FieldCanBeLocal")
-    private int isZeroIndexed = 1; // 1 = True 0 = False
-
     public static void main(String[] args) {
         InitializeGraph initializeGraph = new InitializeGraph();
         initializeGraph.initialize();
@@ -43,155 +40,43 @@ public class InitializeGraph {
         writeObjectToFile(distances, Utils.FILE_NAME_DISTANCES + main.Parameters.Common.GRAPH_SIZE);
     }
 
-    public Graph initializeGraph(int graphSize) {
+    public Graph initializeGraph(GraphSizeEnum graphSize) {
         if (Parameters.Common.USE_RANDOM_GRAPH) {
             return initializeRandomGraph(graphSize);
         }
 
-        return initializeSpecialGraph2(graphSize);
-    }
-
-    private Graph initializeSpecialGraph1(int graphSize) {
-        int vertexCount = 0;
-        int candidateSinksNumber = 0;
-        int candidateControllersNumber = 0;
-        ArrayList<Pair<String, Pair<Integer, Integer>>> edgesPairList = new ArrayList<>();
-        if (graphSize == 1) {
-            throw new RuntimeException("Special graph size 1 is not implemented");
-        } else if (graphSize == 2) {
-            throw new RuntimeException("Special graph size 1 is not implemented");
-        } else if (graphSize == 3) {
-            // Candidate Sink = 6 * 2
-            // Candidate Controller = 6 * 2
-            vertexCount = 102;
-            candidateSinksNumber = 12;
-            candidateControllersNumber = 12;
-        } else if (graphSize == 4) {
-            // Candidate Sink = 9 * 2
-            // Candidate Controller = 9 * 2
-            vertexCount = 153;
-            candidateSinksNumber = 18;
-            candidateControllersNumber = 18;
-        } else if (graphSize == 5) {
-            // Candidate Sink = 12 * 2
-            // Candidate Controller = 12 * 2
-            vertexCount = 204;
-            candidateSinksNumber = 24;
-            candidateControllersNumber = 24;
-        }
-
-        List<Integer> A = new ArrayList<>();
-        List<Integer> B = new ArrayList<>();
-        List<Integer> C = new ArrayList<>();
-        List<Integer> D = new ArrayList<>();
-
-        for (int i = 0; i < candidateControllersNumber / 2; i++) {
-            A.add(i);
-        }
-
-        for (int i = 0; i < A.size(); i++) {
-            int sourceNumber = A.get(i);
-            int neighborNumber = A.size() + i;
-            edgesPairList.add(new Pair<>("Edge_" + sourceNumber + "_To_" + neighborNumber, new Pair<>(sourceNumber, neighborNumber)));
-            System.out.println("from: " + sourceNumber + " to: " + neighborNumber);
-            B.add(i, neighborNumber);
-        }
-
-        for (int i = 0; i < B.size(); i++) {
-            int index = i + isZeroIndexed;
-            int sourceNumber = B.get(i);
-            int baseIndex = A.size() + B.size() + (index - 1) * 3 - isZeroIndexed;
-            int[] destinationNumbers = {baseIndex + 1, baseIndex + 2, baseIndex + 3};
-
-            for (int des : destinationNumbers) {
-                edgesPairList.add(new Pair<>("Edge_" + sourceNumber + "_To_" + des, new Pair<>(sourceNumber, des)));
-                System.out.println("from: " + sourceNumber + " to: " + des);
-                C.add(des);
-            }
-        }
-
-        for (int i = 0; i < C.size(); i++) {
-            int index = i + isZeroIndexed;
-            int sourceNumber = C.get(i);
-            int baseIndex = A.size() + B.size() + C.size() + (index - 1) * 4 - isZeroIndexed;
-            int[] destinationNumbers = {baseIndex + 1, baseIndex + 2, baseIndex + 3, baseIndex + 4};
-
-            for (int des : destinationNumbers) {
-                edgesPairList.add(new Pair<>("Edge_" + sourceNumber + "_To_" + des, new Pair<>(sourceNumber, des)));
-                System.out.println("from: " + sourceNumber + " to: " + des);
-                D.add(des);
-            }
-        }
-
-        for (int i = 0; i < A.size() - 1; i++) {
-            edgesPairList.add(new Pair<>("Edge_" + A.get(i) + "_To_" + A.get(i + 1), new Pair<>(A.get(i), A.get(i + 1))));
-        }
-
-        for (int i = 0; i < B.size() - 1; i++) {
-            edgesPairList.add(new Pair<>("Edge_" + B.get(i) + "_To_" + B.get(i + 1), new Pair<>(B.get(i), B.get(i + 1))));
-        }
-
-        for (int i = 0; i < vertexCount; i++) {
-            Vertex location = new Vertex("Node_" + i, "Node_" + i, main.Parameters.Common.SINK_LOAD, main.Parameters.Common.CONTROLLER_LOAD);
-            nodes.add(location);
-        }
-
-        edgesPairList.stream().forEach((edge) -> addLane(edge.getKey(), edge.getValue().getKey(), edge.getValue().getValue()));
-
-        Set<Integer> candidateSinksNumberSet = new HashSet<>();
-        Set<Integer> candidateControllerNumberSet = new HashSet<>();
-
-        A.forEach(integer -> {
-            candidateSinksNumberSet.add(integer);
-            candidateControllerNumberSet.add(integer);
-        });
-
-        B.forEach(integer -> {
-            candidateSinksNumberSet.add(integer);
-            candidateControllerNumberSet.add(integer);
-        });
-
-        candidateControllerNumberSet.stream().forEach((candidateControllerNumber) -> candidateControllers.add(nodes.get(candidateControllerNumber)));
-
-        candidateSinksNumberSet.stream().forEach((candidateSinkNumber) -> candidateSinks.add(nodes.get(candidateSinkNumber)));
-
-        return new Graph(nodes, edges);
+        return initializeSpecialGraph(graphSize);
     }
 
     @SuppressWarnings("PointlessArithmeticExpression")
-    private Graph initializeSpecialGraph2(int graphSize) {
+    private Graph initializeSpecialGraph(GraphSizeEnum graphSize) {
         List<Pair<Integer, Integer>> srcDes = new ArrayList<>();
         int vertexCount = 0;
-        int candidateSinksNumber = 0;
         int candidateControllersNumber = 0;
         ArrayList<Pair<String, Pair<Integer, Integer>>> edgesPairList = new ArrayList<>();
-        if (graphSize == 1) {
+        if (GraphSizeEnum.RANDOM_20_SPECIAL_NONE == graphSize) {
             throw new RuntimeException("Special graph size 1 is not implemented");
-        } else if (graphSize == 2) {
+        } else if (GraphSizeEnum.RANDOM_40_SPECIAL_NONE == graphSize) {
             throw new RuntimeException("Special graph size 2 is not implemented");
-        } else if (graphSize == 3) {
+        } else if (GraphSizeEnum.RANDOM_80_SPECIAL_104 == graphSize) {
             // Candidate Sink = 8 * 2
             // Candidate Controller = 8 * 2
             vertexCount = 104;
-            candidateSinksNumber = 16;
             candidateControllersNumber = 16;
-        } else if (graphSize == 4) {
+        } else if (GraphSizeEnum.RANDOM_150_SPECIAL_169 == graphSize) {
             // Candidate Sink = 13 * 2
             // Candidate Controller = 13 * 2
             vertexCount = 169;
-            candidateSinksNumber = 26;
             candidateControllersNumber = 26;
-        } else if (graphSize == 5) {
+        } else if (GraphSizeEnum.RANDOM_200_SPECIAL_195 == graphSize) {
             // Candidate Sink = 13 * 2
             // Candidate Controller = 13 * 2
             vertexCount = 195;
-            candidateSinksNumber = 30;
             candidateControllersNumber = 30;
-        } else if (graphSize == 6) {
+        } else if (GraphSizeEnum.RANDOM_NONE_SPECIAL_143 == graphSize) {
             // Candidate Sink = 13 * 2
             // Candidate Controller = 13 * 2
             vertexCount = 143;
-            candidateSinksNumber = 22;
             candidateControllersNumber = 22;
         }
 
@@ -200,6 +85,8 @@ public class InitializeGraph {
         List<Integer> C = new ArrayList<>();
         List<Integer> D = new ArrayList<>();
         List<Integer> E = new ArrayList<>();
+
+        @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
         List<Integer> F = new ArrayList<>();
 
         for (int i = 1; i <= candidateControllersNumber; i++) {
@@ -303,36 +190,36 @@ public class InitializeGraph {
         return new Graph(nodes, edges);
     }
 
-    private Graph initializeRandomGraph(int graphSize) {
+    private Graph initializeRandomGraph(GraphSizeEnum graphSize) {
         int vertexCount = 0;
         int candidateSinksNumber = 0;
         int candidateControllersNumber = 0;
         ArrayList<Pair<String, Pair<Integer, Integer>>> edgesPairList = new ArrayList<>();
-        if (graphSize == 1) {
+        if (GraphSizeEnum.RANDOM_20_SPECIAL_NONE == graphSize) {
             // Candidate Sink = 4 (20/5)
             // Candidate Controller = 2 (20/10)
             vertexCount = 20;
             candidateSinksNumber = 6;
             candidateControllersNumber = 9;
-        } else if (graphSize == 2) {
+        } else if (GraphSizeEnum.RANDOM_40_SPECIAL_NONE == graphSize) {
             // Candidate Sink = 8 (40/5)
             // Candidate Controller = 4 (40/10)
             vertexCount = 40;
             candidateSinksNumber = vertexCount / 5;
             candidateControllersNumber = vertexCount / 10;
-        } else if (graphSize == 3) {
+        } else if (GraphSizeEnum.RANDOM_80_SPECIAL_104 == graphSize) {
             // Candidate Sink = 16 (80/5)
             // Candidate Controller = 8 (80/10)
             vertexCount = 80;
             candidateSinksNumber = vertexCount / 5;
             candidateControllersNumber = vertexCount / 10;
-        } else if (graphSize == 4) {
+        } else if (GraphSizeEnum.RANDOM_150_SPECIAL_169 == graphSize) {
             // Candidate Sink = 32 (160/5)
             // Candidate Controller = 16 (160/10)
             vertexCount = 150;
             candidateSinksNumber = 50;
             candidateControllersNumber = 40;
-        } else if (graphSize == 5) {
+        } else if (GraphSizeEnum.RANDOM_200_SPECIAL_195 == graphSize) {
             // Candidate Sink = 32 (200/5)
             // Candidate Controller = 16 (160/10)
             vertexCount = 200;
