@@ -307,18 +307,18 @@ public class FactoryClient {
 
     private void retrieveVariablesFromFile(int modelNo) {
         if (modelNo == 1) {
-            graph = (Graph) readObjectFromFile(Utils.FILE_NAME_GRAPH + main.Parameters.Common.GRAPH_SIZE);
-            candidateSinks = (List<Vertex>) readObjectFromFile(Utils.FILE_NAME_CANDIDATE_SINKS + main.Parameters.Common.GRAPH_SIZE);
-            candidateControllers = (List<Vertex>) readObjectFromFile(Utils.FILE_NAME_CANDIDATE_CONTROLLERS + main.Parameters.Common.GRAPH_SIZE);
-            sinkYSpinVariables = (boolean[][]) readObjectFromFile(Utils.FILE_NAME_SINK_Y_SPIN_VARIABLES + main.Parameters.Common.GRAPH_SIZE);
-            controllerYSpinVariables = (boolean[][]) readObjectFromFile(Utils.FILE_NAME_CONTROLLER_Y_SPIN_VARIABLES + main.Parameters.Common.GRAPH_SIZE);
-            distances = (int[][]) readObjectFromFile(Utils.FILE_NAME_DISTANCES + main.Parameters.Common.GRAPH_SIZE);
+            graph = (Graph) readObjectFromFile(Utils.FILE_NAME_GRAPH + Parameters.Common.GRAPH_SIZE.number);
+            candidateSinks = (List<Vertex>) readObjectFromFile(Utils.FILE_NAME_CANDIDATE_SINKS + Parameters.Common.GRAPH_SIZE.number);
+            candidateControllers = (List<Vertex>) readObjectFromFile(Utils.FILE_NAME_CANDIDATE_CONTROLLERS + Parameters.Common.GRAPH_SIZE.number);
+            sinkYSpinVariables = (boolean[][]) readObjectFromFile(Utils.FILE_NAME_SINK_Y_SPIN_VARIABLES + Parameters.Common.GRAPH_SIZE.number);
+            controllerYSpinVariables = (boolean[][]) readObjectFromFile(Utils.FILE_NAME_CONTROLLER_Y_SPIN_VARIABLES + Parameters.Common.GRAPH_SIZE.number);
+            distances = (int[][]) readObjectFromFile(Utils.FILE_NAME_DISTANCES + Parameters.Common.GRAPH_SIZE.number);
         } else if (modelNo == 2) {
-            graph = (Graph) readObjectFromFile(Utils.FILE_NAME_GRAPH + main.Parameters.Common.GRAPH_SIZE);
-            candidateControllers = (List<Vertex>) readObjectFromFile(Utils.FILE_NAME_CANDIDATE_CONTROLLERS + main.Parameters.Common.GRAPH_SIZE);
-            controllerY = (int[][]) readObjectFromFile(Utils.FILE_NAME_CONTROLLER_Y + main.Parameters.Common.GRAPH_SIZE);
-            controllerY = (int[][]) readObjectFromFile(Utils.FILE_NAME_CONTROLLER_Y + main.Parameters.Common.GRAPH_SIZE);
-            distances = (int[][]) readObjectFromFile(Utils.FILE_NAME_DISTANCES + main.Parameters.Common.GRAPH_SIZE);
+            graph = (Graph) readObjectFromFile(Utils.FILE_NAME_GRAPH + Parameters.Common.GRAPH_SIZE.number);
+            candidateControllers = (List<Vertex>) readObjectFromFile(Utils.FILE_NAME_CANDIDATE_CONTROLLERS + Parameters.Common.GRAPH_SIZE.number);
+            controllerY = (int[][]) readObjectFromFile(Utils.FILE_NAME_CONTROLLER_Y + Parameters.Common.GRAPH_SIZE.number);
+            controllerY = (int[][]) readObjectFromFile(Utils.FILE_NAME_CONTROLLER_Y + Parameters.Common.GRAPH_SIZE.number);
+            distances = (int[][]) readObjectFromFile(Utils.FILE_NAME_DISTANCES + Parameters.Common.GRAPH_SIZE.number);
         }
     }
 
