@@ -3,29 +3,14 @@ package problem_modelings.budget_constrained_lmax_optimization.model_specificati
 import main.LineChartEx;
 import main.model.Graph;
 import main.model.Vertex;
+import problem_modelings.base.plain_old_data.BaseMultiControllerProblemModelingPlainOldData;
 
 import java.util.List;
 
-public class BudgetConstrainedLmaxOptimizationModelingPlainOldData {
-
-    // Problem Specifications
-    public Graph graph;
-    public List<Vertex> candidateControllers;           //AC
-    public int sensorControllerMaxDistance;             // LMax
-    public int[][] controllerY;                         // Y (Number of Hops)
-    public boolean[][] controllerYSpinVariable;         // Y Spin Variables (is distances favorable?)
+public class BudgetConstrainedLmaxOptimizationModelingPlainOldData extends BaseMultiControllerProblemModelingPlainOldData {
+    public int[][] controllerY;     // Y (Number of Hops)
     public int[][] distances;
-
-    // Solution Spin Variables
-    public boolean[] controllerXSpinVariables;          // SX (X Spin Variable)
     public boolean[][] replicasOfControllerXSpinVariables;
-
-    // Temp Spin Variables
-    public boolean[] tempControllerXSpinVariables;      // SX (X Spin Variable)
-
-    public int maxControllerCoverage;                   // K
-    public int maxControllerLoad;                       // W
-    public int costController;
     public int totalBudget;
     public LineChartEx lineChartEx;
 

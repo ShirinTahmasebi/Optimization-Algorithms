@@ -3,40 +3,13 @@ package problem_modelings.cost_optimization.model_specifications;
 import main.LineChartEx;
 import main.model.Graph;
 import main.model.Vertex;
+import problem_modelings.base.plain_old_data.BaseMultiControllerMultiSinkProblemModelingPlainOldData;
 
 import java.util.List;
 
-public class CostOptimizationModelingPlainOldData {
-
-    // Problem Specifications
-    public Graph graph;
-
-    public List<Vertex> candidateSinks;            // AS
-    public List<Vertex> candidateControllers;      //AC
-
-    public int sensorSinkMaxDistance;              // Lmax
-    public int sensorControllerMaxDistance;        // LPrimeMax
-
-    public boolean[][] sinkYSpinVariables;           // SY (Y Spin Variable)
-    public boolean[][] controllerYSpinVariables;     // SYPrime (Y Spin Variable)
-
-    // Solution Spin Variables
-    public boolean[] sinkXSpinVariables;             // SX (X Spin Variable)
-    public boolean[] controllerXSpinVariables;       // SXPrime (X Spin Variable)
+public class CostOptimizationModelingPlainOldData extends BaseMultiControllerMultiSinkProblemModelingPlainOldData {
     public boolean[][] replicasOfSinkXSpinVariables;
     public boolean[][] replicasOfControllerXSpinVariables;
-
-    // Temp Spin Variables
-    public boolean[] tempSinkXSpinVariables;           // SX (X Spin Variable)
-    public boolean[] tempControllerXSpinVariables;     // SXPrime (X Spin Variable)
-
-    public int maxSinkCoverage;          // K
-    public int maxControllerCoverage;    // KPrime
-    public int maxSinkLoad;          // W
-    public int maxControllerLoad;    // WPrime
-    public int costSink;
-    public int costController;
-    public float costReductionFactor;
     public LineChartEx lineChartEx;
 
     public CostOptimizationModelingPlainOldData(

@@ -3,11 +3,11 @@ package problem_modelings.cost_optimization.model_specifications;
 import main.Parameters;
 import main.model.Graph;
 import main.model.Vertex;
-import problem_modelings.BaseProblemModeling;
+import problem_modelings.base.modeling.BaseMultiControllerMultiSinkProblemModeling;
 
 import java.util.List;
 
-public abstract class CostOptimizationModelingAbstract extends BaseProblemModeling {
+public abstract class CostOptimizationModelingAbstract extends BaseMultiControllerMultiSinkProblemModeling {
 
     public CostOptimizationModelingPlainOldData modelPlainOldData;
 

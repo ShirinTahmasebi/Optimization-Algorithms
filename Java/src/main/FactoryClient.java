@@ -43,9 +43,13 @@ public class FactoryClient {
     public static void main(String[] args) {
         FactoryClient client = new FactoryClient();
 
-//        client.executeAlgorithmsOnFirstModel();
-        client.executeAlgorithmsOnBudgetConstrainedModel();
-
+        if (Parameters.Common.MODEL_NO == ModelNoEnum.COST_OPTIMIZATION) {
+            client.executeAlgorithmsOnFirstModel();
+        } else if (Parameters.Common.MODEL_NO == ModelNoEnum.BUDGET_CONSTRAINED_LMAX_OPTIMIZATION) {
+            client.executeAlgorithmsOnBudgetConstrainedModel();
+        } else if (Parameters.Common.MODEL_NO == ModelNoEnum.BUDGET_CONSTRAINED_CONTROLLER_OVERHEAD) {
+            // TODO: Add problem modeling
+        }
     }
 
     private void executeAlgorithmsOnBudgetConstrainedModel() {
@@ -63,7 +67,7 @@ public class FactoryClient {
         double saLMaxSum = 0;
         double saSummationOfLMaxSum = 0;
 
-        retrieveVariablesFromFile(2);
+        retrieveVariablesFromFile();
 
         BudgetConstrainedLmaxOptimizationModelingPlainOldData budgetConstrainedLmaxOptimizationModelingPlainOldData = new BudgetConstrainedLmaxOptimizationModelingPlainOldData(
                 graph,
@@ -212,7 +216,7 @@ public class FactoryClient {
         double qaEnergySum = 0;
         double saEnergySum = 0;
 
-        retrieveVariablesFromFile(1);
+        retrieveVariablesFromFile();
 
         CostOptimizationModelingPlainOldData costOptimizationModelingPlainOldData = new CostOptimizationModelingPlainOldData(
                 graph,
@@ -305,21 +309,22 @@ public class FactoryClient {
         // TODO: Print Results Using printResults Method
     }
 
-    private void retrieveVariablesFromFile(int modelNo) {
-        if (modelNo == 1) {
+    private void retrieveVariablesFromFile() {
+        if (Parameters.Common.MODEL_NO == ModelNoEnum.COST_OPTIMIZATION) {
             graph = (Graph) readObjectFromFile(Utils.FILE_NAME_GRAPH + Parameters.Common.GRAPH_SIZE.number);
             candidateSinks = (List<Vertex>) readObjectFromFile(Utils.FILE_NAME_CANDIDATE_SINKS + Parameters.Common.GRAPH_SIZE.number);
             candidateControllers = (List<Vertex>) readObjectFromFile(Utils.FILE_NAME_CANDIDATE_CONTROLLERS + Parameters.Common.GRAPH_SIZE.number);
             sinkYSpinVariables = (boolean[][]) readObjectFromFile(Utils.FILE_NAME_SINK_Y_SPIN_VARIABLES + Parameters.Common.GRAPH_SIZE.number);
             controllerYSpinVariables = (boolean[][]) readObjectFromFile(Utils.FILE_NAME_CONTROLLER_Y_SPIN_VARIABLES + Parameters.Common.GRAPH_SIZE.number);
             distances = (int[][]) readObjectFromFile(Utils.FILE_NAME_DISTANCES + Parameters.Common.GRAPH_SIZE.number);
-        } else if (modelNo == 2) {
+        } else if (Parameters.Common.MODEL_NO == ModelNoEnum.BUDGET_CONSTRAINED_LMAX_OPTIMIZATION) {
             graph = (Graph) readObjectFromFile(Utils.FILE_NAME_GRAPH + Parameters.Common.GRAPH_SIZE.number);
             candidateControllers = (List<Vertex>) readObjectFromFile(Utils.FILE_NAME_CANDIDATE_CONTROLLERS + Parameters.Common.GRAPH_SIZE.number);
             controllerY = (int[][]) readObjectFromFile(Utils.FILE_NAME_CONTROLLER_Y + Parameters.Common.GRAPH_SIZE.number);
             controllerY = (int[][]) readObjectFromFile(Utils.FILE_NAME_CONTROLLER_Y + Parameters.Common.GRAPH_SIZE.number);
             distances = (int[][]) readObjectFromFile(Utils.FILE_NAME_DISTANCES + Parameters.Common.GRAPH_SIZE.number);
         }
+        // TODO: Add problem modeling
     }
 
     private void printResults(LineChartEx chartEx, Map<String, Map<String, Double>> algorithmResultInfo) {

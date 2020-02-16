@@ -45,6 +45,7 @@ public class Parameters {
         public static final int COST_CONTROLLER = 3;
         public static final boolean USE_RANDOM_GRAPH = false;
         public static final int GRAPH_SPEC_MODEL_NO = 2;
+        public static final ModelNoEnum MODEL_NO = ModelNoEnum.BUDGET_CONSTRAINED_CONTROLLER_OVERHEAD;
     }
 
     public static class ResultInfoConstants {

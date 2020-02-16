@@ -4,14 +4,14 @@ import base_algorithms.Cuckoo.model.CuckooDataAndBehaviour;
 import main.Parameters;
 import main.model.Graph;
 import main.model.Vertex;
-import problem_modelings.BaseProblemModeling;
+import problem_modelings.base.modeling.BaseMultiControllerProblemModeling;
 import problem_modelings.budget_constrained_lmax_optimization.algorithms.cuckoo.CuckooBudgetConstrainedCostOptimizationModelingDataAndBehaviour;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public abstract class BudgetConstrainedLmaxOptimizationModelingAbstract extends BaseProblemModeling {
+public abstract class BudgetConstrainedLmaxOptimizationModelingAbstract extends BaseMultiControllerProblemModeling {
 
     public static int L_MAX_COEFFICIENT = 100;
     public static int SUMMATION_OFL_MAX_COEFFICIENT = 10;
