@@ -138,8 +138,7 @@ public class QABudgetConstrainedCostOptimizationModeling extends BudgetConstrain
         double lMaxEnergy = Utils.getMaxLEnergy(maxL);
         double distanceToNearestControllerEnergy = Utils.getSummationOfMaxLEnergy(summationOfLMax);
 
-        // TODO: Correct this line after test
-        double potentialEnergy = reliabilityEnergy + loadBalancingEnergy + 0.55 * (lMaxEnergy + distanceToNearestControllerEnergy);
+        double potentialEnergy = reliabilityEnergy + loadBalancingEnergy + lMaxEnergy + distanceToNearestControllerEnergy;
         double kineticEnergy = getKineticEnergy(currentReplicaNum);
 
         return new Pair<>(potentialEnergy, kineticEnergy);
