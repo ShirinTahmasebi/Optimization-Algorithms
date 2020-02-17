@@ -17,5 +17,5 @@ public interface SAModelingInterface {
 
     SAPlainOldData getData();
 
-    SAResultBase getResult();
+    SAResultBaseInterface getResult();
 }

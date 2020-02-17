@@ -2,7 +2,7 @@ package problem_modelings.cost_optimization.algorithms;
 
 import base_algorithms.simulated_annealing.SAModelingInterface;
 import base_algorithms.simulated_annealing.SAPlainOldData;
-import base_algorithms.simulated_annealing.SAResultBase;
+import base_algorithms.simulated_annealing.SAResultBaseInterface;
 import main.Parameters;
 import problem_modelings.cost_optimization.Utils;
 import problem_modelings.cost_optimization.model_specifications.CostOptimizationModelingAbstract;
@@ -111,7 +111,7 @@ public class SACostOptimizationModeling extends CostOptimizationModelingAbstract
     }
 
     @Override
-    public SAResultBase getResult() {
+    public SAResultBaseInterface getResult() {
         return new CostOptimizationModelingSAResult();
     }
 }

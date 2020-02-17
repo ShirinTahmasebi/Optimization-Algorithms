@@ -16,7 +16,7 @@ public class QAAlgorithm {
         this.lineChartEx = new LineChartEx();
     }
 
-    public Pair<Double, QAResultBase> execute() {
+    public Pair<Double, QAResultBaseInterface> execute() {
         // Reset Dynamic Values
         qaModelingInterface.resetDynamicVariables();
 

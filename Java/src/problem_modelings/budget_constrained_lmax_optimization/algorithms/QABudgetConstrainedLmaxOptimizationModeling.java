@@ -1,6 +1,6 @@
 package problem_modelings.budget_constrained_lmax_optimization.algorithms;
 
-import base_algorithms.quantum_annealing.QAResultBase;
+import base_algorithms.quantum_annealing.QAResultBaseInterface;
 import javafx.util.Pair;
 import base_algorithms.quantum_annealing.QAModelingInterface;
 import base_algorithms.quantum_annealing.QAPlainOldData;
@@ -165,7 +165,7 @@ public class QABudgetConstrainedLmaxOptimizationModeling extends BudgetConstrain
     }
 
     @Override
-    public QAResultBase getResult() {
+    public QAResultBaseInterface getResult() {
         int maxL = super.calculateMaxL(modelPlainOldData.controllerXSpinVariables);
         int toNearestControllerEnergy = super.calculateDistanceToNearestControllerEnergy(modelPlainOldData.controllerXSpinVariables);
         return new BudgetConstrainedLmaxOptimizationModelignQAResult(maxL, toNearestControllerEnergy);

@@ -2,7 +2,7 @@ package problem_modelings.budget_constrained_lmax_optimization.algorithms;
 
 import base_algorithms.simulated_annealing.SAModelingInterface;
 import base_algorithms.simulated_annealing.SAPlainOldData;
-import base_algorithms.simulated_annealing.SAResultBase;
+import base_algorithms.simulated_annealing.SAResultBaseInterface;
 import main.Parameters;
 import problem_modelings.budget_constrained_lmax_optimization.Utils;
 import problem_modelings.budget_constrained_lmax_optimization.model_specifications.BudgetConstrainedLmaxOptimizationModelignSAResult;
@@ -121,7 +121,7 @@ public class SABudgetConstrainedLmaxOptimizationModeling extends BudgetConstrain
     }
 
     @Override
-    public SAResultBase getResult() {
+    public SAResultBaseInterface getResult() {
         int maxL = super.calculateMaxL(modelPlainOldData.controllerXSpinVariables);
         int toNearestControllerEnergy = super.calculateDistanceToNearestControllerEnergy(modelPlainOldData.controllerXSpinVariables);
         return new BudgetConstrainedLmaxOptimizationModelignSAResult(maxL, toNearestControllerEnergy);

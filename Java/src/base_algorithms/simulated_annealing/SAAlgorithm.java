@@ -15,7 +15,7 @@ public class SAAlgorithm {
         this.lineChartEx = new LineChartEx();
     }
 
-    public Pair<Double, SAResultBase> execute() {
+    public Pair<Double, SAResultBaseInterface> execute() {
         // Reset Dynamic Variables
         saModelingInterface.resetDynamicVariables();
 

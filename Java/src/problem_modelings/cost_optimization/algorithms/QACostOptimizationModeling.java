@@ -1,6 +1,6 @@
 package problem_modelings.cost_optimization.algorithms;
 
-import base_algorithms.quantum_annealing.QAResultBase;
+import base_algorithms.quantum_annealing.QAResultBaseInterface;
 import javafx.util.Pair;
 import main.Parameters;
 import problem_modelings.cost_optimization.Utils;
@@ -174,7 +174,7 @@ public class QACostOptimizationModeling extends CostOptimizationModelingAbstract
     }
 
     @Override
-    public QAResultBase getResult() {
+    public QAResultBaseInterface getResult() {
         return new CostOptimizationModelingQAResult();
     }
 

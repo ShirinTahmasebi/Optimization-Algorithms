@@ -6,11 +6,11 @@ import base_algorithms.Cuckoo.CuckooPlainOldData;
 import base_algorithms.quantum_annealing.QAAlgorithm;
 import base_algorithms.quantum_annealing.QAModelingInterface;
 import base_algorithms.quantum_annealing.QAPlainOldData;
-import base_algorithms.quantum_annealing.QAResultBase;
+import base_algorithms.quantum_annealing.QAResultBaseInterface;
 import base_algorithms.simulated_annealing.SAAlgorithm;
 import base_algorithms.simulated_annealing.SAModelingInterface;
 import base_algorithms.simulated_annealing.SAPlainOldData;
-import base_algorithms.simulated_annealing.SAResultBase;
+import base_algorithms.simulated_annealing.SAResultBaseInterface;
 import javafx.util.Pair;
 import main.model.Graph;
 import main.model.Vertex;
@@ -127,7 +127,7 @@ public class FactoryClient {
 
         for (int i = 0; i < main.Parameters.Common.SIMULATION_COUNT; i++) {
 
-            Pair<Double, QAResultBase> qaResultPair = qaAlgorithm.execute();
+            Pair<Double, QAResultBaseInterface> qaResultPair = qaAlgorithm.execute();
 
             chartEx.addToQASeries(i + 1, qaResultPair.getKey());
 
@@ -160,7 +160,7 @@ public class FactoryClient {
 
         for (int i = 0; i < main.Parameters.Common.SIMULATION_COUNT; i++) {
 
-            Pair<Double, SAResultBase> saResultPair = saAlgorithm.execute();
+            Pair<Double, SAResultBaseInterface> saResultPair = saAlgorithm.execute();
 
             chartEx.addToSASeries(i + 1, saResultPair.getKey());
 
@@ -271,7 +271,7 @@ public class FactoryClient {
         QAAlgorithm qaAlgorithm = new QAAlgorithm(qaModelingInterface);
 
         for (int i = 0; i < main.Parameters.Common.SIMULATION_COUNT; i++) {
-            Pair<Double, QAResultBase> qaPotentialEnergy = qaAlgorithm.execute();
+            Pair<Double, QAResultBaseInterface> qaPotentialEnergy = qaAlgorithm.execute();
             chartEx.addToQASeries(i + 1, qaPotentialEnergy.getKey());
             qaEnergySum += qaPotentialEnergy.getKey();
             System.out.println("QA Energy: " + qaPotentialEnergy);
@@ -297,7 +297,7 @@ public class FactoryClient {
         SAAlgorithm saAlgorithm = new SAAlgorithm(saModelingInterface);
 
         for (int i = 0; i < main.Parameters.Common.SIMULATION_COUNT; i++) {
-            Pair<Double, SAResultBase> saExecuteResult = saAlgorithm.execute();
+            Pair<Double, SAResultBaseInterface> saExecuteResult = saAlgorithm.execute();
             chartEx.addToSASeries(i + 1, saExecuteResult.getKey());
             saEnergySum += saExecuteResult.getKey();
             System.out.println("SA Energy: " + saExecuteResult);

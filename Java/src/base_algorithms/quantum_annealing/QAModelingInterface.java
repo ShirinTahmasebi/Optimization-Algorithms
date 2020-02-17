@@ -26,5 +26,5 @@ public interface QAModelingInterface {
 
     QAPlainOldData getData();
 
-    QAResultBase getResult();
+    QAResultBaseInterface getResult();
 }

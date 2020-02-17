@@ -1,4 +1,4 @@
 package base_algorithms.quantum_annealing;
 
-public interface QAResultBase {
+public interface QAResultBaseInterface {
 }
