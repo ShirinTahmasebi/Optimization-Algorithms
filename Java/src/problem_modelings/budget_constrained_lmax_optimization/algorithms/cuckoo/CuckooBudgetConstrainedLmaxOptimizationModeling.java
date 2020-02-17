@@ -11,18 +11,18 @@ import problem_modelings.budget_constrained_lmax_optimization.model_specificatio
 
 import java.util.*;
 
-public class CuckooBudgetConstrainedCostOptimizationModeling extends BudgetConstrainedLmaxOptimizationModelingAbstract implements CuckooModelingInterface {
+public class CuckooBudgetConstrainedLmaxOptimizationModeling extends BudgetConstrainedLmaxOptimizationModelingAbstract implements CuckooModelingInterface {
 
     CuckooPlainOldData cuckooPlainOldData;
 
-    public CuckooBudgetConstrainedCostOptimizationModeling(BudgetConstrainedLmaxOptimizationModelingPlainOldData modelPlainOldData, CuckooPlainOldData cuckooPlainOldData) {
+    public CuckooBudgetConstrainedLmaxOptimizationModeling(BudgetConstrainedLmaxOptimizationModelingPlainOldData modelPlainOldData, CuckooPlainOldData cuckooPlainOldData) {
         super(modelPlainOldData);
         this.cuckooPlainOldData = cuckooPlainOldData;
     }
 
     @Override
     public double calculateCost(CuckooDataAndBehaviour cuckooDataAndBehaviours) {
-        CuckooBudgetConstrainedCostOptimizationModelingDataAndBehaviour castedCuckooDataAndBehaviours = (CuckooBudgetConstrainedCostOptimizationModelingDataAndBehaviour) cuckooDataAndBehaviours;
+        CuckooBudgetConstrainedLmaxOptimizationModelingDataAndBehaviour castedCuckooDataAndBehaviours = (CuckooBudgetConstrainedLmaxOptimizationModelingDataAndBehaviour) cuckooDataAndBehaviours;
         int maxL = super.calculateMaxL(castedCuckooDataAndBehaviours);
         int summationOfLMax = super.calculateDistanceToNearestControllerEnergy(castedCuckooDataAndBehaviours);
 
@@ -56,8 +56,8 @@ public class CuckooBudgetConstrainedCostOptimizationModeling extends BudgetConst
             throw new Exception("Using generateEggs is not valid for not mature cuckoos!");
         }
         List<Cuckoo> eggs = new ArrayList<>();
-        CuckooBudgetConstrainedCostOptimizationModelingDataAndBehaviour dataAndBehaviour =
-                (CuckooBudgetConstrainedCostOptimizationModelingDataAndBehaviour) matureCuckoo.getCuckooDataAndBehaviour();
+        CuckooBudgetConstrainedLmaxOptimizationModelingDataAndBehaviour dataAndBehaviour =
+                (CuckooBudgetConstrainedLmaxOptimizationModelingDataAndBehaviour) matureCuckoo.getCuckooDataAndBehaviour();
         matureCuckoo.getMatureCuckoo().setELR(dataAndBehaviour.getMaxELR());
 
         for (int i = 0; i < matureCuckoo.getMatureCuckoo().getNumberOfEggs(); i++) {
@@ -75,7 +75,7 @@ public class CuckooBudgetConstrainedCostOptimizationModeling extends BudgetConst
 
         Random random = new Random();
 
-        CuckooBudgetConstrainedCostOptimizationModelingDataAndBehaviour dataAndBehaviour = (CuckooBudgetConstrainedCostOptimizationModelingDataAndBehaviour) matureCuckoo.getCuckooDataAndBehaviour();
+        CuckooBudgetConstrainedLmaxOptimizationModelingDataAndBehaviour dataAndBehaviour = (CuckooBudgetConstrainedLmaxOptimizationModelingDataAndBehaviour) matureCuckoo.getCuckooDataAndBehaviour();
 
         boolean[] tempCandidateController = dataAndBehaviour.controllerXSpinVariables.clone();
         int maxElr = matureCuckoo.getMatureCuckoo().getELR();
@@ -119,7 +119,7 @@ public class CuckooBudgetConstrainedCostOptimizationModeling extends BudgetConst
 
         controllerInversionIndicesFromTrueToFalse.forEach(index -> tempCandidateController[index] = false);
 
-        CuckooDataAndBehaviour cuckooDataAndBehaviour = new CuckooBudgetConstrainedCostOptimizationModelingDataAndBehaviour(tempCandidateController);
+        CuckooDataAndBehaviour cuckooDataAndBehaviour = new CuckooBudgetConstrainedLmaxOptimizationModelingDataAndBehaviour(tempCandidateController);
 
         return new Cuckoo(false, cuckooDataAndBehaviour);
     }
@@ -137,7 +137,7 @@ public class CuckooBudgetConstrainedCostOptimizationModeling extends BudgetConst
 
         trueIndices.forEach(trueIndex -> controllersSpinVariables[trueIndex] = true);
 
-        CuckooDataAndBehaviour cuckooDataAndBehaviour = new CuckooBudgetConstrainedCostOptimizationModelingDataAndBehaviour(controllersSpinVariables);
+        CuckooDataAndBehaviour cuckooDataAndBehaviour = new CuckooBudgetConstrainedLmaxOptimizationModelingDataAndBehaviour(controllersSpinVariables);
         Cuckoo cuckoo = new Cuckoo(true, cuckooDataAndBehaviour);
         cuckoo.setCost(calculateCost(cuckooDataAndBehaviour));
         return cuckoo;
@@ -145,7 +145,7 @@ public class CuckooBudgetConstrainedCostOptimizationModeling extends BudgetConst
 
     @Override
     public void printGeneratedSolution(CuckooDataAndBehaviour cuckooDataAndBehaviour) {
-        CuckooBudgetConstrainedCostOptimizationModelingDataAndBehaviour dataAndBehaviour = (CuckooBudgetConstrainedCostOptimizationModelingDataAndBehaviour) cuckooDataAndBehaviour;
+        CuckooBudgetConstrainedLmaxOptimizationModelingDataAndBehaviour dataAndBehaviour = (CuckooBudgetConstrainedLmaxOptimizationModelingDataAndBehaviour) cuckooDataAndBehaviour;
         super.printGeneratedSolution(dataAndBehaviour.controllerXSpinVariables);
     }
 

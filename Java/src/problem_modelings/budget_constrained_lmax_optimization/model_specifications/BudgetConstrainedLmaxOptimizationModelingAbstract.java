@@ -4,7 +4,7 @@ import base_algorithms.Cuckoo.model.CuckooDataAndBehaviour;
 import main.Parameters;
 import main.model.Vertex;
 import problem_modelings.base.modeling.BaseMultiControllerProblemModeling;
-import problem_modelings.budget_constrained_lmax_optimization.algorithms.cuckoo.CuckooBudgetConstrainedCostOptimizationModelingDataAndBehaviour;
+import problem_modelings.budget_constrained_lmax_optimization.algorithms.cuckoo.CuckooBudgetConstrainedLmaxOptimizationModelingDataAndBehaviour;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -58,8 +58,8 @@ public abstract class BudgetConstrainedLmaxOptimizationModelingAbstract extends 
     }
 
     public int calculateMaxL(CuckooDataAndBehaviour cuckooDataAndBehaviour) {
-        if (cuckooDataAndBehaviour instanceof CuckooBudgetConstrainedCostOptimizationModelingDataAndBehaviour) {
-            return calculateMaxL((CuckooBudgetConstrainedCostOptimizationModelingDataAndBehaviour) cuckooDataAndBehaviour);
+        if (cuckooDataAndBehaviour instanceof CuckooBudgetConstrainedLmaxOptimizationModelingDataAndBehaviour) {
+            return calculateMaxL((CuckooBudgetConstrainedLmaxOptimizationModelingDataAndBehaviour) cuckooDataAndBehaviour);
         } else {
             return Integer.MAX_VALUE;
         }
@@ -67,14 +67,14 @@ public abstract class BudgetConstrainedLmaxOptimizationModelingAbstract extends 
 
 
     public int calculateDistanceToNearestControllerEnergy(CuckooDataAndBehaviour cuckooDataAndBehaviour) {
-        if (cuckooDataAndBehaviour instanceof CuckooBudgetConstrainedCostOptimizationModelingDataAndBehaviour) {
-            return calculateDistanceToNearestControllerEnergy((CuckooBudgetConstrainedCostOptimizationModelingDataAndBehaviour) cuckooDataAndBehaviour);
+        if (cuckooDataAndBehaviour instanceof CuckooBudgetConstrainedLmaxOptimizationModelingDataAndBehaviour) {
+            return calculateDistanceToNearestControllerEnergy((CuckooBudgetConstrainedLmaxOptimizationModelingDataAndBehaviour) cuckooDataAndBehaviour);
         } else {
             return Integer.MAX_VALUE;
         }
     }
 
-    private int calculateMaxL(CuckooBudgetConstrainedCostOptimizationModelingDataAndBehaviour cuckooDataAndBehaviour) {
+    private int calculateMaxL(CuckooBudgetConstrainedLmaxOptimizationModelingDataAndBehaviour cuckooDataAndBehaviour) {
 
         List<Integer> nodeMinDistancesToSelectedControllers = new ArrayList<>();
         List<Integer> controllersIndices = new ArrayList<>();
@@ -134,7 +134,7 @@ public abstract class BudgetConstrainedLmaxOptimizationModelingAbstract extends 
         return nodeMinDistancesToSelectedControllers.stream().mapToInt(Integer::intValue).sum();
     }
 
-    private int calculateDistanceToNearestControllerEnergy(CuckooBudgetConstrainedCostOptimizationModelingDataAndBehaviour cuckooDataAndBehaviour) {
+    private int calculateDistanceToNearestControllerEnergy(CuckooBudgetConstrainedLmaxOptimizationModelingDataAndBehaviour cuckooDataAndBehaviour) {
 
         List<Integer> nodeMinDistancesToSelectedControllers = new ArrayList<>();
         List<Integer> controllersIndices = new ArrayList<>();

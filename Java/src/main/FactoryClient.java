@@ -14,9 +14,9 @@ import base_algorithms.simulated_annealing.SAResultBase;
 import javafx.util.Pair;
 import main.model.Graph;
 import main.model.Vertex;
-import problem_modelings.budget_constrained_lmax_optimization.algorithms.QABudgetConstrainedCostOptimizationModeling;
+import problem_modelings.budget_constrained_lmax_optimization.algorithms.QABudgetConstrainedLmaxOptimizationModeling;
 import problem_modelings.budget_constrained_lmax_optimization.algorithms.SABudgetConstrainedLmaxOptimizationModeling;
-import problem_modelings.budget_constrained_lmax_optimization.algorithms.cuckoo.CuckooBudgetConstrainedCostOptimizationModeling;
+import problem_modelings.budget_constrained_lmax_optimization.algorithms.cuckoo.CuckooBudgetConstrainedLmaxOptimizationModeling;
 import problem_modelings.budget_constrained_lmax_optimization.model_specifications.BudgetConstrainedLmaxOptimizationModelignSAResult;
 import problem_modelings.budget_constrained_lmax_optimization.model_specifications.BudgetConstrainedLmaxOptimizationModelingPlainOldData;
 import problem_modelings.budget_constrained_lmax_optimization.model_specifications.BudgetConstrainedLmaxOptimizationModelignQAResult;
@@ -85,14 +85,14 @@ public class FactoryClient {
 
         CuckooPlainOldData cuckooPlainOldData = new CuckooPlainOldData();
 
-        CuckooModelingInterface cuckooModelingInterface = new CuckooBudgetConstrainedCostOptimizationModeling(budgetConstrainedLmaxOptimizationModelingPlainOldData, cuckooPlainOldData);
+        CuckooModelingInterface cuckooModelingInterface = new CuckooBudgetConstrainedLmaxOptimizationModeling(budgetConstrainedLmaxOptimizationModelingPlainOldData, cuckooPlainOldData);
 
         CuckooAlgorithm cuckooAlgorithm = new CuckooAlgorithm(cuckooModelingInterface);
 
         for (int i = 0; i < main.Parameters.Common.SIMULATION_COUNT; i++) {
             double cuckooPotentialEnergy = cuckooAlgorithm.execute();
-            double lmax = ((CuckooBudgetConstrainedCostOptimizationModeling) cuckooModelingInterface).calculateMaxL(cuckooAlgorithm.getSelectedCuckooDataAndBehavior());
-            double summationOfLMax = ((CuckooBudgetConstrainedCostOptimizationModeling) cuckooModelingInterface).calculateDistanceToNearestControllerEnergy(cuckooAlgorithm.getSelectedCuckooDataAndBehavior());
+            double lmax = ((CuckooBudgetConstrainedLmaxOptimizationModeling) cuckooModelingInterface).calculateMaxL(cuckooAlgorithm.getSelectedCuckooDataAndBehavior());
+            double summationOfLMax = ((CuckooBudgetConstrainedLmaxOptimizationModeling) cuckooModelingInterface).calculateDistanceToNearestControllerEnergy(cuckooAlgorithm.getSelectedCuckooDataAndBehavior());
 
             chartEx.addToCuckooSeries(i + 1, cuckooPotentialEnergy);
 
@@ -118,7 +118,7 @@ public class FactoryClient {
                 main.Parameters.QuantumAnnealing.TUNNELING_FIELD_EVAPORATION
         );
 
-        QAModelingInterface qaModelingInterface = new QABudgetConstrainedCostOptimizationModeling(
+        QAModelingInterface qaModelingInterface = new QABudgetConstrainedLmaxOptimizationModeling(
                 budgetConstrainedLmaxOptimizationModelingPlainOldData,
                 qaPlainOldData
         );

@@ -12,11 +12,11 @@ import problem_modelings.budget_constrained_lmax_optimization.model_specificatio
 
 import java.util.*;
 
-public class QABudgetConstrainedCostOptimizationModeling extends BudgetConstrainedLmaxOptimizationModelingAbstract implements QAModelingInterface {
+public class QABudgetConstrainedLmaxOptimizationModeling extends BudgetConstrainedLmaxOptimizationModelingAbstract implements QAModelingInterface {
 
     private QAPlainOldData qaDataStructure;
 
-    public QABudgetConstrainedCostOptimizationModeling(BudgetConstrainedLmaxOptimizationModelingPlainOldData modelPlainOldData, QAPlainOldData qaDataStructure) {
+    public QABudgetConstrainedLmaxOptimizationModeling(BudgetConstrainedLmaxOptimizationModelingPlainOldData modelPlainOldData, QAPlainOldData qaDataStructure) {
         super(modelPlainOldData);
         this.qaDataStructure = qaDataStructure;
     }
