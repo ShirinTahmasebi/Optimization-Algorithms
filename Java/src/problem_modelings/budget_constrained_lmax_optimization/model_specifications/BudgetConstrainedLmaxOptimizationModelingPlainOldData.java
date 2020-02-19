@@ -24,18 +24,9 @@ public class BudgetConstrainedLmaxOptimizationModelingPlainOldData extends BaseM
             int costController,
             int totalBudget,
             int[][] distances) {
+        super(graph, candidateControllers, sensorControllerMaxDistance, maxControllerCoverage, maxControllerLoad, costController);
         this.controllerY = controllerY;
-        this.tempControllerXSpinVariables = new boolean[candidateControllers.size()];
-        this.controllerXSpinVariables = new boolean[candidateControllers.size()];
         this.distances = distances;
-
-        this.graph = graph;
-        this.candidateControllers = candidateControllers;
-        this.sensorControllerMaxDistance = sensorControllerMaxDistance;
-
-        this.maxControllerCoverage = maxControllerCoverage;
-        this.maxControllerLoad = maxControllerLoad;
-        this.costController = costController;
         this.totalBudget = totalBudget;
         this.lineChartEx = new LineChartEx();
     }

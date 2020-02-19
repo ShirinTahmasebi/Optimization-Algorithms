@@ -4,4 +4,8 @@ import main.model.Graph;
 
 public abstract class BaseProblemModelingPlainOldData {
     public Graph graph;
+
+    public BaseProblemModelingPlainOldData(Graph graph){
+        this.graph = graph;
+    }
 }

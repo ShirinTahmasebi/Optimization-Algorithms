@@ -27,26 +27,16 @@ public class CostOptimizationModelingPlainOldData extends BaseMultiControllerMul
             int costSink,
             int costController,
             float costReductionFactor) {
-        this.controllerYSpinVariables = controllerYSpinVariables;
-        this.sinkYSpinVariables = sinkYSpinVariables;
-        this.tempControllerXSpinVariables = new boolean[candidateControllers.size()];
-        this.tempSinkXSpinVariables = new boolean[candidateSinks.size()];
-        this.sinkXSpinVariables = new boolean[candidateSinks.size()];
-        this.controllerXSpinVariables = new boolean[candidateControllers.size()];
-
-        this.graph = graph;
-        this.candidateSinks = candidateSinks;
-        this.candidateControllers = candidateControllers;
-        this.sensorSinkMaxDistance = sensorSinkMaxDistance;
-        this.sensorControllerMaxDistance = sensorControllerMaxDistance;
-
-        this.maxSinkCoverage = maxSinkCoverage;
-        this.maxControllerCoverage = maxControllerCoverage;
-        this.maxSinkLoad = maxSinkLoad;
-        this.maxControllerLoad = maxControllerLoad;
-        this.costSink = costSink;
-        this.costController = costController;
-        this.costReductionFactor = costReductionFactor;
+        super(
+                graph,
+                candidateSinks, candidateControllers,
+                sinkYSpinVariables, controllerYSpinVariables,
+                sensorSinkMaxDistance, sensorControllerMaxDistance,
+                maxSinkCoverage, maxControllerCoverage,
+                maxSinkLoad, maxControllerLoad,
+                costSink, costController,
+                costReductionFactor
+        );
         this.lineChartEx = new LineChartEx();
     }
 }
