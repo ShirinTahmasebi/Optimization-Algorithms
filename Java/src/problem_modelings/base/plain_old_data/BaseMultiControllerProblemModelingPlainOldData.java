@@ -40,7 +40,7 @@ public abstract class BaseMultiControllerProblemModelingPlainOldData extends Bas
 
         this.controllerXSpinVariables = new boolean[candidateControllers.size()];
         this.tempControllerXSpinVariables = new boolean[candidateControllers.size()];
-        this.sensorsLoadToControllers = new int[graph.getVertexes().size()][candidateControllers.size()];
+        this.sensorsLoadToControllers = new int[graph.getVertexes().size()][graph.getVertexes().size()];
         this.maxControllerCoverage = maxControllerCoverage;
         this.maxControllerLoad = maxControllerLoad;
         this.costController = costController;
