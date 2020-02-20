@@ -1,9 +1,9 @@
 package problem_modelings.budget_constrained_lmax_optimization.algorithms;
 
 import base_algorithms.quantum_annealing.QAResultBaseInterface;
-import javafx.util.Pair;
 import base_algorithms.quantum_annealing.QAModelingInterface;
 import base_algorithms.quantum_annealing.QAPlainOldData;
+import javafx.util.Pair;
 import main.Parameters;
 import problem_modelings.budget_constrained_lmax_optimization.Utils;
 import problem_modelings.budget_constrained_lmax_optimization.model_specifications.BudgetConstrainedLmaxOptimizationModelingAbstract;
@@ -135,19 +135,17 @@ public class QABudgetConstrainedLmaxOptimizationModeling extends BudgetConstrain
                 modelPlainOldData.maxControllerLoad, modelPlainOldData.maxControllerCoverage, maxL
         );
 
-        // TODO: Implement
-        double controllerSynchronizationOverheadEnergy = Utils.getControllerSynchronizationOverheadEnergy(
+        double controllerSynchronizationDelayAndOverheadEnergy = Utils.getControllerSynchronizationDelayAndOverheadEnergy(
                 modelPlainOldData.graph,
                 modelPlainOldData.controllerY,
                 modelPlainOldData.candidateControllers, modelPlainOldData.tempControllerXSpinVariables,
-                modelPlainOldData.maxControllerLoad, modelPlainOldData.maxControllerCoverage, maxL,
                 modelPlainOldData.sensorsLoadToControllers
         );
 
         double lMaxEnergy = Utils.getMaxLEnergy(maxL);
         double distanceToNearestControllerEnergy = Utils.getSummationOfMaxLEnergy(summationOfLMax);
 
-        double potentialEnergy = reliabilityEnergy + loadBalancingEnergy + lMaxEnergy + distanceToNearestControllerEnergy + controllerSynchronizationOverheadEnergy;
+        double potentialEnergy = reliabilityEnergy + loadBalancingEnergy + lMaxEnergy + distanceToNearestControllerEnergy + controllerSynchronizationDelayAndOverheadEnergy;
         double kineticEnergy = getKineticEnergy(currentReplicaNum);
 
         return new Pair<>(potentialEnergy, kineticEnergy);

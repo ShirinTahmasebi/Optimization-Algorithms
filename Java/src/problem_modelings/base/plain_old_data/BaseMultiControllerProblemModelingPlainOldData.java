@@ -12,7 +12,7 @@ public abstract class BaseMultiControllerProblemModelingPlainOldData extends Bas
     // Problem Specifications
     public List<Vertex> candidateControllers;       // AC
     public int sensorControllerMaxDistance;         // LMax
-    public int[][] sensorsLoadToControllers;        // w[sensors][candidate controllers]
+    public int[][] sensorsLoadToControllers;        // w[sensors][sensors]
     // TODO: Rename this field: controllerYSpinVariables
     public boolean[][] controllerYSpinVariable;     // SY (Y Spin Variable)
 
@@ -49,7 +49,7 @@ public abstract class BaseMultiControllerProblemModelingPlainOldData extends Bas
 
         // TODO: Write w matrix to file and load it from file
         for (int i = 0; i < graph.getVertexes().size(); i++) {
-            for (int j = 0; j < candidateControllers.size(); j++) {
+            for (int j = 0; j < graph.getVertexes().size(); j++) {
                 int randLoad = random.nextInt(Parameters.Common.MAX_CONTROLLER_LOAD);
                 sensorsLoadToControllers[i][j] = randLoad;
             }

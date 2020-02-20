@@ -99,10 +99,17 @@ public class SABudgetConstrainedLmaxOptimizationModeling extends BudgetConstrain
                 modelPlainOldData.maxControllerLoad, modelPlainOldData.maxControllerCoverage, 0
         );
 
-        double lMaxEnergy = Utils.getMaxLEnergy(maxL);
+        double controllerSynchronizationDelayAndOverheadEnergy = Utils.getControllerSynchronizationDelayAndOverheadEnergy(
+                modelPlainOldData.graph,
+                modelPlainOldData.controllerY,
+                modelPlainOldData.candidateControllers, modelPlainOldData.tempControllerXSpinVariables,
+                modelPlainOldData.sensorsLoadToControllers
+        );
 
+        double lMaxEnergy = Utils.getMaxLEnergy(maxL);
         double distanceToNearestControllerEnergy = super.calculateDistanceToNearestControllerEnergy(modelPlainOldData.tempControllerXSpinVariables);
-        return reliabilityEnergy + loadBalancingEnergy + lMaxEnergy + distanceToNearestControllerEnergy;
+
+        return reliabilityEnergy + loadBalancingEnergy + lMaxEnergy + distanceToNearestControllerEnergy + controllerSynchronizationDelayAndOverheadEnergy;
     }
 
     @Override

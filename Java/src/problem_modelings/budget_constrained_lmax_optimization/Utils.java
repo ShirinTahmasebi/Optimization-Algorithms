@@ -1,5 +1,7 @@
 package problem_modelings.budget_constrained_lmax_optimization;
 
+import main.ModelNoEnum;
+import main.Parameters;
 import main.model.Graph;
 import main.model.Vertex;
 import problem_modelings.budget_constrained_lmax_optimization.model_specifications.BudgetConstrainedLmaxOptimizationModelingAbstract;
@@ -163,5 +165,31 @@ public interface Utils {
 
     static double getSummationOfMaxLEnergy(int summationOfLMax) {
         return (summationOfLMax < 0 ? summationOfLMax * -1 : summationOfLMax) * BudgetConstrainedLmaxOptimizationModelingAbstract.SUMMATION_OFL_MAX_COEFFICIENT;
+    }
+
+    static double getControllerSynchronizationDelayAndOverheadEnergy(Graph graph, int[][] controllerY, List<Vertex> candidateControllers, boolean[] tempControllerXSpinVariables, int[][] sensorsLoadToControllers) {
+        if (Parameters.Common.MODEL_NO != ModelNoEnum.BUDGET_CONSTRAINED_CONTROLLER_OVERHEAD){
+            return 0;
+        }
+
+        double controllerSyncDelay = .0;
+        double controllerSyncOverhead = .0;
+
+        for (int i = 0; i < graph.getVertexes().size(); i++) {
+            Vertex graphNode = graph.getVertexes().get(i);
+            if (Utils.isNodeSelectedAsController(graphNode.getId(), tempControllerXSpinVariables, candidateControllers)) {
+                for (int j = 0; j < graph.getVertexes().size(); j++) {
+                    Vertex graphNode2 = graph.getVertexes().get(i);
+                    if (!graphNode2.getId().equals(graphNode.getId()) &&
+                            Utils.isNodeSelectedAsController(graphNode2.getId(), tempControllerXSpinVariables, candidateControllers)) {
+                        controllerSyncOverhead += sensorsLoadToControllers[i][j];
+                        controllerSyncDelay += controllerY[i][j];
+                    }
+                }
+            }
+        }
+
+        return (Parameters.SynchronizationOverheadModel.SYNC_DELAY_WEIGHT * controllerSyncDelay) +
+                (Parameters.SynchronizationOverheadModel.SYNC_OVERHEAD_WEIGHT * controllerSyncOverhead);
     }
 }

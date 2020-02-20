@@ -27,6 +27,11 @@ public class Parameters {
         public static final int MAX_CUCKOO_NUMBERS = 10000;
     }
 
+    public static class SynchronizationOverheadModel {
+        public static final double SYNC_OVERHEAD_WEIGHT = 0.1;
+        public static final double SYNC_DELAY_WEIGHT = 1 - SYNC_OVERHEAD_WEIGHT;
+    }
+
     public static class Common {
         public static final boolean DO_PRINT_INSTANCES = false;
         public static final boolean DO_PRINT_STEPS = false;
@@ -43,7 +48,7 @@ public class Parameters {
         public static final int MAX_CONTROLLER_LOAD = 30;                   // WPrime
         public static final int COST_SINK = 1;
         public static final int COST_CONTROLLER = 3;
-        public static final boolean USE_RANDOM_GRAPH = false;
+        public static final boolean USE_RANDOM_GRAPH = true;
         public static final int GRAPH_SPEC_MODEL_NO = 2;
         public static final ModelNoEnum MODEL_NO = ModelNoEnum.BUDGET_CONSTRAINED_CONTROLLER_OVERHEAD;
     }
