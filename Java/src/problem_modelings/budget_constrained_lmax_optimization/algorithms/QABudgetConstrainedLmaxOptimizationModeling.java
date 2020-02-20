@@ -135,10 +135,19 @@ public class QABudgetConstrainedLmaxOptimizationModeling extends BudgetConstrain
                 modelPlainOldData.maxControllerLoad, modelPlainOldData.maxControllerCoverage, maxL
         );
 
+        // TODO: Implement
+        double controllerSynchronizationOverheadEnergy = Utils.getControllerSynchronizationOverheadEnergy(
+                modelPlainOldData.graph,
+                modelPlainOldData.controllerY,
+                modelPlainOldData.candidateControllers, modelPlainOldData.tempControllerXSpinVariables,
+                modelPlainOldData.maxControllerLoad, modelPlainOldData.maxControllerCoverage, maxL,
+                modelPlainOldData.sensorsLoadToControllers
+        );
+
         double lMaxEnergy = Utils.getMaxLEnergy(maxL);
         double distanceToNearestControllerEnergy = Utils.getSummationOfMaxLEnergy(summationOfLMax);
 
-        double potentialEnergy = reliabilityEnergy + loadBalancingEnergy + lMaxEnergy + distanceToNearestControllerEnergy;
+        double potentialEnergy = reliabilityEnergy + loadBalancingEnergy + lMaxEnergy + distanceToNearestControllerEnergy + controllerSynchronizationOverheadEnergy;
         double kineticEnergy = getKineticEnergy(currentReplicaNum);
 
         return new Pair<>(potentialEnergy, kineticEnergy);
