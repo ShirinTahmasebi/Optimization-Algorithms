@@ -14,6 +14,7 @@ public abstract class BudgetConstrainedLmaxOptimizationModelingAbstract extends 
 
     public static int L_MAX_COEFFICIENT = 100;
     public static int SUMMATION_OFL_MAX_COEFFICIENT = 10;
+    public static int SYNCHRONIZATION_COST_COEFFICIENT = 15;
 
     public BudgetConstrainedLmaxOptimizationModelingAbstract(BudgetConstrainedLmaxOptimizationModelingPlainOldData modelPlainOldData) {
         this.modelPlainOldData = modelPlainOldData;

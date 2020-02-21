@@ -167,23 +167,26 @@ public interface Utils {
         return (summationOfLMax < 0 ? summationOfLMax * -1 : summationOfLMax) * BudgetConstrainedLmaxOptimizationModelingAbstract.SUMMATION_OFL_MAX_COEFFICIENT;
     }
 
-    static double getControllerSynchronizationDelayAndOverheadEnergy(Graph graph, int[][] controllerY, List<Vertex> candidateControllers, boolean[] tempControllerXSpinVariables, int[][] sensorsLoadToControllers) {
-        if (Parameters.Common.MODEL_NO != ModelNoEnum.BUDGET_CONSTRAINED_CONTROLLER_OVERHEAD){
+    static double getControllerSynchronizationDelayAndOverheadCost(Graph graph, int[][] controllerY, List<Vertex> candidateControllers, boolean[] tempControllerXSpinVariables, int[][] sensorsLoadToControllers) {
+        if (Parameters.Common.MODEL_NO != ModelNoEnum.BUDGET_CONSTRAINED_CONTROLLER_OVERHEAD) {
             return 0;
         }
 
         double controllerSyncDelay = .0;
         double controllerSyncOverhead = .0;
 
-        for (int i = 0; i < graph.getVertexes().size(); i++) {
-            Vertex graphNode = graph.getVertexes().get(i);
-            if (Utils.isNodeSelectedAsController(graphNode.getId(), tempControllerXSpinVariables, candidateControllers)) {
-                for (int j = 0; j < graph.getVertexes().size(); j++) {
-                    Vertex graphNode2 = graph.getVertexes().get(i);
-                    if (!graphNode2.getId().equals(graphNode.getId()) &&
-                            Utils.isNodeSelectedAsController(graphNode2.getId(), tempControllerXSpinVariables, candidateControllers)) {
-                        controllerSyncOverhead += sensorsLoadToControllers[i][j];
-                        controllerSyncDelay += controllerY[i][j];
+        for (int i = 0; i < tempControllerXSpinVariables.length; i++) {
+            if (tempControllerXSpinVariables[i]) {
+                Vertex controller1 = candidateControllers.get(i);
+                int vertexIndexById1 = graph.getVertexIndexById(controller1.getId());
+                for (int j = 0; j < tempControllerXSpinVariables.length; j++) {
+                    if (tempControllerXSpinVariables[j]) {
+                        Vertex controller2 = candidateControllers.get(j);
+                        int vertexIndexById2 = graph.getVertexIndexById(controller2.getId());
+                        if (vertexIndexById1 != vertexIndexById2) {
+                            controllerSyncOverhead += sensorsLoadToControllers[vertexIndexById1][vertexIndexById2];
+                            controllerSyncDelay += controllerY[vertexIndexById1][j];
+                        }
                     }
                 }
             }
@@ -191,5 +194,9 @@ public interface Utils {
 
         return (Parameters.SynchronizationOverheadModel.SYNC_DELAY_WEIGHT * controllerSyncDelay) +
                 (Parameters.SynchronizationOverheadModel.SYNC_OVERHEAD_WEIGHT * controllerSyncOverhead);
+    }
+
+    static double getControllerSynchronizationOverheadEnergy(double controllerSynchronizationDelayAndOverheadCost) {
+        return BudgetConstrainedLmaxOptimizationModelingAbstract.SYNCHRONIZATION_COST_COEFFICIENT * controllerSynchronizationDelayAndOverheadCost;
     }
 }

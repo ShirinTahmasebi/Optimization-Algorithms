@@ -38,21 +38,22 @@ public class CuckooBudgetConstrainedLmaxOptimizationModeling extends BudgetConst
         double loadBalancingEnergy = Utils.getLoadBalancingEnergy(
                 modelPlainOldData.graph,
                 modelPlainOldData.controllerY,
-                modelPlainOldData.candidateControllers, modelPlainOldData.tempControllerXSpinVariables,
+                modelPlainOldData.candidateControllers, controllerXSpinVariables,
                 modelPlainOldData.maxControllerLoad, modelPlainOldData.maxControllerCoverage, maxL
         );
 
-        double controllerSynchronizationDelayAndOverheadEnergy = Utils.getControllerSynchronizationDelayAndOverheadEnergy(
+        double controllerSynchronizationDelayAndOverheadCost = Utils.getControllerSynchronizationDelayAndOverheadCost(
                 modelPlainOldData.graph,
                 modelPlainOldData.controllerY,
-                modelPlainOldData.candidateControllers, modelPlainOldData.tempControllerXSpinVariables,
+                modelPlainOldData.candidateControllers, controllerXSpinVariables,
                 modelPlainOldData.sensorsLoadToControllers
         );
 
         double lMaxEnergy = Utils.getMaxLEnergy(maxL);
         double distanceToNearestControllerEnergy = Utils.getSummationOfMaxLEnergy(summationOfLMax);
+        double controllerSynchronizationOverheadEnergy = Utils.getControllerSynchronizationOverheadEnergy(controllerSynchronizationDelayAndOverheadCost);
 
-        return reliabilityEnergy + loadBalancingEnergy + lMaxEnergy + distanceToNearestControllerEnergy + controllerSynchronizationDelayAndOverheadEnergy;
+        return reliabilityEnergy + loadBalancingEnergy + lMaxEnergy + distanceToNearestControllerEnergy + controllerSynchronizationOverheadEnergy;
     }
 
     // TODO: Revise generateEggs and generateEggsByElr
