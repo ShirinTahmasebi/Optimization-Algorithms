@@ -189,6 +189,16 @@ public class InitializeGraph {
 
         candidateSinksNumberSet.stream().forEach((candidateSinkNumber) -> candidateSinks.add(nodes.get(candidateSinkNumber)));
 
+        Random random = new Random();
+
+        sensorToSensorWorkload = new int[vertexCount][vertexCount];
+        for (int i = 0; i < vertexCount; i++) {
+            for (int j = 0; j < vertexCount; j++) {
+                int randLoad = random.nextInt(Parameters.Common.MAX_CONTROLLER_LOAD);
+                sensorToSensorWorkload[i][j] = randLoad;
+            }
+        }
+
         return new Graph(nodes, edges);
     }
 
