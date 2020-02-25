@@ -39,6 +39,7 @@ public class FactoryClient {
     private boolean[][] sinkYSpinVariables;         // SY (Y Spin Variable)
     private boolean[][] controllerYSpinVariables;   // SYPrime (Y Spin Variable)
     private int[][] distances;
+    private int[][] sensorToSensorWorkload;         // w[sensors][sensors]
 
     public static void main(String[] args) {
         FactoryClient client = new FactoryClient();
@@ -78,7 +79,8 @@ public class FactoryClient {
                 main.Parameters.Common.MAX_CONTROLLER_LOAD,
                 main.Parameters.Common.COST_CONTROLLER,
                 (candidateControllers.size() / 3) * Parameters.Common.COST_CONTROLLER,
-                distances
+                distances,
+                sensorToSensorWorkload
         );
 
         Date cuckooTimeA = new Date();
@@ -311,18 +313,19 @@ public class FactoryClient {
 
     private void retrieveVariablesFromFile() {
         if (Parameters.Common.MODEL_NO == ModelNoEnum.COST_OPTIMIZATION) {
-            graph = (Graph) readObjectFromFile(Utils.FILE_NAME_GRAPH + Parameters.Common.GRAPH_SIZE.number);
-            candidateSinks = (List<Vertex>) readObjectFromFile(Utils.FILE_NAME_CANDIDATE_SINKS + Parameters.Common.GRAPH_SIZE.number);
-            candidateControllers = (List<Vertex>) readObjectFromFile(Utils.FILE_NAME_CANDIDATE_CONTROLLERS + Parameters.Common.GRAPH_SIZE.number);
-            sinkYSpinVariables = (boolean[][]) readObjectFromFile(Utils.FILE_NAME_SINK_Y_SPIN_VARIABLES + Parameters.Common.GRAPH_SIZE.number);
-            controllerYSpinVariables = (boolean[][]) readObjectFromFile(Utils.FILE_NAME_CONTROLLER_Y_SPIN_VARIABLES + Parameters.Common.GRAPH_SIZE.number);
-            distances = (int[][]) readObjectFromFile(Utils.FILE_NAME_DISTANCES + Parameters.Common.GRAPH_SIZE.number);
+            graph = (Graph) readObjectFromFile(Utils.FILE_NAME_GRAPH);
+            candidateSinks = (List<Vertex>) readObjectFromFile(Utils.FILE_NAME_CANDIDATE_SINKS);
+            candidateControllers = (List<Vertex>) readObjectFromFile(Utils.FILE_NAME_CANDIDATE_CONTROLLERS);
+            sinkYSpinVariables = (boolean[][]) readObjectFromFile(Utils.FILE_NAME_SINK_Y_SPIN_VARIABLES);
+            controllerYSpinVariables = (boolean[][]) readObjectFromFile(Utils.FILE_NAME_CONTROLLER_Y_SPIN_VARIABLES);
+            distances = (int[][]) readObjectFromFile(Utils.FILE_NAME_DISTANCES);
         } else if (Parameters.Common.MODEL_NO == ModelNoEnum.BUDGET_CONSTRAINED_LMAX_OPTIMIZATION || Parameters.Common.MODEL_NO == ModelNoEnum.BUDGET_CONSTRAINED_CONTROLLER_OVERHEAD) {
-            graph = (Graph) readObjectFromFile(Utils.FILE_NAME_GRAPH + Parameters.Common.GRAPH_SIZE.number);
-            candidateControllers = (List<Vertex>) readObjectFromFile(Utils.FILE_NAME_CANDIDATE_CONTROLLERS + Parameters.Common.GRAPH_SIZE.number);
-            controllerY = (int[][]) readObjectFromFile(Utils.FILE_NAME_CONTROLLER_Y + Parameters.Common.GRAPH_SIZE.number);
-            controllerY = (int[][]) readObjectFromFile(Utils.FILE_NAME_CONTROLLER_Y + Parameters.Common.GRAPH_SIZE.number);
-            distances = (int[][]) readObjectFromFile(Utils.FILE_NAME_DISTANCES + Parameters.Common.GRAPH_SIZE.number);
+            graph = (Graph) readObjectFromFile(Utils.FILE_NAME_GRAPH);
+            candidateControllers = (List<Vertex>) readObjectFromFile(Utils.FILE_NAME_CANDIDATE_CONTROLLERS);
+            controllerY = (int[][]) readObjectFromFile(Utils.FILE_NAME_CONTROLLER_Y);
+            controllerY = (int[][]) readObjectFromFile(Utils.FILE_NAME_CONTROLLER_Y);
+            distances = (int[][]) readObjectFromFile(Utils.FILE_NAME_DISTANCES);
+            sensorToSensorWorkload = (int[][]) readObjectFromFile(Utils.FILE_NAME_SENSOR_TO_SENSOR_WORKLOAD);
         }
     }
 

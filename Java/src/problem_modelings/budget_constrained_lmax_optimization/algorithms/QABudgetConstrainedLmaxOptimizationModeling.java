@@ -139,7 +139,7 @@ public class QABudgetConstrainedLmaxOptimizationModeling extends BudgetConstrain
                 modelPlainOldData.graph,
                 modelPlainOldData.controllerY,
                 modelPlainOldData.candidateControllers, modelPlainOldData.tempControllerXSpinVariables,
-                modelPlainOldData.sensorsLoadToControllers
+                modelPlainOldData.sensorToSensorWorkload
         );
 
         double lMaxEnergy = Utils.getMaxLEnergy(maxL);
@@ -148,6 +148,8 @@ public class QABudgetConstrainedLmaxOptimizationModeling extends BudgetConstrain
 
         double potentialEnergy = reliabilityEnergy + loadBalancingEnergy + lMaxEnergy + distanceToNearestControllerEnergy + controllerSynchronizationOverheadEnergy;
         double kineticEnergy = getKineticEnergy(currentReplicaNum);
+        // TODO: Uncomment of SA
+//        double kineticEnergy = 0;
 
         return new Pair<>(potentialEnergy, kineticEnergy);
     }

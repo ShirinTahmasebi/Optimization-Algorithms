@@ -22,6 +22,7 @@ public class InitializeGraph {
     private boolean[][] sinkYSpinVariables;           // SY (Y Spin Variable)
     private boolean[][] controllerYSpinVariables;     // SYPrime (Y Spin Variable)
     private int[][] distances;
+    public int[][] sensorToSensorWorkload;        // w[sensors][sensors]
 
     public static void main(String[] args) {
         InitializeGraph initializeGraph = new InitializeGraph();
@@ -30,14 +31,15 @@ public class InitializeGraph {
     }
 
     private void writeObjectsToFile() {
-        writeObjectToFile(graph, Utils.FILE_NAME_GRAPH + main.Parameters.Common.GRAPH_SIZE);
-        writeObjectToFile(candidateSinks, Utils.FILE_NAME_CANDIDATE_SINKS + main.Parameters.Common.GRAPH_SIZE);
-        writeObjectToFile(candidateControllers, Utils.FILE_NAME_CANDIDATE_CONTROLLERS + main.Parameters.Common.GRAPH_SIZE);
-        writeObjectToFile(sinkY, Utils.FILE_NAME_SINK_Y + main.Parameters.Common.GRAPH_SIZE);
-        writeObjectToFile(sinkYSpinVariables, Utils.FILE_NAME_SINK_Y_SPIN_VARIABLES + main.Parameters.Common.GRAPH_SIZE);
-        writeObjectToFile(controllerY, Utils.FILE_NAME_CONTROLLER_Y + main.Parameters.Common.GRAPH_SIZE);
-        writeObjectToFile(controllerYSpinVariables, Utils.FILE_NAME_CONTROLLER_Y_SPIN_VARIABLES + main.Parameters.Common.GRAPH_SIZE);
-        writeObjectToFile(distances, Utils.FILE_NAME_DISTANCES + main.Parameters.Common.GRAPH_SIZE);
+        writeObjectToFile(graph, Utils.FILE_NAME_GRAPH);
+        writeObjectToFile(candidateSinks, Utils.FILE_NAME_CANDIDATE_SINKS);
+        writeObjectToFile(candidateControllers, Utils.FILE_NAME_CANDIDATE_CONTROLLERS);
+        writeObjectToFile(sinkY, Utils.FILE_NAME_SINK_Y);
+        writeObjectToFile(sinkYSpinVariables, Utils.FILE_NAME_SINK_Y_SPIN_VARIABLES);
+        writeObjectToFile(controllerY, Utils.FILE_NAME_CONTROLLER_Y);
+        writeObjectToFile(controllerYSpinVariables, Utils.FILE_NAME_CONTROLLER_Y_SPIN_VARIABLES);
+        writeObjectToFile(distances, Utils.FILE_NAME_DISTANCES);
+        writeObjectToFile(sensorToSensorWorkload, Utils.FILE_NAME_SENSOR_TO_SENSOR_WORKLOAD);
     }
 
     public Graph initializeGraph(GraphSizeEnum graphSize) {
@@ -58,7 +60,7 @@ public class InitializeGraph {
             throw new RuntimeException("Special graph size 1 is not implemented");
         } else if (GraphSizeEnum.RANDOM_40_SPECIAL_NONE == graphSize) {
             throw new RuntimeException("Special graph size 2 is not implemented");
-        } else if (GraphSizeEnum.RANDOM_80_SPECIAL_104 == graphSize) {
+        } else if (GraphSizeEnum.RANDOM_100_SPECIAL_104 == graphSize) {
             // Candidate Sink = 8 * 2
             // Candidate Controller = 8 * 2
             vertexCount = 104;
@@ -207,10 +209,16 @@ public class InitializeGraph {
             vertexCount = 40;
             candidateSinksNumber = vertexCount / 5;
             candidateControllersNumber = vertexCount / 10;
-        } else if (GraphSizeEnum.RANDOM_80_SPECIAL_104 == graphSize) {
+        } else if (GraphSizeEnum.RANDOM_80_SPECIAL_NONE == graphSize) {
             // Candidate Sink = 16 (80/5)
             // Candidate Controller = 8 (80/10)
             vertexCount = 80;
+            candidateSinksNumber = vertexCount / 5;
+            candidateControllersNumber = vertexCount / 10;
+        } else if (GraphSizeEnum.RANDOM_100_SPECIAL_104 == graphSize) {
+            // Candidate Sink = 16 (80/5)
+            // Candidate Controller = 8 (80/10)
+            vertexCount = 100;
             candidateSinksNumber = vertexCount / 5;
             candidateControllersNumber = vertexCount / 10;
         } else if (GraphSizeEnum.RANDOM_150_SPECIAL_169 == graphSize) {
@@ -266,6 +274,16 @@ public class InitializeGraph {
         candidateControllerNumberSet.stream().forEach((candidateControllerNumber) -> candidateControllers.add(nodes.get(candidateControllerNumber)));
 
         candidateSinksNumberSet.stream().forEach((candidateSinkNumber) -> candidateSinks.add(nodes.get(candidateSinkNumber)));
+
+        Random random = new Random();
+
+        sensorToSensorWorkload = new int[vertexCount][vertexCount];
+        for (int i = 0; i < vertexCount; i++) {
+            for (int j = 0; j < vertexCount; j++) {
+                int randLoad = random.nextInt(Parameters.Common.MAX_CONTROLLER_LOAD);
+                sensorToSensorWorkload[i][j] = randLoad;
+            }
+        }
 
         return new Graph(nodes, edges);
     }

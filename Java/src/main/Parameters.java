@@ -40,7 +40,7 @@ public class Parameters {
         public static final int CONTROLLER_LOAD = 10;                      // wPrime
         public static final int SENSOR_SINK_MAX_DISTANCE = 3;              // Lmax
         public static final int SENSOR_CONTROLLER_MAX_DISTANCE = 2;        // LPrimeMax
-        public static final GraphSizeEnum GRAPH_SIZE = GraphSizeEnum.RANDOM_20_SPECIAL_NONE;
+        public static final GraphSizeEnum GRAPH_SIZE = GraphSizeEnum.RANDOM_100_SPECIAL_104;
         public static final int SIMULATION_COUNT = 10;
         public static final int MAX_SINK_COVERAGE = 6;                      // k
         public static final int MAX_CONTROLLER_COVERAGE = 6;                // kPrime

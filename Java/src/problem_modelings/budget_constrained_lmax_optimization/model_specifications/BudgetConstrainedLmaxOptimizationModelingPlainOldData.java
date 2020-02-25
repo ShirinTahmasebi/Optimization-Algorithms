@@ -23,8 +23,9 @@ public class BudgetConstrainedLmaxOptimizationModelingPlainOldData extends BaseM
             int maxControllerLoad,
             int costController,
             int totalBudget,
-            int[][] distances) {
-        super(graph, candidateControllers, sensorControllerMaxDistance, maxControllerCoverage, maxControllerLoad, costController);
+            int[][] distances,
+            int[][] sensorToSensorWorkload) {
+        super(graph, candidateControllers, sensorControllerMaxDistance, maxControllerCoverage, maxControllerLoad, costController, sensorToSensorWorkload);
         this.controllerY = controllerY;
         this.distances = distances;
         this.totalBudget = totalBudget;

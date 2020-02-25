@@ -46,7 +46,7 @@ public class CuckooBudgetConstrainedLmaxOptimizationModeling extends BudgetConst
                 modelPlainOldData.graph,
                 modelPlainOldData.controllerY,
                 modelPlainOldData.candidateControllers, controllerXSpinVariables,
-                modelPlainOldData.sensorsLoadToControllers
+                modelPlainOldData.sensorToSensorWorkload
         );
 
         double lMaxEnergy = Utils.getMaxLEnergy(maxL);
