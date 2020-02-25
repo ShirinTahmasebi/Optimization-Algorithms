@@ -5,10 +5,10 @@ public class Parameters {
     public static class QuantumAnnealing {
         public static final int TROTTER_REPLICAS = 100;             // P
         public static final float TEMPERATURE = 200f;               // T
-        public static final int MONTE_CARLO_STEP = 110;             // M
+        public static final int MONTE_CARLO_STEP = 80;              // M
         public static final float TUNNELING_FIELD_INITIAL = 1f;
         public static final float TUNNELING_FIELD_FINAL = .5f;
-        public static final float TUNNELING_FIELD_EVAPORATION = .9f;
+        public static final float TUNNELING_FIELD_EVAPORATION = .7f;
     }
 
     public static class SimulatedAnnealing {
@@ -21,10 +21,10 @@ public class Parameters {
     public static class Cuckoo {
         public static final int POPULATION = 200;      // Npop
         public static final int MONTE_CARLO_STEP = 5;
-        public static final int MAX_EGG_NUMBER = 201;
-        public static final int MIN_EGG_NUMBER = 150;
+        public static final int MAX_EGG_NUMBER = 20;
+        public static final int MIN_EGG_NUMBER = 2;
         public static final double EGG_KILLING_RATE = .001;
-        public static final int MAX_CUCKOO_NUMBERS = 10000;
+        public static final int MAX_CUCKOO_NUMBERS = 1000;
     }
 
     public static class SynchronizationOverheadModel {

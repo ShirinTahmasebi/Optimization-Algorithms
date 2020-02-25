@@ -14,15 +14,15 @@ public class Utils implements
 
     private static String FILE_NAME_SPEC_PREFIX = "SEPC_";
     private static String FILE_NAME_DELIMITER = "__";
-    public static String FILE_NAME_GRAPH = (Parameters.Common.USE_RANDOM_GRAPH ? "" : FILE_NAME_SPEC_PREFIX) + Parameters.Common.GRAPH_SPEC_MODEL_NO + Parameters.Common.GRAPH_SIZE.number + FILE_NAME_DELIMITER + "Graph";
-    public static String FILE_NAME_CANDIDATE_SINKS = (Parameters.Common.USE_RANDOM_GRAPH ? "" : FILE_NAME_SPEC_PREFIX) + Parameters.Common.GRAPH_SPEC_MODEL_NO + Parameters.Common.GRAPH_SIZE.number + FILE_NAME_DELIMITER + "CandidateSinks";
-    public static String FILE_NAME_CANDIDATE_CONTROLLERS = (Parameters.Common.USE_RANDOM_GRAPH ? "" : FILE_NAME_SPEC_PREFIX) + Parameters.Common.GRAPH_SPEC_MODEL_NO + Parameters.Common.GRAPH_SIZE.number + FILE_NAME_DELIMITER + "CandidateControllers";
-    public static String FILE_NAME_SINK_Y = (Parameters.Common.USE_RANDOM_GRAPH ? "" : FILE_NAME_SPEC_PREFIX) + Parameters.Common.GRAPH_SPEC_MODEL_NO + Parameters.Common.GRAPH_SIZE.number + FILE_NAME_DELIMITER + "SinkYS";
-    public static String FILE_NAME_SINK_Y_SPIN_VARIABLES = (Parameters.Common.USE_RANDOM_GRAPH ? "" : FILE_NAME_SPEC_PREFIX) + Parameters.Common.GRAPH_SPEC_MODEL_NO + Parameters.Common.GRAPH_SIZE.number + FILE_NAME_DELIMITER + "SinkYSpinVariables";
-    public static String FILE_NAME_CONTROLLER_Y = (Parameters.Common.USE_RANDOM_GRAPH ? "" : FILE_NAME_SPEC_PREFIX) + Parameters.Common.GRAPH_SPEC_MODEL_NO + Parameters.Common.GRAPH_SIZE.number + FILE_NAME_DELIMITER + "ControllerY";
-    public static String FILE_NAME_CONTROLLER_Y_SPIN_VARIABLES = (Parameters.Common.USE_RANDOM_GRAPH ? "" : FILE_NAME_SPEC_PREFIX) + Parameters.Common.GRAPH_SPEC_MODEL_NO + Parameters.Common.GRAPH_SIZE.number + FILE_NAME_DELIMITER + "ControllerYSpinVariables";
-    public static String FILE_NAME_DISTANCES = (Parameters.Common.USE_RANDOM_GRAPH ? "" : FILE_NAME_SPEC_PREFIX) + Parameters.Common.GRAPH_SPEC_MODEL_NO + Parameters.Common.GRAPH_SIZE.number + FILE_NAME_DELIMITER + "Distances";
-    public static String FILE_NAME_SENSOR_TO_SENSOR_WORKLOAD = (Parameters.Common.USE_RANDOM_GRAPH ? "" : FILE_NAME_SPEC_PREFIX) + Parameters.Common.GRAPH_SPEC_MODEL_NO + Parameters.Common.GRAPH_SIZE.number + FILE_NAME_DELIMITER + "SensorToSensorWorkload";
+    public static String FILE_NAME_GRAPH = (Parameters.Common.USE_RANDOM_GRAPH ? "" : FILE_NAME_SPEC_PREFIX) + Parameters.Common.GRAPH_SPEC_MODEL_NO.number + Parameters.Common.GRAPH_SIZE.number + FILE_NAME_DELIMITER + "Graph";
+    public static String FILE_NAME_CANDIDATE_SINKS = (Parameters.Common.USE_RANDOM_GRAPH ? "" : FILE_NAME_SPEC_PREFIX) + Parameters.Common.GRAPH_SPEC_MODEL_NO.number + Parameters.Common.GRAPH_SIZE.number + FILE_NAME_DELIMITER + "CandidateSinks";
+    public static String FILE_NAME_CANDIDATE_CONTROLLERS = (Parameters.Common.USE_RANDOM_GRAPH ? "" : FILE_NAME_SPEC_PREFIX) + Parameters.Common.GRAPH_SPEC_MODEL_NO.number + Parameters.Common.GRAPH_SIZE.number + FILE_NAME_DELIMITER + "CandidateControllers";
+    public static String FILE_NAME_SINK_Y = (Parameters.Common.USE_RANDOM_GRAPH ? "" : FILE_NAME_SPEC_PREFIX) + Parameters.Common.GRAPH_SPEC_MODEL_NO.number + Parameters.Common.GRAPH_SIZE.number + FILE_NAME_DELIMITER + "SinkYS";
+    public static String FILE_NAME_SINK_Y_SPIN_VARIABLES = (Parameters.Common.USE_RANDOM_GRAPH ? "" : FILE_NAME_SPEC_PREFIX) + Parameters.Common.GRAPH_SPEC_MODEL_NO.number + Parameters.Common.GRAPH_SIZE.number + FILE_NAME_DELIMITER + "SinkYSpinVariables";
+    public static String FILE_NAME_CONTROLLER_Y = (Parameters.Common.USE_RANDOM_GRAPH ? "" : FILE_NAME_SPEC_PREFIX) + Parameters.Common.GRAPH_SPEC_MODEL_NO.number + Parameters.Common.GRAPH_SIZE.number + FILE_NAME_DELIMITER + "ControllerY";
+    public static String FILE_NAME_CONTROLLER_Y_SPIN_VARIABLES = (Parameters.Common.USE_RANDOM_GRAPH ? "" : FILE_NAME_SPEC_PREFIX) + Parameters.Common.GRAPH_SPEC_MODEL_NO.number + Parameters.Common.GRAPH_SIZE.number + FILE_NAME_DELIMITER + "ControllerYSpinVariables";
+    public static String FILE_NAME_DISTANCES = (Parameters.Common.USE_RANDOM_GRAPH ? "" : FILE_NAME_SPEC_PREFIX) + Parameters.Common.GRAPH_SPEC_MODEL_NO.number + Parameters.Common.GRAPH_SIZE.number + FILE_NAME_DELIMITER + "Distances";
+    public static String FILE_NAME_SENSOR_TO_SENSOR_WORKLOAD = (Parameters.Common.USE_RANDOM_GRAPH ? "" : FILE_NAME_SPEC_PREFIX) + Parameters.Common.GRAPH_SPEC_MODEL_NO.number + Parameters.Common.GRAPH_SIZE.number + FILE_NAME_DELIMITER + "SensorToSensorWorkload";
 
     public static int getDistance(Graph graph, int firstNodeIndex, int secondNodeIndex) {
         DijkstraAlgorithm dijkstra = new DijkstraAlgorithm(graph);
