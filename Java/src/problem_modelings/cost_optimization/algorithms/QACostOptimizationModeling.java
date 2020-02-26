@@ -1,5 +1,6 @@
 package problem_modelings.cost_optimization.algorithms;
 
+import base_algorithms.Cost;
 import base_algorithms.quantum_annealing.QAResultBaseInterface;
 import javafx.util.Pair;
 import main.Parameters;
@@ -49,7 +50,7 @@ public class QACostOptimizationModeling extends CostOptimizationModelingAbstract
     }
 
     @Override
-    public void generateInitialSpinVariablesAndEnergy() {
+    public void generateInitialSpinVariablesAndEnergy() throws Exception {
         // --- Initialize temp lists to false
         for (int i = 0; i < modelPlainOldData.candidateControllers.size(); i++) {
             modelPlainOldData.controllerXSpinVariables[i] = false;
@@ -61,7 +62,8 @@ public class QACostOptimizationModeling extends CostOptimizationModelingAbstract
 
         modelPlainOldData.tempControllerXSpinVariables = modelPlainOldData.controllerXSpinVariables.clone();
         modelPlainOldData.tempSinkXSpinVariables = modelPlainOldData.sinkXSpinVariables.clone();
-        qaDataStructure.prevEnergyPair = calculateCost(-1);
+        Cost cost = calculateCost(-1);
+        qaDataStructure.prevEnergyPair = new Pair<>(cost.getPotentialEnergy(), cost.getKineticEnergy());
     }
 
     @Override
@@ -91,7 +93,7 @@ public class QACostOptimizationModeling extends CostOptimizationModelingAbstract
     }
 
     @Override
-    public Pair<Double, Double> calculateCost(int currentReplicaNum) {
+    public Cost calculateCost(int currentReplicaNum) {
         int reliabilityEnergy = Utils.getReliabilityEnergy(
                 modelPlainOldData.graph,
                 modelPlainOldData.sinkYSpinVariables, modelPlainOldData.controllerYSpinVariables,
@@ -115,10 +117,13 @@ public class QACostOptimizationModeling extends CostOptimizationModelingAbstract
                 modelPlainOldData.costSink, modelPlainOldData.costController, modelPlainOldData.costReductionFactor
         );
 
-        double potentialEnergy = reliabilityEnergy + loadBalancingEnergy + costEnergy;
         double kineticEnergy = getKineticEnergy(currentReplicaNum);
 
-        return new Pair<>(potentialEnergy, kineticEnergy);
+        return new Cost()
+                .setReliabilityCost(reliabilityEnergy)
+                .setLoadBalancingCost(loadBalancingEnergy)
+                .setBudgetCostEnergy(costEnergy)
+                .setKineticEnergy(kineticEnergy);
     }
 
     @Override

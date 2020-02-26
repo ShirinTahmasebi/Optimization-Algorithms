@@ -28,11 +28,16 @@ public class Parameters {
     }
 
     public static class SynchronizationOverheadModel {
-        public static final double SYNC_OVERHEAD_WEIGHT = 0.1;
+        public static final double SYNC_OVERHEAD_WEIGHT = 0.5;
         public static final double SYNC_DELAY_WEIGHT = 1 - SYNC_OVERHEAD_WEIGHT;
+        public static final int SUMMATION_OFL_MAX_BALANCE = 10;
+        public static final int SYNCHRONIZATION_COST_BALANCE = 1;
+        public static final int INTER_CONTROLLER_SYNC_COEFFICIENT = 1;  // alpha
+        public static final int LMAX_COEFFICIENT = 1;                   // beta
     }
 
     public static class Common {
+        public static final int PENALTY_COEFFICIENT = 1;                // gamma
         public static final boolean DO_PRINT_INSTANCES = false;
         public static final boolean DO_PRINT_STEPS = false;
         public static final float COST_REDUCTION_FACTOR = 0.75f;
@@ -48,8 +53,8 @@ public class Parameters {
         public static final int MAX_CONTROLLER_LOAD = 30;                   // WPrime
         public static final int COST_SINK = 1;
         public static final int COST_CONTROLLER = 3;
-        public static final boolean USE_RANDOM_GRAPH = false;
-        public static final ModelNoEnum GRAPH_SPEC_MODEL_NO = ModelNoEnum.BUDGET_CONSTRAINED_CONTROLLER_OVERHEAD;
+        public static final boolean USE_RANDOM_GRAPH = true;
+        public static final ModelNoEnum GRAPH_SPEC_MODEL_NO = ModelNoEnum.BUDGET_CONSTRAINED_LMAX_OPTIMIZATION;
         public static final ModelNoEnum MODEL_NO = ModelNoEnum.BUDGET_CONSTRAINED_CONTROLLER_OVERHEAD;
     }
 

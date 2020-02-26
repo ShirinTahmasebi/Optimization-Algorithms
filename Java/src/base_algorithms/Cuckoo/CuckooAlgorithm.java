@@ -20,7 +20,7 @@ public class CuckooAlgorithm {
         lineChartEx = new LineChartEx();
     }
 
-    public double execute() {
+    public double execute() throws Exception {
         cuckooPlainOldData.matureCuckoos.clear();
         for (int step = 0; step < Parameters.Cuckoo.MONTE_CARLO_STEP; step++) {
             for (int i = 0; i < Parameters.Cuckoo.POPULATION; i++) {
@@ -36,7 +36,7 @@ public class CuckooAlgorithm {
                     }
                 }
                 for (Cuckoo cuckoo : cuckooPlainOldData.eggs) {
-                    cuckoo.setCost(cuckooModelingInterface.calculateCost(cuckoo.getCuckooDataAndBehaviour()));
+                    cuckoo.setCost(cuckooModelingInterface.calculateCost(cuckoo.getCuckooDataAndBehaviour()).getPotentialEnergy());
                 }
                 Collections.sort(cuckooPlainOldData.eggs, new CuckooComparator());
 

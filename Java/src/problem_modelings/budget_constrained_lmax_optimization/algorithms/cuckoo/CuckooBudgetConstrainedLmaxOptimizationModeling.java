@@ -1,10 +1,12 @@
 package problem_modelings.budget_constrained_lmax_optimization.algorithms.cuckoo;
 
 
+import base_algorithms.Cost;
 import base_algorithms.Cuckoo.CuckooModelingInterface;
 import base_algorithms.Cuckoo.CuckooPlainOldData;
 import base_algorithms.Cuckoo.model.Cuckoo;
 import base_algorithms.Cuckoo.model.CuckooDataAndBehaviour;
+import javafx.util.Pair;
 import problem_modelings.budget_constrained_lmax_optimization.Utils;
 import problem_modelings.budget_constrained_lmax_optimization.model_specifications.BudgetConstrainedLmaxOptimizationModelingAbstract;
 import problem_modelings.budget_constrained_lmax_optimization.model_specifications.BudgetConstrainedLmaxOptimizationModelingPlainOldData;
@@ -21,7 +23,7 @@ public class CuckooBudgetConstrainedLmaxOptimizationModeling extends BudgetConst
     }
 
     @Override
-    public double calculateCost(CuckooDataAndBehaviour cuckooDataAndBehaviours) {
+    public Cost calculateCost(CuckooDataAndBehaviour cuckooDataAndBehaviours) {
         CuckooBudgetConstrainedLmaxOptimizationModelingDataAndBehaviour castedCuckooDataAndBehaviours = (CuckooBudgetConstrainedLmaxOptimizationModelingDataAndBehaviour) cuckooDataAndBehaviours;
         int maxL = super.calculateMaxL(castedCuckooDataAndBehaviours);
         int summationOfLMax = super.calculateDistanceToNearestControllerEnergy(castedCuckooDataAndBehaviours);
@@ -42,18 +44,20 @@ public class CuckooBudgetConstrainedLmaxOptimizationModeling extends BudgetConst
                 modelPlainOldData.maxControllerLoad, modelPlainOldData.maxControllerCoverage, maxL
         );
 
-        double controllerSynchronizationDelayAndOverheadCost = Utils.getControllerSynchronizationDelayAndOverheadCost(
+        Pair<Double, Double> controllerSynchronizationDelayAndOverheadCostPair = Utils.getControllerSynchronizationDelayAndOverheadCost(
                 modelPlainOldData.graph,
                 modelPlainOldData.controllerY,
                 modelPlainOldData.candidateControllers, controllerXSpinVariables,
                 modelPlainOldData.sensorToSensorWorkload
         );
 
-        double lMaxEnergy = Utils.getMaxLEnergy(maxL);
-        double distanceToNearestControllerEnergy = Utils.getSummationOfMaxLEnergy(summationOfLMax);
-        double controllerSynchronizationOverheadEnergy = Utils.getControllerSynchronizationOverheadEnergy(controllerSynchronizationDelayAndOverheadCost);
-
-        return reliabilityEnergy + loadBalancingEnergy + lMaxEnergy + distanceToNearestControllerEnergy + controllerSynchronizationOverheadEnergy;
+        return new Cost()
+                .setReliabilityCost(reliabilityEnergy)
+                .setLoadBalancingCost(loadBalancingEnergy)
+                .setLmaxCost(maxL)
+                .setSummationOfLMaxCost(summationOfLMax)
+                .setSynchronizationDelayCost(controllerSynchronizationDelayAndOverheadCostPair.getKey())
+                .setSynchronizationOverheadCost(controllerSynchronizationDelayAndOverheadCostPair.getValue());
     }
 
     // TODO: Revise generateEggs and generateEggsByElr
@@ -133,7 +137,7 @@ public class CuckooBudgetConstrainedLmaxOptimizationModeling extends BudgetConst
     }
 
     @Override
-    public Cuckoo generateInitialRandomCuckoos() {
+    public Cuckoo generateInitialRandomCuckoos() throws Exception {
         boolean[] controllersSpinVariables = new boolean[modelPlainOldData.candidateControllers.size()];
         Set<Integer> trueIndices = new HashSet<>();
 
@@ -147,7 +151,7 @@ public class CuckooBudgetConstrainedLmaxOptimizationModeling extends BudgetConst
 
         CuckooDataAndBehaviour cuckooDataAndBehaviour = new CuckooBudgetConstrainedLmaxOptimizationModelingDataAndBehaviour(controllersSpinVariables);
         Cuckoo cuckoo = new Cuckoo(true, cuckooDataAndBehaviour);
-        cuckoo.setCost(calculateCost(cuckooDataAndBehaviour));
+        cuckoo.setCost(calculateCost(cuckooDataAndBehaviour).getPotentialEnergy());
         return cuckoo;
     }
 

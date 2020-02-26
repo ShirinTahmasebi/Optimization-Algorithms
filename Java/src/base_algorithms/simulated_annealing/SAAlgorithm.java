@@ -15,7 +15,7 @@ public class SAAlgorithm {
         this.lineChartEx = new LineChartEx();
     }
 
-    public Pair<Double, SAResultBaseInterface> execute() {
+    public Pair<Double, SAResultBaseInterface> execute() throws Exception {
         // Reset Dynamic Variables
         saModelingInterface.resetDynamicVariables();
 
@@ -33,7 +33,7 @@ public class SAAlgorithm {
                 // Generate neighbor
                 saModelingInterface.generateNeighbor();
                 // ------ Calculate potential energy of temp solution
-                double energy = saModelingInterface.calculateCost();
+                double energy = saModelingInterface.calculateCost().getPotentialEnergy();
                 if (energy < minEnergy) {
                     minEnergy = energy;
                 }

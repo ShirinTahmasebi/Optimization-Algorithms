@@ -1,5 +1,6 @@
 package problem_modelings.cost_optimization.algorithms.cuckoo;
 
+import base_algorithms.Cost;
 import base_algorithms.Cuckoo.CuckooModelingInterface;
 import base_algorithms.Cuckoo.CuckooPlainOldData;
 import base_algorithms.Cuckoo.model.Cuckoo;
@@ -20,7 +21,7 @@ public class CuckooCostOptimizationModeling extends CostOptimizationModelingAbst
     }
 
     @Override
-    public double calculateCost(CuckooDataAndBehaviour cuckooDataAndBehaviours) {
+    public Cost calculateCost(CuckooDataAndBehaviour cuckooDataAndBehaviours) {
         boolean[] sinkXSpinVariables = ((CuckooCostOptimizationModelingDataAndBehaviour) cuckooDataAndBehaviours).sinkXSpinVariables;
         boolean[] controllerXSpinVariables = ((CuckooCostOptimizationModelingDataAndBehaviour) cuckooDataAndBehaviours).controllerXSpinVariables;
         int reliabilityEnergy = Utils.getReliabilityEnergy(
@@ -46,7 +47,10 @@ public class CuckooCostOptimizationModeling extends CostOptimizationModelingAbst
                 modelPlainOldData.costSink, modelPlainOldData.costController, modelPlainOldData.costReductionFactor
         );
 
-        return reliabilityEnergy + loadBalancingEnergy + costEnergy;
+        return new Cost()
+                .setReliabilityCost(reliabilityEnergy)
+                .setLoadBalancingCost(loadBalancingEnergy)
+                .setBudgetCostEnergy(costEnergy);
     }
 
     @Override
@@ -119,7 +123,7 @@ public class CuckooCostOptimizationModeling extends CostOptimizationModelingAbst
         }
         CuckooDataAndBehaviour cuckooDataAndBehaviour = new CuckooCostOptimizationModelingDataAndBehaviour(sinkSpinVariables, controllersSpinVariables);
         Cuckoo cuckoo = new Cuckoo(true, cuckooDataAndBehaviour);
-        cuckoo.setCost(calculateCost(cuckooDataAndBehaviour));
+        cuckoo.setCost(calculateCost(cuckooDataAndBehaviour).getReliabilityCost());
         return cuckoo;
     }
 

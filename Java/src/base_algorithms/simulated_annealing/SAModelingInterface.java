@@ -1,15 +1,17 @@
 package base_algorithms.simulated_annealing;
 
 
+import base_algorithms.Cost;
+
 public interface SAModelingInterface {
 
     void resetDynamicVariables();
 
-    void generateInitialSpinVariablesAndEnergy();
+    void generateInitialSpinVariablesAndEnergy() throws Exception;
 
     void generateNeighbor();
 
-    double calculateCost();
+    Cost calculateCost();
 
     void acceptSolution();
 

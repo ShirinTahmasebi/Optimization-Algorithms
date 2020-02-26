@@ -1,5 +1,6 @@
 package problem_modelings.budget_constrained_lmax_optimization.algorithms;
 
+import base_algorithms.Cost;
 import base_algorithms.quantum_annealing.QAResultBaseInterface;
 import base_algorithms.quantum_annealing.QAModelingInterface;
 import base_algorithms.quantum_annealing.QAPlainOldData;
@@ -117,7 +118,7 @@ public class QABudgetConstrainedLmaxOptimizationModeling extends BudgetConstrain
     }
 
     @Override
-    public Pair<Double, Double> calculateCost(int currentReplicaNum) {
+    public Cost calculateCost(int currentReplicaNum) {
         int maxL = super.calculateMaxL(modelPlainOldData.tempControllerXSpinVariables);
         int summationOfLMax = super.calculateDistanceToNearestControllerEnergy(modelPlainOldData.tempControllerXSpinVariables);
 
@@ -135,23 +136,25 @@ public class QABudgetConstrainedLmaxOptimizationModeling extends BudgetConstrain
                 modelPlainOldData.maxControllerLoad, modelPlainOldData.maxControllerCoverage, maxL
         );
 
-        double controllerSynchronizationDelayAndOverheadCost = Utils.getControllerSynchronizationDelayAndOverheadCost(
+        Pair<Double, Double> controllerSynchronizationDelayAndOverheadCost = Utils.getControllerSynchronizationDelayAndOverheadCost(
                 modelPlainOldData.graph,
                 modelPlainOldData.controllerY,
                 modelPlainOldData.candidateControllers, modelPlainOldData.tempControllerXSpinVariables,
                 modelPlainOldData.sensorToSensorWorkload
         );
 
-        double lMaxEnergy = Utils.getMaxLEnergy(maxL);
-        double distanceToNearestControllerEnergy = Utils.getSummationOfMaxLEnergy(summationOfLMax);
-        double controllerSynchronizationOverheadEnergy = Utils.getControllerSynchronizationOverheadEnergy(controllerSynchronizationDelayAndOverheadCost);
-
-        double potentialEnergy = reliabilityEnergy + loadBalancingEnergy + lMaxEnergy + distanceToNearestControllerEnergy + controllerSynchronizationOverheadEnergy;
         double kineticEnergy = getKineticEnergy(currentReplicaNum);
-        // TODO: Uncomment of SA
+        // TODO: Uncomment for SA
 //        double kineticEnergy = 0;
 
-        return new Pair<>(potentialEnergy, kineticEnergy);
+        return new Cost()
+                .setLmaxCost(maxL)
+                .setSummationOfLMaxCost(summationOfLMax)
+                .setSynchronizationDelayCost(controllerSynchronizationDelayAndOverheadCost.getKey())
+                .setSynchronizationOverheadCost(controllerSynchronizationDelayAndOverheadCost.getValue())
+                .setLoadBalancingCost(loadBalancingEnergy)
+                .setReliabilityCost(reliabilityEnergy)
+                .setKineticEnergy(kineticEnergy);
     }
 
     @Override

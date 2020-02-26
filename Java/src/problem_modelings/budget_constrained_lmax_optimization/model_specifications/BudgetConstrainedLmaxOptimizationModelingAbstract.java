@@ -13,8 +13,6 @@ import java.util.List;
 public abstract class BudgetConstrainedLmaxOptimizationModelingAbstract extends BaseMultiControllerProblemModeling<BudgetConstrainedLmaxOptimizationModelingPlainOldData> {
 
     public static int L_MAX_COEFFICIENT = 100;
-    public static int SUMMATION_OFL_MAX_COEFFICIENT = 10;
-    public static int SYNCHRONIZATION_COST_COEFFICIENT = 1;
 
     public BudgetConstrainedLmaxOptimizationModelingAbstract(BudgetConstrainedLmaxOptimizationModelingPlainOldData modelPlainOldData) {
         this.modelPlainOldData = modelPlainOldData;

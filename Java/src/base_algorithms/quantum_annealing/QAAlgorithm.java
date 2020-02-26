@@ -1,5 +1,6 @@
 package base_algorithms.quantum_annealing;
 
+import base_algorithms.Cost;
 import javafx.util.Pair;
 import main.LineChartEx;
 import main.Parameters;
@@ -16,7 +17,7 @@ public class QAAlgorithm {
         this.lineChartEx = new LineChartEx();
     }
 
-    public Pair<Double, QAResultBaseInterface> execute() {
+    public Pair<Double, QAResultBaseInterface> execute() throws Exception {
         // Reset Dynamic Values
         qaModelingInterface.resetDynamicVariables();
 
@@ -37,7 +38,8 @@ public class QAAlgorithm {
                     // Generate neighbor
                     qaModelingInterface.generateNeighbor();
                     // Calculate energy of temp solution
-                    Pair<Double, Double> energyPair = qaModelingInterface.calculateCost(ro);
+                    Cost cost = qaModelingInterface.calculateCost(ro);
+                    Pair<Double, Double> energyPair = new Pair<>(cost.getPotentialEnergy(), cost.getKineticEnergy());
                     double energy = qaModelingInterface.calculateEnergyFromPair(energyPair);
                     double prevEnergy = qaModelingInterface.calculateEnergyFromPair(qaPlainOldData.prevEnergyPair);
                     double minEnergy = qaModelingInterface.calculateEnergyFromPair(minEnergyPair);

@@ -1,5 +1,6 @@
 package problem_modelings.budget_constrained_lmax_optimization;
 
+import javafx.util.Pair;
 import main.ModelNoEnum;
 import main.Parameters;
 import main.model.Graph;
@@ -164,12 +165,12 @@ public interface Utils {
     }
 
     static double getSummationOfMaxLEnergy(int summationOfLMax) {
-        return (summationOfLMax < 0 ? summationOfLMax * -1 : summationOfLMax) * BudgetConstrainedLmaxOptimizationModelingAbstract.SUMMATION_OFL_MAX_COEFFICIENT;
+        return (summationOfLMax < 0 ? summationOfLMax * -1 : summationOfLMax) * Parameters.SynchronizationOverheadModel.SUMMATION_OFL_MAX_BALANCE;
     }
 
-    static double getControllerSynchronizationDelayAndOverheadCost(Graph graph, int[][] controllerY, List<Vertex> candidateControllers, boolean[] tempControllerXSpinVariables, int[][] sensorsLoadToControllers) {
+    static Pair<Double, Double> getControllerSynchronizationDelayAndOverheadCost(Graph graph, int[][] controllerY, List<Vertex> candidateControllers, boolean[] tempControllerXSpinVariables, int[][] sensorsLoadToControllers) {
         if (Parameters.Common.MODEL_NO != ModelNoEnum.BUDGET_CONSTRAINED_CONTROLLER_OVERHEAD) {
-            return 0;
+            return new Pair<>(0., 0.);
         }
 
         double controllerSyncDelay = .0;
@@ -192,11 +193,10 @@ public interface Utils {
             }
         }
 
-        return (Parameters.SynchronizationOverheadModel.SYNC_DELAY_WEIGHT * controllerSyncDelay) +
-                (Parameters.SynchronizationOverheadModel.SYNC_OVERHEAD_WEIGHT * controllerSyncOverhead);
+        return new Pair<>(controllerSyncDelay, controllerSyncOverhead);
     }
 
     static double getControllerSynchronizationOverheadEnergy(double controllerSynchronizationDelayAndOverheadCost) {
-        return BudgetConstrainedLmaxOptimizationModelingAbstract.SYNCHRONIZATION_COST_COEFFICIENT * controllerSynchronizationDelayAndOverheadCost;
+        return Parameters.SynchronizationOverheadModel.SYNCHRONIZATION_COST_BALANCE * controllerSynchronizationDelayAndOverheadCost;
     }
 }

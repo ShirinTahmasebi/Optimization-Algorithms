@@ -41,7 +41,7 @@ public class FactoryClient {
     private int[][] distances;
     private int[][] sensorToSensorWorkload;         // w[sensors][sensors]
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         FactoryClient client = new FactoryClient();
 
         if (Parameters.Common.MODEL_NO == ModelNoEnum.COST_OPTIMIZATION) {
@@ -53,7 +53,7 @@ public class FactoryClient {
         }
     }
 
-    private void executeAlgorithmsOnBudgetConstrainedModel() {
+    private void executeAlgorithmsOnBudgetConstrainedModel() throws Exception {
         LineChartEx chartEx = new LineChartEx();
 
         double cuckooEnergySum = 0;
@@ -212,7 +212,7 @@ public class FactoryClient {
         printResults(chartEx, algorithmResultsMap);
     }
 
-    private void executeAlgorithmsOnFirstModel() {
+    private void executeAlgorithmsOnFirstModel() throws Exception {
         LineChartEx chartEx = new LineChartEx();
         double cuckooEnergySum = 0;
         double qaEnergySum = 0;

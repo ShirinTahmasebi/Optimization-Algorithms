@@ -1,5 +1,6 @@
 package base_algorithms.quantum_annealing;
 
+import base_algorithms.Cost;
 import javafx.util.Pair;
 
 public interface QAModelingInterface {
@@ -8,7 +9,7 @@ public interface QAModelingInterface {
 
     void generateReplicasOfSolutions();
 
-    void generateInitialSpinVariablesAndEnergy();
+    void generateInitialSpinVariablesAndEnergy() throws Exception;
 
     void getAReplica(int replicaNumber);
 
@@ -16,7 +17,7 @@ public interface QAModelingInterface {
 
     double getKineticEnergy(int currentReplicaNum);
 
-    Pair<Double, Double> calculateCost(int currentReplicaNum);
+    Cost calculateCost(int currentReplicaNum);
 
     double calculateEnergyFromPair(Pair<Double, Double> energyPair);
 

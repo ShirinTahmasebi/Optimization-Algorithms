@@ -1,5 +1,6 @@
 package problem_modelings.cost_optimization.algorithms;
 
+import base_algorithms.Cost;
 import base_algorithms.simulated_annealing.SAModelingInterface;
 import base_algorithms.simulated_annealing.SAPlainOldData;
 import base_algorithms.simulated_annealing.SAResultBaseInterface;
@@ -31,7 +32,7 @@ public class SACostOptimizationModeling extends CostOptimizationModelingAbstract
     }
 
     @Override
-    public void generateInitialSpinVariablesAndEnergy() {
+    public void generateInitialSpinVariablesAndEnergy() throws Exception {
         // --- Initialize temp lists to false
         for (int i = 0; i < modelPlainOldData.candidateControllers.size(); i++) {
             modelPlainOldData.controllerXSpinVariables[i] = false;
@@ -43,7 +44,7 @@ public class SACostOptimizationModeling extends CostOptimizationModelingAbstract
 
         modelPlainOldData.tempControllerXSpinVariables = modelPlainOldData.controllerXSpinVariables.clone();
         modelPlainOldData.tempSinkXSpinVariables = modelPlainOldData.sinkXSpinVariables.clone();
-        saPlainOldData.prevEnergy = calculateCost();
+        saPlainOldData.prevEnergy = calculateCost().getPotentialEnergy();
     }
 
     @Override
@@ -67,7 +68,7 @@ public class SACostOptimizationModeling extends CostOptimizationModelingAbstract
     }
 
     @Override
-    public double calculateCost() {
+    public Cost calculateCost() {
         int reliabilityEnergy = Utils.getReliabilityEnergy(
                 modelPlainOldData.graph,
                 modelPlainOldData.sinkYSpinVariables, modelPlainOldData.controllerYSpinVariables,
@@ -91,7 +92,10 @@ public class SACostOptimizationModeling extends CostOptimizationModelingAbstract
                 modelPlainOldData.costSink, modelPlainOldData.costController, modelPlainOldData.costReductionFactor
         );
 
-        return reliabilityEnergy + loadBalancingEnergy + costEnergy;
+        return new Cost()
+                .setReliabilityCost(reliabilityEnergy)
+                .setLoadBalancingCost(loadBalancingEnergy)
+                .setBudgetCostEnergy(costEnergy);
     }
 
     @Override
