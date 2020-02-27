@@ -43,7 +43,7 @@ public class SAAlgorithm {
                     saModelingInterface.acceptSolution();
                 } else {
                     // Else with given probability decide to accept or not
-                    double baseProb = Math.exp((saPlainOldData.prevEnergy.getPotentialEnergy() - energy.getPotentialEnergy()) / saPlainOldData.temperature);
+                    double baseProb = Math.exp((- saPlainOldData.prevEnergy.getPotentialEnergy() + energy.getPotentialEnergy()) / saPlainOldData.temperature);
                     if (Parameters.Common.DO_PRINT_STEPS) {
                         System.out.println("BaseProp " + baseProb);
                     }

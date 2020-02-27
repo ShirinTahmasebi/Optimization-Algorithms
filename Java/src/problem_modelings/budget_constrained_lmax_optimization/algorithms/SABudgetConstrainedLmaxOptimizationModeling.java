@@ -35,7 +35,15 @@ public class SABudgetConstrainedLmaxOptimizationModeling extends BudgetConstrain
         }
 
         modelPlainOldData.tempControllerXSpinVariables = modelPlainOldData.controllerXSpinVariables.clone();
-        saPlainOldData.prevEnergy = calculateCost();
+        saPlainOldData.prevEnergy = new Cost()
+                .setBudgetCostEnergy(Integer.MAX_VALUE)
+                .setKineticEnergy(Integer.MAX_VALUE)
+                .setLmaxCost(Integer.MAX_VALUE)
+                .setSummationOfLMaxCost(Integer.MAX_VALUE)
+                .setSynchronizationOverheadCost(Integer.MAX_VALUE)
+                .setSynchronizationDelayCost(Integer.MAX_VALUE)
+                .setLoadBalancingCost(Integer.MAX_VALUE)
+                .setReliabilityCost(Integer.MAX_VALUE);
     }
 
     @Override
@@ -83,37 +91,36 @@ public class SABudgetConstrainedLmaxOptimizationModeling extends BudgetConstrain
     @Override
     public Cost calculateCost() {
         int maxL = super.calculateMaxL(modelPlainOldData.tempControllerXSpinVariables);
+        int summationOfLMax = super.calculateDistanceToNearestControllerEnergy(modelPlainOldData.tempControllerXSpinVariables);
 
         int reliabilityEnergy = Utils.getReliabilityEnergy(
                 modelPlainOldData.graph,
                 modelPlainOldData.controllerY,
                 modelPlainOldData.candidateControllers, modelPlainOldData.tempControllerXSpinVariables,
-                modelPlainOldData.maxControllerCoverage, 0
+                modelPlainOldData.maxControllerCoverage, maxL
         );
 
         double loadBalancingEnergy = Utils.getLoadBalancingEnergy(
                 modelPlainOldData.graph,
                 modelPlainOldData.controllerY,
                 modelPlainOldData.candidateControllers, modelPlainOldData.tempControllerXSpinVariables,
-                modelPlainOldData.maxControllerLoad, modelPlainOldData.maxControllerCoverage, 0
+                modelPlainOldData.maxControllerLoad, modelPlainOldData.maxControllerCoverage, maxL
         );
 
-        Pair<Double, Double> controllerSynchronizationDelayAndOverheadCostPair = Utils.getControllerSynchronizationDelayAndOverheadCost(
+        Pair<Double, Double> controllerSynchronizationDelayAndOverheadCost = Utils.getControllerSynchronizationDelayAndOverheadCost(
                 modelPlainOldData.graph,
                 modelPlainOldData.controllerY,
                 modelPlainOldData.candidateControllers, modelPlainOldData.tempControllerXSpinVariables,
                 modelPlainOldData.sensorToSensorWorkload
         );
 
-        double distanceToNearestControllerEnergy = super.calculateDistanceToNearestControllerEnergy(modelPlainOldData.tempControllerXSpinVariables);
-
         return new Cost()
-                .setReliabilityCost(reliabilityEnergy)
-                .setLoadBalancingCost(loadBalancingEnergy)
                 .setLmaxCost(maxL)
-                .setSummationOfLMaxCost(distanceToNearestControllerEnergy)
-                .setSynchronizationDelayCost(controllerSynchronizationDelayAndOverheadCostPair.getKey())
-                .setSynchronizationOverheadCost(controllerSynchronizationDelayAndOverheadCostPair.getValue());
+                .setSummationOfLMaxCost(summationOfLMax)
+                .setSynchronizationDelayCost(controllerSynchronizationDelayAndOverheadCost.getKey())
+                .setSynchronizationOverheadCost(controllerSynchronizationDelayAndOverheadCost.getValue())
+                .setLoadBalancingCost(loadBalancingEnergy)
+                .setReliabilityCost(reliabilityEnergy);
     }
 
     @Override

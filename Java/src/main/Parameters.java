@@ -31,8 +31,8 @@ public class Parameters {
 
     public static class SimulatedAnnealing {
         public static final float TEMPERATURE_INITIAL = 100;                // T Initial
-        public static final float TEMPERATURE_FINAL = 1;                    // T Final
-        public static final float TEMPERATURE_COOLING_RATE = .75f;          // T Cooling Rate
+        public static final float TEMPERATURE_FINAL = .05f;                    // T Final
+        public static final float TEMPERATURE_COOLING_RATE = .95f;          // T Cooling Rate
         public static final int MONTE_CARLO_STEP = 50;                      // M
     }
 
