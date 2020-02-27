@@ -2,6 +2,24 @@ package main;
 
 public class Parameters {
 
+    static {
+        if (Common.MODEL_NO == ModelNoEnum.BUDGET_CONSTRAINED_CONTROLLER_OVERHEAD && Common.USE_RANDOM_GRAPH) {
+            switch (Common.GRAPH_SIZE) {
+                case RANDOM_100_SPECIAL_104:
+                    SynchronizationOverheadModel.SUMMATION_OFL_MAX_BALANCE = 50;
+                    break;
+                case RANDOM_150_SPECIAL_169:
+                    break;
+                case RANDOM_200_SPECIAL_195:
+                    break;
+                case RANDOM_NONE_SPECIAL_143:
+                    break;
+                case RANDOM_80_SPECIAL_NONE:
+                    break;
+            }
+        }
+    }
+
     public static class QuantumAnnealing {
         public static final int TROTTER_REPLICAS = 100;             // P
         public static final float TEMPERATURE = 200f;               // T
@@ -28,16 +46,19 @@ public class Parameters {
     }
 
     public static class SynchronizationOverheadModel {
+        // --
         public static final double SYNC_OVERHEAD_WEIGHT = 0.5;
         public static final double SYNC_DELAY_WEIGHT = 1 - SYNC_OVERHEAD_WEIGHT;
-        public static final int SUMMATION_OFL_MAX_BALANCE = 10;
-        public static final int SYNCHRONIZATION_COST_BALANCE = 1;
-        public static final int INTER_CONTROLLER_SYNC_COEFFICIENT = 1;  // alpha
-        public static final int LMAX_COEFFICIENT = 1;                   // beta
+        // --
+        public static int SUMMATION_OFL_MAX_BALANCE = 10;
+        public static int SYNCHRONIZATION_COST_BALANCE = 50;
+        // --
+        public static final double INTER_CONTROLLER_SYNC_COEFFICIENT = 0.1;                         // alpha
+        public static final double LMAX_COEFFICIENT = 1 - INTER_CONTROLLER_SYNC_COEFFICIENT;        // beta
     }
 
     public static class Common {
-        public static final int PENALTY_COEFFICIENT = 1;                // gamma
+        public static final int PENALTY_COEFFICIENT = 1;                    // gamma
         public static final boolean DO_PRINT_INSTANCES = false;
         public static final boolean DO_PRINT_STEPS = false;
         public static final float COST_REDUCTION_FACTOR = 0.75f;

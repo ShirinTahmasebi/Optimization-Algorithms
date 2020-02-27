@@ -159,12 +159,12 @@ public interface Utils {
         return score;
     }
 
-    static double getMaxLEnergy(int maxL) {
+    static double getMaxLCost(int maxL) {
         if (maxL == Integer.MAX_VALUE) return maxL;
         return (maxL < 0 ? maxL * -1 : maxL) * BudgetConstrainedLmaxOptimizationModelingAbstract.L_MAX_COEFFICIENT;
     }
 
-    static double getSummationOfMaxLEnergy(int summationOfLMax) {
+    static double getSummationOfMaxLCost(int summationOfLMax) {
         return (summationOfLMax < 0 ? summationOfLMax * -1 : summationOfLMax) * Parameters.SynchronizationOverheadModel.SUMMATION_OFL_MAX_BALANCE;
     }
 
