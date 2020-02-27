@@ -164,8 +164,8 @@ public class QABudgetConstrainedLmaxOptimizationModeling extends BudgetConstrain
     }
 
     @Override
-    public double calculateEnergyFromPair(Pair<Double, Double> energyPair) {
-        return energyPair.getKey() + energyPair.getValue();
+    public double calculateEnergyFromCost(Cost cost) throws Exception {
+        return cost.getPotentialEnergy() + cost.getKineticEnergy();
     }
 
     @Override

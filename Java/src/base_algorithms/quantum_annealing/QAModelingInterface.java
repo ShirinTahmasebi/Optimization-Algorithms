@@ -19,7 +19,7 @@ public interface QAModelingInterface {
 
     Cost calculateCost(int currentReplicaNum);
 
-    double calculateEnergyFromPair(Pair<Double, Double> energyPair);
+    double calculateEnergyFromCost(Cost energyPair) throws Exception;
 
     void acceptSolution();
 

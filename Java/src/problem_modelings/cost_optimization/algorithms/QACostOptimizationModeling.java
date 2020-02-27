@@ -3,7 +3,6 @@ package problem_modelings.cost_optimization.algorithms;
 import base_algorithms.Cost;
 import base_algorithms.quantum_annealing.QAModelingInterface;
 import base_algorithms.quantum_annealing.QAPlainOldData;
-import javafx.util.Pair;
 import main.Parameters;
 import problem_modelings.cost_optimization.Utils;
 import problem_modelings.cost_optimization.model_specifications.CostOptimizationModelingAbstract;
@@ -155,8 +154,8 @@ public class QACostOptimizationModeling extends CostOptimizationModelingAbstract
     }
 
     @Override
-    public double calculateEnergyFromPair(Pair<Double, Double> energyPair) {
-        return energyPair.getKey() + energyPair.getValue();
+    public double calculateEnergyFromCost(Cost cost) throws Exception {
+        return cost.getPotentialEnergy() + cost.getKineticEnergy();
     }
 
     @Override

@@ -1,7 +1,6 @@
 package base_algorithms.quantum_annealing;
 
 import base_algorithms.Cost;
-import javafx.util.Pair;
 import main.LineChartEx;
 import main.Parameters;
 
@@ -26,7 +25,16 @@ public class QAAlgorithm {
         qaModelingInterface.generateInitialSpinVariablesAndEnergy();
 
         int counter = 0;
-        Pair<Double, Double> minEnergyPair = new Pair<>(Double.MAX_VALUE, Double.MAX_VALUE);
+        Cost minEnergyPair = new Cost()
+                .setBudgetCostEnergy(Integer.MAX_VALUE)
+                .setKineticEnergy(Integer.MAX_VALUE)
+                .setLmaxCost(Integer.MAX_VALUE)
+                .setSummationOfLMaxCost(Integer.MAX_VALUE)
+                .setSynchronizationOverheadCost(Integer.MAX_VALUE)
+                .setSynchronizationDelayCost(Integer.MAX_VALUE)
+                .setLoadBalancingCost(Integer.MAX_VALUE)
+                .setReliabilityCost(Integer.MAX_VALUE);
+
         // Do while tunneling field is favorable
         do {
             // For each replica
@@ -39,14 +47,13 @@ public class QAAlgorithm {
                     qaModelingInterface.generateNeighbor();
                     // Calculate energy of temp solution
                     Cost cost = qaModelingInterface.calculateCost(ro);
-                    Pair<Double, Double> energyPair = new Pair<>(cost.getPotentialEnergy(), cost.getKineticEnergy());
-                    double energy = qaModelingInterface.calculateEnergyFromPair(energyPair);
-                    double prevEnergy = qaModelingInterface.calculateEnergyFromPair(new Pair<>(qaPlainOldData.prevEnergyPair.getPotentialEnergy(), qaPlainOldData.prevEnergyPair.getKineticEnergy()));
-                    double minEnergy = qaModelingInterface.calculateEnergyFromPair(minEnergyPair);
+                    double energy = qaModelingInterface.calculateEnergyFromCost(cost);
+                    double prevEnergy = qaModelingInterface.calculateEnergyFromCost(qaPlainOldData.prevEnergyPair);
+                    double minEnergy = qaModelingInterface.calculateEnergyFromCost(minEnergyPair);
                     if (energy < minEnergy) {
-                        minEnergyPair = energyPair;
+                        minEnergyPair = cost;
                     }
-                    if (energyPair.getKey() < qaPlainOldData.prevEnergyPair.getPotentialEnergy() || energy < prevEnergy) {
+                    if (cost.getPotentialEnergy() < qaPlainOldData.prevEnergyPair.getPotentialEnergy() || energy < prevEnergy) {
                         // If energy has decreased: accept solution
                         qaPlainOldData.prevEnergyPair = cost;
                         qaModelingInterface.acceptSolution();
@@ -64,9 +71,9 @@ public class QAAlgorithm {
                     }
                     lineChartEx.addToEnergySeries(
                             counter,
-                            qaModelingInterface.calculateEnergyFromPair(new Pair<>(qaPlainOldData.prevEnergyPair.getPotentialEnergy(), qaPlainOldData.prevEnergyPair.getKineticEnergy())),
+                            qaModelingInterface.calculateEnergyFromCost(qaPlainOldData.prevEnergyPair),
                             energy,
-                            qaModelingInterface.calculateEnergyFromPair(minEnergyPair),
+                            qaModelingInterface.calculateEnergyFromCost(minEnergyPair),
                             4
                     );
                 } // End of for
@@ -79,9 +86,9 @@ public class QAAlgorithm {
         if (Parameters.Common.DO_PRINT_INSTANCES) {
             // Final solution is in: sinkXSpinVariables and controllerXSpinVariables
             System.out.println("Counter: " + counter);
-            System.out.println("Accepted Energy: " + qaModelingInterface.calculateEnergyFromPair(new Pair<>(qaPlainOldData.prevEnergyPair.getPotentialEnergy(), qaPlainOldData.prevEnergyPair.getKineticEnergy())));
+            System.out.println("Accepted Energy: " + qaModelingInterface.calculateEnergyFromCost(qaPlainOldData.prevEnergyPair));
             System.out.println("Accepted Potential Energy: " + qaPlainOldData.prevEnergyPair.getPotentialEnergy());
-            System.out.println("Min Energy: " + qaModelingInterface.calculateEnergyFromPair(minEnergyPair));
+            System.out.println("Min Energy: " + qaModelingInterface.calculateEnergyFromCost(minEnergyPair));
             System.out.println("Final Temperature: " + qaPlainOldData.temperature);
             lineChartEx.drawChart();
         }
