@@ -32,7 +32,7 @@ public class Parameters {
     public static class SimulatedAnnealing {
         public static final float TEMPERATURE_INITIAL = 100;                // T Initial
         public static final float TEMPERATURE_FINAL = .05f;                    // T Final
-        public static final float TEMPERATURE_COOLING_RATE = .95f;          // T Cooling Rate
+        public static final float TEMPERATURE_COOLING_RATE = .7f;          // T Cooling Rate
         public static final int MONTE_CARLO_STEP = 50;                      // M
     }
 
@@ -82,8 +82,14 @@ public class Parameters {
     public static class ResultInfoConstants {
         public static final String START_TIME = "START_TIME";
         public static final String END_TIME = "END_TIME";
-        public static final String ENERGY = "ENERGY";
+        public static final String POTENTIAL_ENERGY = "POTENTIAL_ENERGY";
+        public static final String KINETIC_ENERGY = "KINETIC_ENERGY";
         public static final String LMAX = "LMAX";
         public static final String SUMMATION_OF_LMAX = "SUMMATION_OF_LMAX";
+        public static final String SYNC_OVERHEAD_COST = "SYNC_OVERHEAD_COST";
+        public static final String SYNC_DELAY_COST = "SYNC_DELAY_COST";
+        public static final String RELIABILITY_COST = "RELIABILITY_COST";
+        public static final String LOAD_BALANCING_COST = "LOAD_BALANCING_COST";
+        public static final String BUDGET_COST_ENERGY = "BUDGET_COST_ENERGY";
     }
 }
