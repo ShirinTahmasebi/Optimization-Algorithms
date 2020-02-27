@@ -3,12 +3,10 @@ package problem_modelings.cost_optimization.algorithms;
 import base_algorithms.Cost;
 import base_algorithms.simulated_annealing.SAModelingInterface;
 import base_algorithms.simulated_annealing.SAPlainOldData;
-import base_algorithms.simulated_annealing.SAResultBaseInterface;
 import main.Parameters;
 import problem_modelings.cost_optimization.Utils;
 import problem_modelings.cost_optimization.model_specifications.CostOptimizationModelingAbstract;
 import problem_modelings.cost_optimization.model_specifications.CostOptimizationModelingPlainOldData;
-import problem_modelings.cost_optimization.model_specifications.CostOptimizationModelingSAResult;
 
 import java.util.Random;
 
@@ -24,7 +22,6 @@ public class SACostOptimizationModeling extends CostOptimizationModelingAbstract
     @Override
     public void resetDynamicVariables() {
         saPlainOldData.temperature = saPlainOldData.temperatureInitial;
-        saPlainOldData.prevEnergy = 0;
         this.modelPlainOldData.tempControllerXSpinVariables = new boolean[modelPlainOldData.candidateControllers.size()];
         this.modelPlainOldData.tempSinkXSpinVariables = new boolean[modelPlainOldData.candidateSinks.size()];
         this.modelPlainOldData.sinkXSpinVariables = new boolean[modelPlainOldData.candidateSinks.size()];
@@ -44,7 +41,7 @@ public class SACostOptimizationModeling extends CostOptimizationModelingAbstract
 
         modelPlainOldData.tempControllerXSpinVariables = modelPlainOldData.controllerXSpinVariables.clone();
         modelPlainOldData.tempSinkXSpinVariables = modelPlainOldData.sinkXSpinVariables.clone();
-        saPlainOldData.prevEnergy = calculateCost().getPotentialEnergy();
+        saPlainOldData.prevEnergy = calculateCost();
     }
 
     @Override
@@ -112,10 +109,5 @@ public class SACostOptimizationModeling extends CostOptimizationModelingAbstract
     @Override
     public SAPlainOldData getData() {
         return saPlainOldData;
-    }
-
-    @Override
-    public SAResultBaseInterface getResult() {
-        return new CostOptimizationModelingSAResult();
     }
 }

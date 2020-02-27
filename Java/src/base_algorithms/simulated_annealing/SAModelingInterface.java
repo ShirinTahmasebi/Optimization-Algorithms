@@ -18,6 +18,4 @@ public interface SAModelingInterface {
     void printGeneratedSolution();
 
     SAPlainOldData getData();
-
-    SAResultBaseInterface getResult();
 }

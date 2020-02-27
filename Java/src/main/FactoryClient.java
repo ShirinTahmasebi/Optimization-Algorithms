@@ -7,20 +7,15 @@ import base_algorithms.Cuckoo.CuckooPlainOldData;
 import base_algorithms.quantum_annealing.QAAlgorithm;
 import base_algorithms.quantum_annealing.QAModelingInterface;
 import base_algorithms.quantum_annealing.QAPlainOldData;
-import base_algorithms.quantum_annealing.QAResultBaseInterface;
 import base_algorithms.simulated_annealing.SAAlgorithm;
 import base_algorithms.simulated_annealing.SAModelingInterface;
 import base_algorithms.simulated_annealing.SAPlainOldData;
-import base_algorithms.simulated_annealing.SAResultBaseInterface;
-import javafx.util.Pair;
 import main.model.Graph;
 import main.model.Vertex;
 import problem_modelings.budget_constrained_lmax_optimization.algorithms.QABudgetConstrainedLmaxOptimizationModeling;
 import problem_modelings.budget_constrained_lmax_optimization.algorithms.SABudgetConstrainedLmaxOptimizationModeling;
 import problem_modelings.budget_constrained_lmax_optimization.algorithms.cuckoo.CuckooBudgetConstrainedLmaxOptimizationModeling;
-import problem_modelings.budget_constrained_lmax_optimization.model_specifications.BudgetConstrainedLmaxOptimizationModelignSAResult;
 import problem_modelings.budget_constrained_lmax_optimization.model_specifications.BudgetConstrainedLmaxOptimizationModelingPlainOldData;
-import problem_modelings.budget_constrained_lmax_optimization.model_specifications.BudgetConstrainedLmaxOptimizationModelignQAResult;
 import problem_modelings.cost_optimization.algorithms.QACostOptimizationModeling;
 import problem_modelings.cost_optimization.algorithms.SACostOptimizationModeling;
 import problem_modelings.cost_optimization.algorithms.cuckoo.CuckooCostOptimizationModeling;
@@ -84,32 +79,12 @@ public class FactoryClient {
                 sensorToSensorWorkload
         );
 
-        Date cuckooTimeA = new Date();
-
+        // Cuckoo algorithm initialization
         CuckooPlainOldData cuckooPlainOldData = new CuckooPlainOldData();
-
         CuckooModelingInterface cuckooModelingInterface = new CuckooBudgetConstrainedLmaxOptimizationModeling(budgetConstrainedLmaxOptimizationModelingPlainOldData, cuckooPlainOldData);
-
         CuckooAlgorithm cuckooAlgorithm = new CuckooAlgorithm(cuckooModelingInterface);
 
-        for (int i = 0; i < main.Parameters.Common.SIMULATION_COUNT; i++) {
-            Cost cuckooCost = cuckooAlgorithm.execute();
-            double lmax = ((CuckooBudgetConstrainedLmaxOptimizationModeling) cuckooModelingInterface).calculateMaxL(cuckooAlgorithm.getSelectedCuckooDataAndBehavior());
-            double summationOfLMax = ((CuckooBudgetConstrainedLmaxOptimizationModeling) cuckooModelingInterface).calculateDistanceToNearestControllerEnergy(cuckooAlgorithm.getSelectedCuckooDataAndBehavior());
-
-            chartEx.addToCuckooSeries(i + 1, cuckooCost.getPotentialEnergy());
-
-            cuckooEnergySum += cuckooCost.getPotentialEnergy();
-            cuckooLMaxSum += lmax;
-            cuckooSummationOfLMaxSum += summationOfLMax;
-
-            printResults(cuckooCost, OptimizationAlgorithmsEnum.CUCKOO);
-        }
-
-        Date cuckooTimeB = new Date();
-
-        Date quantumTimeA = new Date();
-
+        // QA algorithm initialization
         QAPlainOldData qaPlainOldData = new QAPlainOldData(
                 main.Parameters.QuantumAnnealing.TROTTER_REPLICAS,
                 main.Parameters.QuantumAnnealing.TEMPERATURE,
@@ -118,66 +93,69 @@ public class FactoryClient {
                 main.Parameters.QuantumAnnealing.TUNNELING_FIELD_FINAL,
                 main.Parameters.QuantumAnnealing.TUNNELING_FIELD_EVAPORATION
         );
-
-        QAModelingInterface qaModelingInterface = new QABudgetConstrainedLmaxOptimizationModeling(
-                budgetConstrainedLmaxOptimizationModelingPlainOldData,
-                qaPlainOldData
-        );
-
+        QAModelingInterface qaModelingInterface = new QABudgetConstrainedLmaxOptimizationModeling(budgetConstrainedLmaxOptimizationModelingPlainOldData, qaPlainOldData);
         QAAlgorithm qaAlgorithm = new QAAlgorithm(qaModelingInterface);
 
-        for (int i = 0; i < main.Parameters.Common.SIMULATION_COUNT; i++) {
-
-            Pair<Cost, QAResultBaseInterface> qaResultPair = qaAlgorithm.execute();
-
-            chartEx.addToQASeries(i + 1, qaResultPair.getKey().getPotentialEnergy());
-
-            qaEnergySum += qaResultPair.getKey().getPotentialEnergy();
-            qaLMaxSum += ((BudgetConstrainedLmaxOptimizationModelignQAResult) qaResultPair.getValue()).lMax;
-            qaSummationOfLMaxSum += ((BudgetConstrainedLmaxOptimizationModelignQAResult) qaResultPair.getValue()).summationOfDistanceToNearestControllers;
-
-
-            printResults(qaResultPair.getKey(), OptimizationAlgorithmsEnum.QUANTUM_ANNEALING);
-        }
-
-        Date quantumTimeB = new Date();
-
-        Date simulatedTimeA = new Date();
-
+        // SA algorithm initialization
         SAPlainOldData saPlainOldData = new SAPlainOldData(
                 Parameters.SimulatedAnnealing.TEMPERATURE_INITIAL,
                 Parameters.SimulatedAnnealing.TEMPERATURE_FINAL,
                 Parameters.SimulatedAnnealing.TEMPERATURE_COOLING_RATE,
                 Parameters.SimulatedAnnealing.MONTE_CARLO_STEP
         );
-
-        SAModelingInterface saModelingInterface = new SABudgetConstrainedLmaxOptimizationModeling(
-                budgetConstrainedLmaxOptimizationModelingPlainOldData,
-                saPlainOldData
-        );
-
+        SAModelingInterface saModelingInterface = new SABudgetConstrainedLmaxOptimizationModeling(budgetConstrainedLmaxOptimizationModelingPlainOldData, saPlainOldData);
         SAAlgorithm saAlgorithm = new SAAlgorithm(saModelingInterface);
 
+        // Cuckoo execution
+        Date cuckooTimeA = new Date();
         for (int i = 0; i < main.Parameters.Common.SIMULATION_COUNT; i++) {
+            Cost cuckooCost = cuckooAlgorithm.execute();
+            double lmax = ((CuckooBudgetConstrainedLmaxOptimizationModeling) cuckooModelingInterface).calculateMaxL(cuckooAlgorithm.getSelectedCuckooDataAndBehavior());
+            double summationOfLMax = ((CuckooBudgetConstrainedLmaxOptimizationModeling) cuckooModelingInterface).calculateDistanceToNearestControllerEnergy(cuckooAlgorithm.getSelectedCuckooDataAndBehavior());
 
-            Pair<Double, SAResultBaseInterface> saResultPair = saAlgorithm.execute();
+            cuckooEnergySum += cuckooCost.getPotentialEnergy();
+            cuckooLMaxSum += lmax;
+            cuckooSummationOfLMaxSum += summationOfLMax;
 
-            chartEx.addToSASeries(i + 1, saResultPair.getKey());
+            chartEx.addToCuckooSeries(i + 1, cuckooCost.getPotentialEnergy());
+            printResults(cuckooCost, OptimizationAlgorithmsEnum.CUCKOO);
+        }
+        Date cuckooTimeB = new Date();
 
-            long lMax = ((BudgetConstrainedLmaxOptimizationModelignSAResult) saResultPair.getValue()).lMax;
-            double summationOfDistanceToNearestControllers = ((BudgetConstrainedLmaxOptimizationModelignSAResult) saResultPair.getValue()).summationOfDistanceToNearestControllers;
+        // QA execution
+        Date quantumTimeA = new Date();
+        for (int i = 0; i < main.Parameters.Common.SIMULATION_COUNT; i++) {
+            Cost qaCost = qaAlgorithm.execute();
 
-            saEnergySum += saResultPair.getKey();
+            qaEnergySum += qaCost.getPotentialEnergy();
+            qaLMaxSum += qaCost.getlMaxCost();
+            qaSummationOfLMaxSum += qaCost.getSummationOfLMaxCost();
+
+            chartEx.addToQASeries(i + 1, qaCost.getPotentialEnergy());
+            printResults(qaCost, OptimizationAlgorithmsEnum.QUANTUM_ANNEALING);
+        }
+        Date quantumTimeB = new Date();
+
+        // SA execution
+        Date simulatedTimeA = new Date();
+        for (int i = 0; i < main.Parameters.Common.SIMULATION_COUNT; i++) {
+            Cost saCost = saAlgorithm.execute();
+
+            chartEx.addToSASeries(i + 1, saCost.getPotentialEnergy());
+
+            // TODO: Revise these two lines
+            double lMax = saCost.getlMaxCost();
+            double summationOfDistanceToNearestControllers = saCost.getSummationOfLMaxCost();
+
+            saEnergySum += saCost.getPotentialEnergy();
             saLMaxSum += lMax;
             saSummationOfLMaxSum += summationOfDistanceToNearestControllers;
 
-            System.out.println("SA Energy: " + saResultPair.getKey());
-            System.out.println("SA L Max: " + lMax);
-            System.out.println("SA Summation of L Max: " + summationOfDistanceToNearestControllers);
+            printResults(saCost, OptimizationAlgorithmsEnum.SIMULATED_ANNEALING);
         }
-
         Date simulatedTimeB = new Date();
 
+        // Create results map
         Map<String, Map<String, Double>> algorithmResultsMap = new HashMap<>();
 
         Map<String, Double> cuckooMap = new HashMap<>();
@@ -271,10 +249,10 @@ public class FactoryClient {
         QAAlgorithm qaAlgorithm = new QAAlgorithm(qaModelingInterface);
 
         for (int i = 0; i < main.Parameters.Common.SIMULATION_COUNT; i++) {
-            Pair<Cost, QAResultBaseInterface> qaPotentialEnergy = qaAlgorithm.execute();
-            chartEx.addToQASeries(i + 1, qaPotentialEnergy.getKey().getPotentialEnergy());
-            qaEnergySum += qaPotentialEnergy.getKey().getPotentialEnergy();
-            System.out.println("QA Energy: " + qaPotentialEnergy);
+            Cost qaCost = qaAlgorithm.execute();
+            chartEx.addToQASeries(i + 1, qaCost.getPotentialEnergy());
+            qaEnergySum += qaCost.getPotentialEnergy();
+            System.out.println("QA Energy: " + qaCost.getPotentialEnergy());
         }
 
         Date quantumTimeB = new Date();
@@ -297,10 +275,10 @@ public class FactoryClient {
         SAAlgorithm saAlgorithm = new SAAlgorithm(saModelingInterface);
 
         for (int i = 0; i < main.Parameters.Common.SIMULATION_COUNT; i++) {
-            Pair<Double, SAResultBaseInterface> saExecuteResult = saAlgorithm.execute();
-            chartEx.addToSASeries(i + 1, saExecuteResult.getKey());
-            saEnergySum += saExecuteResult.getKey();
-            System.out.println("SA Energy: " + saExecuteResult);
+            Cost saExecuteResult = saAlgorithm.execute();
+            chartEx.addToSASeries(i + 1, saExecuteResult.getPotentialEnergy());
+            saEnergySum += saExecuteResult.getPotentialEnergy();
+            System.out.println("SA Energy: " + saExecuteResult.getPotentialEnergy());
         }
 
 

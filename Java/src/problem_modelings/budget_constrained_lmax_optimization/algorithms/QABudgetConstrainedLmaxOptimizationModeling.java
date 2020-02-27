@@ -1,7 +1,6 @@
 package problem_modelings.budget_constrained_lmax_optimization.algorithms;
 
 import base_algorithms.Cost;
-import base_algorithms.quantum_annealing.QAResultBaseInterface;
 import base_algorithms.quantum_annealing.QAModelingInterface;
 import base_algorithms.quantum_annealing.QAPlainOldData;
 import javafx.util.Pair;
@@ -9,7 +8,6 @@ import main.Parameters;
 import problem_modelings.budget_constrained_lmax_optimization.Utils;
 import problem_modelings.budget_constrained_lmax_optimization.model_specifications.BudgetConstrainedLmaxOptimizationModelingAbstract;
 import problem_modelings.budget_constrained_lmax_optimization.model_specifications.BudgetConstrainedLmaxOptimizationModelingPlainOldData;
-import problem_modelings.budget_constrained_lmax_optimization.model_specifications.BudgetConstrainedLmaxOptimizationModelignQAResult;
 
 import java.util.*;
 
@@ -183,12 +181,5 @@ public class QABudgetConstrainedLmaxOptimizationModeling extends BudgetConstrain
     @Override
     public QAPlainOldData getData() {
         return qaDataStructure;
-    }
-
-    @Override
-    public QAResultBaseInterface getResult() {
-        int maxL = super.calculateMaxL(modelPlainOldData.controllerXSpinVariables);
-        int toNearestControllerEnergy = super.calculateDistanceToNearestControllerEnergy(modelPlainOldData.controllerXSpinVariables);
-        return new BudgetConstrainedLmaxOptimizationModelignQAResult(maxL, toNearestControllerEnergy);
     }
 }

@@ -1,6 +1,6 @@
 package base_algorithms.simulated_annealing;
 
-import javafx.util.Pair;
+import base_algorithms.Cost;
 import main.LineChartEx;
 import main.Parameters;
 
@@ -15,7 +15,7 @@ public class SAAlgorithm {
         this.lineChartEx = new LineChartEx();
     }
 
-    public Pair<Double, SAResultBaseInterface> execute() throws Exception {
+    public Cost execute() throws Exception {
         // Reset Dynamic Variables
         saModelingInterface.resetDynamicVariables();
 
@@ -33,17 +33,17 @@ public class SAAlgorithm {
                 // Generate neighbor
                 saModelingInterface.generateNeighbor();
                 // ------ Calculate potential energy of temp solution
-                double energy = saModelingInterface.calculateCost().getPotentialEnergy();
-                if (energy < minEnergy) {
-                    minEnergy = energy;
+                Cost energy = saModelingInterface.calculateCost();
+                if (energy.getPotentialEnergy() < minEnergy) {
+                    minEnergy = energy.getPotentialEnergy();
                 }
-                if (energy < saPlainOldData.prevEnergy) {
+                if (energy.getPotentialEnergy() < saPlainOldData.prevEnergy.getPotentialEnergy()) {
                     // If energy has decreased: accept solution
                     saPlainOldData.prevEnergy = energy;
                     saModelingInterface.acceptSolution();
                 } else {
                     // Else with given probability decide to accept or not
-                    double baseProb = Math.exp((saPlainOldData.prevEnergy - energy) / saPlainOldData.temperature);
+                    double baseProb = Math.exp((saPlainOldData.prevEnergy.getPotentialEnergy() - energy.getPotentialEnergy()) / saPlainOldData.temperature);
                     if (Parameters.Common.DO_PRINT_STEPS) {
                         System.out.println("BaseProp " + baseProb);
                     }
@@ -55,8 +55,8 @@ public class SAAlgorithm {
                 }
                 lineChartEx.addToEnergySeries(
                         counter,
-                        saPlainOldData.prevEnergy,
-                        energy,
+                        saPlainOldData.prevEnergy.getPotentialEnergy(),
+                        energy.getPotentialEnergy(),
                         minEnergy,
                         4
                 );
@@ -75,6 +75,6 @@ public class SAAlgorithm {
         }
 
         saModelingInterface.printGeneratedSolution();
-        return new Pair(saPlainOldData.prevEnergy, saModelingInterface.getResult());
+        return saPlainOldData.prevEnergy;
     }
 }

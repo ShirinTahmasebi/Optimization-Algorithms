@@ -3,11 +3,9 @@ package problem_modelings.budget_constrained_lmax_optimization.algorithms;
 import base_algorithms.Cost;
 import base_algorithms.simulated_annealing.SAModelingInterface;
 import base_algorithms.simulated_annealing.SAPlainOldData;
-import base_algorithms.simulated_annealing.SAResultBaseInterface;
 import javafx.util.Pair;
 import main.Parameters;
 import problem_modelings.budget_constrained_lmax_optimization.Utils;
-import problem_modelings.budget_constrained_lmax_optimization.model_specifications.BudgetConstrainedLmaxOptimizationModelignSAResult;
 import problem_modelings.budget_constrained_lmax_optimization.model_specifications.BudgetConstrainedLmaxOptimizationModelingAbstract;
 import problem_modelings.budget_constrained_lmax_optimization.model_specifications.BudgetConstrainedLmaxOptimizationModelingPlainOldData;
 
@@ -25,7 +23,6 @@ public class SABudgetConstrainedLmaxOptimizationModeling extends BudgetConstrain
     @Override
     public void resetDynamicVariables() {
         saPlainOldData.temperature = saPlainOldData.temperatureInitial;
-        saPlainOldData.prevEnergy = 0;
         this.modelPlainOldData.tempControllerXSpinVariables = new boolean[modelPlainOldData.candidateControllers.size()];
         this.modelPlainOldData.controllerXSpinVariables = new boolean[modelPlainOldData.candidateControllers.size()];
     }
@@ -38,7 +35,7 @@ public class SABudgetConstrainedLmaxOptimizationModeling extends BudgetConstrain
         }
 
         modelPlainOldData.tempControllerXSpinVariables = modelPlainOldData.controllerXSpinVariables.clone();
-        saPlainOldData.prevEnergy = calculateCost().getPotentialEnergy();
+        saPlainOldData.prevEnergy = calculateCost();
     }
 
     @Override
@@ -132,12 +129,5 @@ public class SABudgetConstrainedLmaxOptimizationModeling extends BudgetConstrain
     @Override
     public SAPlainOldData getData() {
         return saPlainOldData;
-    }
-
-    @Override
-    public SAResultBaseInterface getResult() {
-        int maxL = super.calculateMaxL(modelPlainOldData.controllerXSpinVariables);
-        int toNearestControllerEnergy = super.calculateDistanceToNearestControllerEnergy(modelPlainOldData.controllerXSpinVariables);
-        return new BudgetConstrainedLmaxOptimizationModelignSAResult(maxL, toNearestControllerEnergy);
     }
 }

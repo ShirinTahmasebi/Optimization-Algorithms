@@ -17,7 +17,7 @@ public class QAAlgorithm {
         this.lineChartEx = new LineChartEx();
     }
 
-    public Pair<Cost, QAResultBaseInterface> execute() throws Exception {
+    public Cost execute() throws Exception {
         // Reset Dynamic Values
         qaModelingInterface.resetDynamicVariables();
 
@@ -87,6 +87,6 @@ public class QAAlgorithm {
         }
 
         qaModelingInterface.printGeneratedSolution();
-        return new Pair<>(qaPlainOldData.prevEnergyPair, qaModelingInterface.getResult());
+        return qaPlainOldData.prevEnergyPair;
     }
 }

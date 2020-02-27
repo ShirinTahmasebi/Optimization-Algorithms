@@ -1,15 +1,13 @@
 package problem_modelings.cost_optimization.algorithms;
 
 import base_algorithms.Cost;
-import base_algorithms.quantum_annealing.QAResultBaseInterface;
+import base_algorithms.quantum_annealing.QAModelingInterface;
+import base_algorithms.quantum_annealing.QAPlainOldData;
 import javafx.util.Pair;
 import main.Parameters;
 import problem_modelings.cost_optimization.Utils;
-import base_algorithms.quantum_annealing.QAModelingInterface;
-import base_algorithms.quantum_annealing.QAPlainOldData;
 import problem_modelings.cost_optimization.model_specifications.CostOptimizationModelingAbstract;
 import problem_modelings.cost_optimization.model_specifications.CostOptimizationModelingPlainOldData;
-import problem_modelings.cost_optimization.model_specifications.CostOptimizationModelingQAResult;
 
 import java.util.Random;
 
@@ -175,11 +173,6 @@ public class QACostOptimizationModeling extends CostOptimizationModelingAbstract
     @Override
     public QAPlainOldData getData() {
         return qaDataStructure;
-    }
-
-    @Override
-    public QAResultBaseInterface getResult() {
-        return new CostOptimizationModelingQAResult();
     }
 
     @SuppressWarnings("unused")
