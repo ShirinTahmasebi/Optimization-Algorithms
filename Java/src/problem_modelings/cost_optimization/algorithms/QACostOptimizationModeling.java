@@ -62,8 +62,7 @@ public class QACostOptimizationModeling extends CostOptimizationModelingAbstract
 
         modelPlainOldData.tempControllerXSpinVariables = modelPlainOldData.controllerXSpinVariables.clone();
         modelPlainOldData.tempSinkXSpinVariables = modelPlainOldData.sinkXSpinVariables.clone();
-        Cost cost = calculateCost(-1);
-        qaDataStructure.prevEnergyPair = new Pair<>(cost.getPotentialEnergy(), cost.getKineticEnergy());
+        qaDataStructure.prevEnergyPair = calculateCost(-1);
     }
 
     @Override

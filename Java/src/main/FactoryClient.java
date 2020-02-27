@@ -1,5 +1,6 @@
 package main;
 
+import base_algorithms.Cost;
 import base_algorithms.Cuckoo.CuckooAlgorithm;
 import base_algorithms.Cuckoo.CuckooModelingInterface;
 import base_algorithms.Cuckoo.CuckooPlainOldData;
@@ -129,17 +130,23 @@ public class FactoryClient {
 
         for (int i = 0; i < main.Parameters.Common.SIMULATION_COUNT; i++) {
 
-            Pair<Double, QAResultBaseInterface> qaResultPair = qaAlgorithm.execute();
+            Pair<Cost, QAResultBaseInterface> qaResultPair = qaAlgorithm.execute();
 
-            chartEx.addToQASeries(i + 1, qaResultPair.getKey());
+            chartEx.addToQASeries(i + 1, qaResultPair.getKey().getPotentialEnergy());
 
-            qaEnergySum += qaResultPair.getKey();
+            qaEnergySum += qaResultPair.getKey().getPotentialEnergy();
             qaLMaxSum += ((BudgetConstrainedLmaxOptimizationModelignQAResult) qaResultPair.getValue()).lMax;
             qaSummationOfLMaxSum += ((BudgetConstrainedLmaxOptimizationModelignQAResult) qaResultPair.getValue()).summationOfDistanceToNearestControllers;
 
-            System.out.println("QA Energy: " + qaResultPair.getKey());
-            System.out.println("QA L Max: " + ((BudgetConstrainedLmaxOptimizationModelignQAResult) qaResultPair.getValue()).lMax);
-            System.out.println("QA Summation of L Max: " + ((BudgetConstrainedLmaxOptimizationModelignQAResult) qaResultPair.getValue()).summationOfDistanceToNearestControllers);
+            System.out.println("QA Potential Cost: " + qaResultPair.getKey().getPotentialEnergy());
+            System.out.println("QA LMax: " + qaResultPair.getKey().getlMaxCost());
+            System.out.println("QA Summation of LMax Cost: " + qaResultPair.getKey().getSummationOfLMaxCost());
+            System.out.println("QA Sync Overhead Cost: " + qaResultPair.getKey().getSynchronizationOverheadCost());
+            System.out.println("QA Sync Delay Cost: " + qaResultPair.getKey().getSynchronizationDelayCost());
+            System.out.println("QA Reliability Cost: " + qaResultPair.getKey().getReliabilityCost());
+            System.out.println("QA Load Cost: " + qaResultPair.getKey().getLoadBalancingCost());
+            System.out.println("QA Kinetic Cost: " + qaResultPair.getKey().getKineticEnergy());
+            System.out.println("QA Budget Cost: " + qaResultPair.getKey().getBudgetCostEnergy());
         }
 
         Date quantumTimeB = new Date();
@@ -273,9 +280,9 @@ public class FactoryClient {
         QAAlgorithm qaAlgorithm = new QAAlgorithm(qaModelingInterface);
 
         for (int i = 0; i < main.Parameters.Common.SIMULATION_COUNT; i++) {
-            Pair<Double, QAResultBaseInterface> qaPotentialEnergy = qaAlgorithm.execute();
-            chartEx.addToQASeries(i + 1, qaPotentialEnergy.getKey());
-            qaEnergySum += qaPotentialEnergy.getKey();
+            Pair<Cost, QAResultBaseInterface> qaPotentialEnergy = qaAlgorithm.execute();
+            chartEx.addToQASeries(i + 1, qaPotentialEnergy.getKey().getPotentialEnergy());
+            qaEnergySum += qaPotentialEnergy.getKey().getPotentialEnergy();
             System.out.println("QA Energy: " + qaPotentialEnergy);
         }
 

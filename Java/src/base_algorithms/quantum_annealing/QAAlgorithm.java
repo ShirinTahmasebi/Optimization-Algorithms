@@ -17,7 +17,7 @@ public class QAAlgorithm {
         this.lineChartEx = new LineChartEx();
     }
 
-    public Pair<Double, QAResultBaseInterface> execute() throws Exception {
+    public Pair<Cost, QAResultBaseInterface> execute() throws Exception {
         // Reset Dynamic Values
         qaModelingInterface.resetDynamicVariables();
 
@@ -41,14 +41,14 @@ public class QAAlgorithm {
                     Cost cost = qaModelingInterface.calculateCost(ro);
                     Pair<Double, Double> energyPair = new Pair<>(cost.getPotentialEnergy(), cost.getKineticEnergy());
                     double energy = qaModelingInterface.calculateEnergyFromPair(energyPair);
-                    double prevEnergy = qaModelingInterface.calculateEnergyFromPair(qaPlainOldData.prevEnergyPair);
+                    double prevEnergy = qaModelingInterface.calculateEnergyFromPair(new Pair<>(qaPlainOldData.prevEnergyPair.getPotentialEnergy(), qaPlainOldData.prevEnergyPair.getKineticEnergy()));
                     double minEnergy = qaModelingInterface.calculateEnergyFromPair(minEnergyPair);
                     if (energy < minEnergy) {
                         minEnergyPair = energyPair;
                     }
-                    if (energyPair.getKey() < qaPlainOldData.prevEnergyPair.getKey() || energy < prevEnergy) {
+                    if (energyPair.getKey() < qaPlainOldData.prevEnergyPair.getPotentialEnergy() || energy < prevEnergy) {
                         // If energy has decreased: accept solution
-                        qaPlainOldData.prevEnergyPair = energyPair;
+                        qaPlainOldData.prevEnergyPair = cost;
                         qaModelingInterface.acceptSolution();
                     } else {
                         // Else with given probability decide to accept or not
@@ -58,13 +58,13 @@ public class QAAlgorithm {
                         }
                         double rand = Math.random();
                         if (rand < baseProb) {
-                            qaPlainOldData.prevEnergyPair = energyPair;
+                            qaPlainOldData.prevEnergyPair = cost;
                             qaModelingInterface.acceptSolution();
                         }
                     }
                     lineChartEx.addToEnergySeries(
                             counter,
-                            qaModelingInterface.calculateEnergyFromPair(qaPlainOldData.prevEnergyPair),
+                            qaModelingInterface.calculateEnergyFromPair(new Pair<>(qaPlainOldData.prevEnergyPair.getPotentialEnergy(), qaPlainOldData.prevEnergyPair.getKineticEnergy())),
                             energy,
                             qaModelingInterface.calculateEnergyFromPair(minEnergyPair),
                             4
@@ -79,14 +79,14 @@ public class QAAlgorithm {
         if (Parameters.Common.DO_PRINT_INSTANCES) {
             // Final solution is in: sinkXSpinVariables and controllerXSpinVariables
             System.out.println("Counter: " + counter);
-            System.out.println("Accepted Energy: " + qaModelingInterface.calculateEnergyFromPair(qaPlainOldData.prevEnergyPair));
-            System.out.println("Accepted Potential Energy: " + qaPlainOldData.prevEnergyPair.getKey());
+            System.out.println("Accepted Energy: " + qaModelingInterface.calculateEnergyFromPair(new Pair<>(qaPlainOldData.prevEnergyPair.getPotentialEnergy(), qaPlainOldData.prevEnergyPair.getKineticEnergy())));
+            System.out.println("Accepted Potential Energy: " + qaPlainOldData.prevEnergyPair.getPotentialEnergy());
             System.out.println("Min Energy: " + qaModelingInterface.calculateEnergyFromPair(minEnergyPair));
             System.out.println("Final Temperature: " + qaPlainOldData.temperature);
             lineChartEx.drawChart();
         }
 
         qaModelingInterface.printGeneratedSolution();
-        return new Pair(qaPlainOldData.prevEnergyPair.getKey(), qaModelingInterface.getResult());
+        return new Pair<>(qaPlainOldData.prevEnergyPair, qaModelingInterface.getResult());
     }
 }

@@ -86,6 +86,10 @@ public class Cost {
         return kineticEnergy;
     }
 
+    public double getBudgetCostEnergy() {
+        return budgetCostEnergy;
+    }
+
     public double getPotentialEnergy() throws Exception {
         if (Parameters.Common.MODEL_NO == ModelNoEnum.COST_OPTIMIZATION) {
             return Parameters.Common.PENALTY_COEFFICIENT * (reliabilityCost + loadBalancingCost) + budgetCostEnergy;

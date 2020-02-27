@@ -59,7 +59,15 @@ public class QABudgetConstrainedLmaxOptimizationModeling extends BudgetConstrain
 
         modelPlainOldData.tempControllerXSpinVariables = modelPlainOldData.controllerXSpinVariables.clone();
         // TODO: Check This Line - calculateCost(-1)
-        qaDataStructure.prevEnergyPair = new Pair(Double.MAX_VALUE, Double.MAX_VALUE);
+        qaDataStructure.prevEnergyPair = new Cost()
+                .setBudgetCostEnergy(Integer.MAX_VALUE)
+                .setKineticEnergy(Integer.MAX_VALUE)
+                .setLmaxCost(Integer.MAX_VALUE)
+                .setSummationOfLMaxCost(Integer.MAX_VALUE)
+                .setSynchronizationOverheadCost(Integer.MAX_VALUE)
+                .setSynchronizationDelayCost(Integer.MAX_VALUE)
+                .setLoadBalancingCost(Integer.MAX_VALUE)
+                .setReliabilityCost(Integer.MAX_VALUE);
     }
 
     @Override
