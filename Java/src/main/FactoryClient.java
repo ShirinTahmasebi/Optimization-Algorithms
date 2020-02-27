@@ -93,19 +93,25 @@ public class FactoryClient {
         CuckooAlgorithm cuckooAlgorithm = new CuckooAlgorithm(cuckooModelingInterface);
 
         for (int i = 0; i < main.Parameters.Common.SIMULATION_COUNT; i++) {
-            double cuckooPotentialEnergy = cuckooAlgorithm.execute();
+            Cost cuckooPotentialEnergy = cuckooAlgorithm.execute();
             double lmax = ((CuckooBudgetConstrainedLmaxOptimizationModeling) cuckooModelingInterface).calculateMaxL(cuckooAlgorithm.getSelectedCuckooDataAndBehavior());
             double summationOfLMax = ((CuckooBudgetConstrainedLmaxOptimizationModeling) cuckooModelingInterface).calculateDistanceToNearestControllerEnergy(cuckooAlgorithm.getSelectedCuckooDataAndBehavior());
 
-            chartEx.addToCuckooSeries(i + 1, cuckooPotentialEnergy);
+            chartEx.addToCuckooSeries(i + 1, cuckooPotentialEnergy.getPotentialEnergy());
 
-            cuckooEnergySum += cuckooPotentialEnergy;
+            cuckooEnergySum += cuckooPotentialEnergy.getPotentialEnergy();
             cuckooLMaxSum += lmax;
             cuckooSummationOfLMaxSum += summationOfLMax;
 
-            System.out.println("Cuckoo Energy: " + cuckooPotentialEnergy);
-            System.out.println("Cuckoo L Max: " + lmax);
-            System.out.println("Cuckoo Summation of L Max: " + summationOfLMax);
+            System.out.println("Cuckoo Total Cost: " + cuckooPotentialEnergy.getPotentialEnergy());
+            System.out.println("Cuckoo LMax: " + cuckooPotentialEnergy.getlMaxCost());
+            System.out.println("Cuckoo Summation of LMax Cost: " + cuckooPotentialEnergy.getSummationOfLMaxCost());
+            System.out.println("Cuckoo Sync Overhead Cost: " + cuckooPotentialEnergy.getSynchronizationOverheadCost());
+            System.out.println("Cuckoo Sync Delay Cost: " + cuckooPotentialEnergy.getSynchronizationDelayCost());
+            System.out.println("Cuckoo Reliability Cost: " + cuckooPotentialEnergy.getReliabilityCost());
+            System.out.println("Cuckoo Load Cost: " + cuckooPotentialEnergy.getLoadBalancingCost());
+            System.out.println("Cuckoo Kinetic Cost: " + cuckooPotentialEnergy.getKineticEnergy());
+            System.out.println("Cuckoo Budget Cost: " + cuckooPotentialEnergy.getBudgetCostEnergy());
         }
 
         Date cuckooTimeB = new Date();
@@ -253,10 +259,10 @@ public class FactoryClient {
         CuckooAlgorithm cuckooAlgorithm = new CuckooAlgorithm(cuckooModelingInterface);
 
         for (int i = 0; i < main.Parameters.Common.SIMULATION_COUNT; i++) {
-            double cuckooPotentialEnergy = cuckooAlgorithm.execute();
-            chartEx.addToCuckooSeries(i + 1, cuckooPotentialEnergy);
-            cuckooEnergySum += cuckooPotentialEnergy;
-            System.out.println("Cuckoo Energy: " + cuckooPotentialEnergy);
+            Cost cuckooPotentialEnergy = cuckooAlgorithm.execute();
+            chartEx.addToCuckooSeries(i + 1, cuckooPotentialEnergy.getPotentialEnergy());
+            cuckooEnergySum += cuckooPotentialEnergy.getPotentialEnergy();
+            System.out.println("Cuckoo Energy: " + cuckooPotentialEnergy.getPotentialEnergy());
         }
 
         Date cuckooTimeB = new Date();

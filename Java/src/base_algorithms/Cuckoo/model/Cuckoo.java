@@ -1,12 +1,14 @@
 package base_algorithms.Cuckoo.model;
 
+import base_algorithms.Cost;
+
 import java.util.Random;
 
 public class Cuckoo {
 
     private CuckooDataAndBehaviour cuckooDataAndBehaviour;
     private boolean isMature = false;
-    private double cost;
+    private Cost cost;
 
     private MatureCuckoo matureCuckoo = new MatureCuckoo();
 
@@ -36,11 +38,11 @@ public class Cuckoo {
         return matureCuckoo;
     }
 
-    public double getCost() {
+    public Cost getCost() {
         return cost;
     }
 
-    public void setCost(double cost) {
+    public void setCost(Cost cost) {
         this.cost = cost;
     }
 

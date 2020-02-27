@@ -123,7 +123,7 @@ public class CuckooCostOptimizationModeling extends CostOptimizationModelingAbst
         }
         CuckooDataAndBehaviour cuckooDataAndBehaviour = new CuckooCostOptimizationModelingDataAndBehaviour(sinkSpinVariables, controllersSpinVariables);
         Cuckoo cuckoo = new Cuckoo(true, cuckooDataAndBehaviour);
-        cuckoo.setCost(calculateCost(cuckooDataAndBehaviour).getReliabilityCost());
+        cuckoo.setCost(calculateCost(cuckooDataAndBehaviour));
         return cuckoo;
     }
 

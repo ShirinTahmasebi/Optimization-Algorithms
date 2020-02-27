@@ -151,7 +151,7 @@ public class CuckooBudgetConstrainedLmaxOptimizationModeling extends BudgetConst
 
         CuckooDataAndBehaviour cuckooDataAndBehaviour = new CuckooBudgetConstrainedLmaxOptimizationModelingDataAndBehaviour(controllersSpinVariables);
         Cuckoo cuckoo = new Cuckoo(true, cuckooDataAndBehaviour);
-        cuckoo.setCost(calculateCost(cuckooDataAndBehaviour).getPotentialEnergy());
+        cuckoo.setCost(calculateCost(cuckooDataAndBehaviour));
         return cuckoo;
     }
 
