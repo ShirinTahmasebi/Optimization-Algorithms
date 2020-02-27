@@ -93,25 +93,17 @@ public class FactoryClient {
         CuckooAlgorithm cuckooAlgorithm = new CuckooAlgorithm(cuckooModelingInterface);
 
         for (int i = 0; i < main.Parameters.Common.SIMULATION_COUNT; i++) {
-            Cost cuckooPotentialEnergy = cuckooAlgorithm.execute();
+            Cost cuckooCost = cuckooAlgorithm.execute();
             double lmax = ((CuckooBudgetConstrainedLmaxOptimizationModeling) cuckooModelingInterface).calculateMaxL(cuckooAlgorithm.getSelectedCuckooDataAndBehavior());
             double summationOfLMax = ((CuckooBudgetConstrainedLmaxOptimizationModeling) cuckooModelingInterface).calculateDistanceToNearestControllerEnergy(cuckooAlgorithm.getSelectedCuckooDataAndBehavior());
 
-            chartEx.addToCuckooSeries(i + 1, cuckooPotentialEnergy.getPotentialEnergy());
+            chartEx.addToCuckooSeries(i + 1, cuckooCost.getPotentialEnergy());
 
-            cuckooEnergySum += cuckooPotentialEnergy.getPotentialEnergy();
+            cuckooEnergySum += cuckooCost.getPotentialEnergy();
             cuckooLMaxSum += lmax;
             cuckooSummationOfLMaxSum += summationOfLMax;
 
-            System.out.println("Cuckoo Total Cost: " + cuckooPotentialEnergy.getPotentialEnergy());
-            System.out.println("Cuckoo LMax: " + cuckooPotentialEnergy.getlMaxCost());
-            System.out.println("Cuckoo Summation of LMax Cost: " + cuckooPotentialEnergy.getSummationOfLMaxCost());
-            System.out.println("Cuckoo Sync Overhead Cost: " + cuckooPotentialEnergy.getSynchronizationOverheadCost());
-            System.out.println("Cuckoo Sync Delay Cost: " + cuckooPotentialEnergy.getSynchronizationDelayCost());
-            System.out.println("Cuckoo Reliability Cost: " + cuckooPotentialEnergy.getReliabilityCost());
-            System.out.println("Cuckoo Load Cost: " + cuckooPotentialEnergy.getLoadBalancingCost());
-            System.out.println("Cuckoo Kinetic Cost: " + cuckooPotentialEnergy.getKineticEnergy());
-            System.out.println("Cuckoo Budget Cost: " + cuckooPotentialEnergy.getBudgetCostEnergy());
+            printResults(cuckooCost, OptimizationAlgorithmsEnum.CUCKOO);
         }
 
         Date cuckooTimeB = new Date();
@@ -144,15 +136,8 @@ public class FactoryClient {
             qaLMaxSum += ((BudgetConstrainedLmaxOptimizationModelignQAResult) qaResultPair.getValue()).lMax;
             qaSummationOfLMaxSum += ((BudgetConstrainedLmaxOptimizationModelignQAResult) qaResultPair.getValue()).summationOfDistanceToNearestControllers;
 
-            System.out.println("QA Potential Cost: " + qaResultPair.getKey().getPotentialEnergy());
-            System.out.println("QA LMax: " + qaResultPair.getKey().getlMaxCost());
-            System.out.println("QA Summation of LMax Cost: " + qaResultPair.getKey().getSummationOfLMaxCost());
-            System.out.println("QA Sync Overhead Cost: " + qaResultPair.getKey().getSynchronizationOverheadCost());
-            System.out.println("QA Sync Delay Cost: " + qaResultPair.getKey().getSynchronizationDelayCost());
-            System.out.println("QA Reliability Cost: " + qaResultPair.getKey().getReliabilityCost());
-            System.out.println("QA Load Cost: " + qaResultPair.getKey().getLoadBalancingCost());
-            System.out.println("QA Kinetic Cost: " + qaResultPair.getKey().getKineticEnergy());
-            System.out.println("QA Budget Cost: " + qaResultPair.getKey().getBudgetCostEnergy());
+
+            printResults(qaResultPair.getKey(), OptimizationAlgorithmsEnum.QUANTUM_ANNEALING);
         }
 
         Date quantumTimeB = new Date();
@@ -222,7 +207,7 @@ public class FactoryClient {
 
         algorithmResultsMap.put(OptimizationAlgorithmsEnum.SIMULATED_ANNEALING.name(), saMap);
 
-        printResults(chartEx, algorithmResultsMap);
+        printResultsSummary(chartEx, algorithmResultsMap);
     }
 
     private void executeAlgorithmsOnFirstModel() throws Exception {
@@ -321,7 +306,7 @@ public class FactoryClient {
 
         Date simulatedTimeB = new Date();
 
-        // TODO: Print Results Using printResults Method
+        // TODO: Print Results Using printResultsSummary Method
     }
 
     private void retrieveVariablesFromFile() {
@@ -342,7 +327,7 @@ public class FactoryClient {
         }
     }
 
-    private void printResults(LineChartEx chartEx, Map<String, Map<String, Double>> algorithmResultInfo) {
+    private void printResultsSummary(LineChartEx chartEx, Map<String, Map<String, Double>> algorithmResultInfo) {
         chartEx.drawChart();
         System.out.println();
 
@@ -359,5 +344,17 @@ public class FactoryClient {
             );
             System.out.println();
         }
+    }
+
+    private void printResults(Cost cost, OptimizationAlgorithmsEnum optimizationAlgorithm) throws Exception {
+        System.out.println(optimizationAlgorithm.name() + " Total Cost: " + cost.getPotentialEnergy());
+        System.out.println(optimizationAlgorithm.name() + " LMax: " + cost.getlMaxCost());
+        System.out.println(optimizationAlgorithm.name() + " Summation of LMax Cost: " + cost.getSummationOfLMaxCost());
+        System.out.println(optimizationAlgorithm.name() + " Sync Overhead Cost: " + cost.getSynchronizationOverheadCost());
+        System.out.println(optimizationAlgorithm.name() + " Sync Delay Cost: " + cost.getSynchronizationDelayCost());
+        System.out.println(optimizationAlgorithm.name() + " Reliability Cost: " + cost.getReliabilityCost());
+        System.out.println(optimizationAlgorithm.name() + " Load Cost: " + cost.getLoadBalancingCost());
+        System.out.println(optimizationAlgorithm.name() + " Kinetic Cost: " + cost.getKineticEnergy());
+        System.out.println(optimizationAlgorithm.name() + " Budget Cost: " + cost.getBudgetCostEnergy());
     }
 }
