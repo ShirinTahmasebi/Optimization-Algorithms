@@ -65,7 +65,7 @@ public abstract class BudgetConstrainedLmaxOptimizationModelingAbstract extends 
     }
 
 
-    public int calculateDistanceToNearestControllerEnergy(CuckooDataAndBehaviour cuckooDataAndBehaviour) {
+    public double calculateDistanceToNearestControllerEnergy(CuckooDataAndBehaviour cuckooDataAndBehaviour) {
         if (cuckooDataAndBehaviour instanceof CuckooBudgetConstrainedLmaxOptimizationModelingDataAndBehaviour) {
             return calculateDistanceToNearestControllerEnergy((CuckooBudgetConstrainedLmaxOptimizationModelingDataAndBehaviour) cuckooDataAndBehaviour);
         } else {
@@ -77,15 +77,18 @@ public abstract class BudgetConstrainedLmaxOptimizationModelingAbstract extends 
         return calculateMaxL(cuckooDataAndBehaviour.controllerXSpinVariables);
     }
 
-    public int calculateDistanceToNearestControllerEnergy(boolean[] controllerXSpinVariable) {
-        List<Integer> nodeMinDistancesToSelectedControllers = new ArrayList<>();
-        List<Integer> controllersIndices = new ArrayList<>();
+    public double calculateDistanceToNearestControllerEnergy(boolean[] controllerXSpinVariable) {
+        List<Integer> nodesDistancesToFurthestCandidateControllers = new ArrayList<>();
+        List<Integer> nodesDistancesToFurthestSelectedControllers = new ArrayList<>();
+        List<Integer> candidateControllersIndices = new ArrayList<>();
+        List<Integer> selectedControllersIndices = new ArrayList<>();
 
         for (int i = 0; i < modelPlainOldData.candidateControllers.size(); i++) {
+            String controllerNodeId = modelPlainOldData.candidateControllers.get(i).getId();
+            int vertexIndexById = modelPlainOldData.graph.getVertexIndexById(controllerNodeId);
+            candidateControllersIndices.add(vertexIndexById);
             if (controllerXSpinVariable[i]) {
-                String controllerNodeId = modelPlainOldData.candidateControllers.get(i).getId();
-                int vertexIndexById = modelPlainOldData.graph.getVertexIndexById(controllerNodeId);
-                controllersIndices.add(vertexIndexById);
+                selectedControllersIndices.add(vertexIndexById);
             }
         }
 
@@ -94,19 +97,37 @@ public abstract class BudgetConstrainedLmaxOptimizationModelingAbstract extends 
         vertexes.forEach(vertex -> {
             List<Integer> nodeDistancesToSelectedControllers = new ArrayList<>();
             nodeDistancesToSelectedControllers.add(Integer.MIN_VALUE);
-
-            for (Integer controllersIndex : controllersIndices) {
+            for (Integer controllersIndex : selectedControllersIndices) {
                 int vertexIndex = modelPlainOldData.graph.getVertexIndexById(vertex.getId());
                 nodeDistancesToSelectedControllers.add(modelPlainOldData.distances[vertexIndex][controllersIndex]);
             }
 
-            nodeMinDistancesToSelectedControllers.add(Collections.max(nodeDistancesToSelectedControllers));
+            nodesDistancesToFurthestSelectedControllers.add(Collections.max(nodeDistancesToSelectedControllers));
         });
 
-        return nodeMinDistancesToSelectedControllers.stream().mapToInt(Integer::intValue).sum();
+        // Worst case is when for each node, the furthest candidate controller is in selected controller list.
+        // Thus, we calculate the distance of each node to all candidate controllers (not just selected controllers) and then collect the maximum distance.
+        vertexes.forEach(vertex -> {
+            List<Integer> nodeDistancesToCandidateControllers = new ArrayList<>();
+            nodeDistancesToCandidateControllers.add(Integer.MIN_VALUE);
+
+            for (Integer controllersIndex : candidateControllersIndices) {
+                int vertexIndex = modelPlainOldData.graph.getVertexIndexById(vertex.getId());
+                nodeDistancesToCandidateControllers.add(modelPlainOldData.distances[vertexIndex][controllersIndex]);
+            }
+
+            nodesDistancesToFurthestCandidateControllers.add(Collections.max(nodeDistancesToCandidateControllers));
+        });
+
+        double worstCase = nodesDistancesToFurthestCandidateControllers.stream().mapToInt(Integer::intValue).sum();
+        double currentCase = nodesDistancesToFurthestSelectedControllers.stream().mapToInt(Integer::intValue).sum();
+
+        return currentCase / worstCase;
     }
 
-    private int calculateDistanceToNearestControllerEnergy(CuckooBudgetConstrainedLmaxOptimizationModelingDataAndBehaviour cuckooDataAndBehaviour) {
+
+    private double calculateDistanceToNearestControllerEnergy
+            (CuckooBudgetConstrainedLmaxOptimizationModelingDataAndBehaviour cuckooDataAndBehaviour) {
         return calculateDistanceToNearestControllerEnergy(cuckooDataAndBehaviour.controllerXSpinVariables);
     }
 }

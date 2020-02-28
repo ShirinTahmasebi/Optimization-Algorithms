@@ -25,7 +25,7 @@ public class CuckooBudgetConstrainedLmaxOptimizationModeling extends BudgetConst
     public Cost calculateCost(CuckooDataAndBehaviour cuckooDataAndBehaviours) {
         CuckooBudgetConstrainedLmaxOptimizationModelingDataAndBehaviour castedCuckooDataAndBehaviours = (CuckooBudgetConstrainedLmaxOptimizationModelingDataAndBehaviour) cuckooDataAndBehaviours;
         int maxL = super.calculateMaxL(castedCuckooDataAndBehaviours);
-        int summationOfLMax = super.calculateDistanceToNearestControllerEnergy(castedCuckooDataAndBehaviours);
+        double summationOfLMax = super.calculateDistanceToNearestControllerEnergy(castedCuckooDataAndBehaviours);
 
         boolean[] controllerXSpinVariables = castedCuckooDataAndBehaviours.controllerXSpinVariables;
 

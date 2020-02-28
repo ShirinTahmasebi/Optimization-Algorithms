@@ -89,7 +89,7 @@ public class SABudgetConstrainedLmaxOptimizationModeling extends BudgetConstrain
     @Override
     public Cost calculateCost() {
         int maxL = super.calculateMaxL(modelPlainOldData.tempControllerXSpinVariables);
-        int summationOfLMax = super.calculateDistanceToNearestControllerEnergy(modelPlainOldData.tempControllerXSpinVariables);
+        double summationOfLMax = super.calculateDistanceToNearestControllerEnergy(modelPlainOldData.tempControllerXSpinVariables);
 
         int reliabilityEnergy = Utils.getReliabilityEnergy(
                 modelPlainOldData.graph,
