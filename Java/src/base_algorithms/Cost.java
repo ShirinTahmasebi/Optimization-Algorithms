@@ -2,7 +2,6 @@ package base_algorithms;
 
 import main.ModelNoEnum;
 import main.Parameters;
-import problem_modelings.budget_constrained_lmax_optimization.Utils;
 
 public class Cost {
     private double lMaxCost;
@@ -85,18 +84,12 @@ public class Cost {
         if (Parameters.Common.MODEL_NO == ModelNoEnum.COST_OPTIMIZATION) {
             return Parameters.Common.PENALTY_COEFFICIENT * (reliabilityCost + loadBalancingCost) + budgetCostEnergy;
         } else if (Parameters.Common.MODEL_NO == ModelNoEnum.BUDGET_CONSTRAINED_LMAX_OPTIMIZATION) {
-            double distanceToNearestControllerEnergy = summationOfLMaxCost * 100000;
+            double distanceToNearestControllerEnergy = summationOfLMaxCost;
             return Parameters.Common.PENALTY_COEFFICIENT * (reliabilityCost + loadBalancingCost) + lMaxCost + distanceToNearestControllerEnergy;
         } else if (Parameters.Common.MODEL_NO == ModelNoEnum.BUDGET_CONSTRAINED_CONTROLLER_OVERHEAD) {
-            // Summation of LMax scaled cost
-            double distanceToNearestControllerEnergy = summationOfLMaxCost * 100000; //Utils.getSummationOfMaxLCost((int) summationOfLMaxCost);
-
-            // Synchronization scaled cost
-            double controllerSynchronizationOverheadEnergy = synchronizationCost * 100000; //Utils.getControllerSynchronizationOverheadEnergy(synchronizationCost);
-
             return Parameters.Common.PENALTY_COEFFICIENT * (reliabilityCost + loadBalancingCost) +
-                    Parameters.SynchronizationOverheadModel.LMAX_COEFFICIENT * distanceToNearestControllerEnergy +
-                    Parameters.SynchronizationOverheadModel.INTER_CONTROLLER_SYNC_COEFFICIENT * controllerSynchronizationOverheadEnergy;
+                    Parameters.SynchronizationOverheadModel.LMAX_COEFFICIENT * summationOfLMaxCost +
+                    Parameters.SynchronizationOverheadModel.INTER_CONTROLLER_SYNC_COEFFICIENT * synchronizationCost;
         } else {
             throw new Exception("Error occurred");
         }

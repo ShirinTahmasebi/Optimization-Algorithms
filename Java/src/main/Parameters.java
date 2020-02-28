@@ -33,7 +33,7 @@ public class Parameters {
     }
 
     public static class Common {
-        public static final int PENALTY_COEFFICIENT = 1;                    // gamma
+        public static final double PENALTY_COEFFICIENT = .1;                // gamma
         public static final boolean DO_PRINT_INSTANCES = false;
         public static final boolean DO_PRINT_STEPS = false;
         public static final float COST_REDUCTION_FACTOR = 0.75f;
