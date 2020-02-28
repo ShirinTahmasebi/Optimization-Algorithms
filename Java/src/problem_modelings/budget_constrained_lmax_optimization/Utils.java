@@ -25,16 +25,16 @@ public interface Utils {
         return 1 - (currentCoverage / bestCaseCoverage);
     }
 
-    static float getLoadBalancingEnergy(
+    static double getLoadBalancingEnergy(
             Graph graph, int[][] controllerY,
             List<Vertex> candidateControllers, boolean[] tempControllerXSpinVariables,
-            int maxControllerLoad, int maxControllerCoverage, int maxL
+            int maxControllerLoad, int maxControllerCoverage, int maxL, int[][] sensorToSensorWorkload
     ) {
         boolean[][] controllerYSpinVariables = calculateSpinVariableFromControllerY(controllerY, maxL);
         return getControllersLoadBalancingEnergy(
                 graph, controllerYSpinVariables,
                 candidateControllers, tempControllerXSpinVariables,
-                maxControllerLoad, maxControllerCoverage
+                maxControllerLoad, maxControllerCoverage, sensorToSensorWorkload
         );
     }
 
@@ -80,34 +80,47 @@ public interface Utils {
         return false;
     }
 
-    static float getControllersLoadBalancingEnergy(
+    static double getControllersLoadBalancingEnergy(
             Graph graph, boolean[][] controllerYSpinVariables,
             List<Vertex> candidateControllers, boolean[] tempControllerXSpinVariables,
-            int maxControllerLoad, int maxControllerCoverage) {
-        float totalControllerLoadEnergy = 0;
+            int maxControllerLoad, int maxControllerCoverage, int[][] sensorToSensorWorkload) {
+        float currentControllerLoadEnergy = 0;
         for (int j = 0; j < candidateControllers.size(); j++) {
-            float totalLoadToJthController
-                    = calculateLoadToJthController(j, graph, controllerYSpinVariables,
-                    tempControllerXSpinVariables, candidateControllers
+            float totalLoadToJthController = calculateLoadToJthController(j, graph, controllerYSpinVariables,
+                    tempControllerXSpinVariables, candidateControllers, sensorToSensorWorkload
             );
             float bestControllerLoad = maxControllerLoad / (maxControllerCoverage - 1);
-            totalControllerLoadEnergy += Math.max(0, totalLoadToJthController - bestControllerLoad);
+            currentControllerLoadEnergy += Math.max(0, totalLoadToJthController - bestControllerLoad);
         }
-        return totalControllerLoadEnergy;
+
+        int selectedControllersCount = 0;
+        for (boolean tempControllerXSpinVariable : tempControllerXSpinVariables) {
+            if (tempControllerXSpinVariable) {
+                selectedControllersCount++;
+            }
+        }
+
+        // Worst case: Foreach controller, maximum load is sent by all sensors.
+        double worstCase = selectedControllersCount * maxControllerLoad * graph.getVertexes().size();
+        return currentControllerLoadEnergy / worstCase;
     }
 
     // j is controller's index in candidateControllers (Not graph node index)
     static float calculateLoadToJthController(
             int j, Graph graph, boolean[][] controllerYSpinVariables,
-            boolean[] tempControllerXSpinVariables, List<Vertex> candidateControllers) {
+            boolean[] tempControllerXSpinVariables, List<Vertex> candidateControllers, int[][] sensorToSensorWorkload) {
         float totalLoadToJthController = 0;
+        Vertex controller = candidateControllers.get(j);
+        int vertexIndexById = graph.getVertexIndexById(controller.getId());
+
         for (int i = 0; i < graph.getVertexes().size(); i++) {
+            double controllerSyncOverhead = sensorToSensorWorkload[i][vertexIndexById];
+
             Vertex graphNode = graph.getVertexes().get(i);
             if (!Utils.isNodeSelectedAsController(graphNode.getId(), tempControllerXSpinVariables, candidateControllers)) {
                 boolean condition = controllerYSpinVariables[i][j] && tempControllerXSpinVariables[j];
                 if (condition) {
-                    totalLoadToJthController
-                            += (float) graphNode.getControllerLoad()
+                    totalLoadToJthController += controllerSyncOverhead
                             / coveredControllersCountByNode(i, candidateControllers, controllerYSpinVariables, tempControllerXSpinVariables);
                 }
             }

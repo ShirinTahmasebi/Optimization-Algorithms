@@ -102,7 +102,8 @@ public class SABudgetConstrainedLmaxOptimizationModeling extends BudgetConstrain
                 modelPlainOldData.graph,
                 modelPlainOldData.controllerY,
                 modelPlainOldData.candidateControllers, modelPlainOldData.tempControllerXSpinVariables,
-                modelPlainOldData.maxControllerLoad, modelPlainOldData.maxControllerCoverage, maxL
+                modelPlainOldData.maxControllerLoad, modelPlainOldData.maxControllerCoverage, maxL,
+                modelPlainOldData.sensorToSensorWorkload
         );
 
         double controllerSynchronizationCost = Utils.getControllerSynchronizationCost(

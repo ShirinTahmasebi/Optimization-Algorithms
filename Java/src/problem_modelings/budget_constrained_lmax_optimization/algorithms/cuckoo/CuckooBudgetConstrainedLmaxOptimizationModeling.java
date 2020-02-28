@@ -40,7 +40,8 @@ public class CuckooBudgetConstrainedLmaxOptimizationModeling extends BudgetConst
                 modelPlainOldData.graph,
                 modelPlainOldData.controllerY,
                 modelPlainOldData.candidateControllers, controllerXSpinVariables,
-                modelPlainOldData.maxControllerLoad, modelPlainOldData.maxControllerCoverage, maxL
+                modelPlainOldData.maxControllerLoad, modelPlainOldData.maxControllerCoverage, maxL,
+                modelPlainOldData.sensorToSensorWorkload
         );
 
         double controllerSynchronizationCost = Utils.getControllerSynchronizationCost(
