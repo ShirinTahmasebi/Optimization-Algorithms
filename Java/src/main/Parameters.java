@@ -46,10 +46,6 @@ public class Parameters {
     }
 
     public static class SynchronizationOverheadModel {
-        // --
-        public static final double SYNC_OVERHEAD_WEIGHT = 0.5;
-        public static final double SYNC_DELAY_WEIGHT = 1 - SYNC_OVERHEAD_WEIGHT;
-        // --
         public static int SUMMATION_OFL_MAX_BALANCE = 10;
         public static int SYNCHRONIZATION_COST_BALANCE = 50;
         // --

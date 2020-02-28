@@ -6,7 +6,7 @@ import main.model.Graph;
 import main.model.Vertex;
 import problem_modelings.budget_constrained_lmax_optimization.model_specifications.BudgetConstrainedLmaxOptimizationModelingAbstract;
 
-import java.util.List;
+import java.util.*;
 
 public interface Utils {
 
@@ -172,13 +172,18 @@ public interface Utils {
             return 0.;
         }
 
-        double controllerSyncDelayOverhead = .0;
+        List<Double> overheads = new ArrayList<>();
+        List<Double> delays = new ArrayList<>();
+        List<Double> highestPossibleDelayOverhead = new ArrayList<>();
+
+        double totalControllerSyncDelayOverhead = .0;
 
         for (int i = 0; i < tempControllerXSpinVariables.length; i++) {
             if (tempControllerXSpinVariables[i]) {
                 // For each selected controller like controller1
                 Vertex controller1 = candidateControllers.get(i);
                 int vertexIndexById1 = graph.getVertexIndexById(controller1.getId());
+                double tempControllerSyncDelayOverhead = .0;
                 for (int j = 0; j < tempControllerXSpinVariables.length; j++) {
                     if (tempControllerXSpinVariables[j]) {
                         Vertex controller2 = candidateControllers.get(j);
@@ -186,14 +191,25 @@ public interface Utils {
                         if (vertexIndexById1 != vertexIndexById2) {
                             double controllerSyncOverhead = sensorsLoadToControllers[vertexIndexById1][vertexIndexById2];
                             double controllerSyncDelay = controllerY[vertexIndexById1][j];
-                            controllerSyncDelayOverhead += controllerSyncDelay * controllerSyncOverhead;
+
+                            overheads.add(controllerSyncOverhead);
+                            delays.add(controllerSyncDelay);
+
+                            tempControllerSyncDelayOverhead += controllerSyncDelay * controllerSyncOverhead;
                         }
                     }
                 }
+
+                double delayOverhead = Collections.max(overheads) * Collections.max(delays);
+                highestPossibleDelayOverhead.add(delayOverhead);
+                totalControllerSyncDelayOverhead += tempControllerSyncDelayOverhead / delayOverhead;
+
+                overheads = new ArrayList<>();
+                delays = new ArrayList<>();
             }
         }
 
-        return controllerSyncDelayOverhead;
+        return totalControllerSyncDelayOverhead / Collections.max(highestPossibleDelayOverhead);
     }
 
     static double getControllerSynchronizationOverheadEnergy(double controllerSynchronizationDelayAndOverheadCost) {
