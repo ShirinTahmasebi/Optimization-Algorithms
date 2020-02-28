@@ -208,41 +208,29 @@ public class InitializeGraph {
         int candidateControllersNumber = 0;
         ArrayList<Pair<String, Pair<Integer, Integer>>> edgesPairList = new ArrayList<>();
         if (GraphSizeEnum.RANDOM_20_SPECIAL_NONE == graphSize) {
-            // Candidate Sink = 4 (20/5)
-            // Candidate Controller = 2 (20/10)
             vertexCount = 20;
             candidateSinksNumber = 6;
             candidateControllersNumber = 9;
         } else if (GraphSizeEnum.RANDOM_40_SPECIAL_NONE == graphSize) {
-            // Candidate Sink = 8 (40/5)
-            // Candidate Controller = 4 (40/10)
             vertexCount = 40;
-            candidateSinksNumber = vertexCount / 5;
-            candidateControllersNumber = vertexCount / 10;
+            candidateSinksNumber = 16;
+            candidateControllersNumber = 8;
         } else if (GraphSizeEnum.RANDOM_80_SPECIAL_NONE == graphSize) {
-            // Candidate Sink = 16 (80/5)
-            // Candidate Controller = 8 (80/10)
             vertexCount = 80;
-            candidateSinksNumber = vertexCount / 5;
-            candidateControllersNumber = vertexCount / 10;
+            candidateSinksNumber = 32;
+            candidateControllersNumber = 16;
         } else if (GraphSizeEnum.RANDOM_100_SPECIAL_104 == graphSize) {
-            // Candidate Sink = 16 (80/5)
-            // Candidate Controller = 8 (80/10)
             vertexCount = 100;
-            candidateSinksNumber = vertexCount / 5;
-            candidateControllersNumber = vertexCount / 10;
+            candidateSinksNumber = 40;
+            candidateControllersNumber = 20;
         } else if (GraphSizeEnum.RANDOM_150_SPECIAL_169 == graphSize) {
-            // Candidate Sink = 32 (160/5)
-            // Candidate Controller = 16 (160/10)
             vertexCount = 150;
-            candidateSinksNumber = 50;
-            candidateControllersNumber = 40;
+            candidateSinksNumber = 60;
+            candidateControllersNumber = 30;
         } else if (GraphSizeEnum.RANDOM_200_SPECIAL_195 == graphSize) {
-            // Candidate Sink = 32 (200/5)
-            // Candidate Controller = 16 (160/10)
             vertexCount = 200;
-            candidateSinksNumber = 70;
-            candidateControllersNumber = 60;
+            candidateSinksNumber = 80;
+            candidateControllersNumber = 40;
         }
 
         for (int i = 0; i < vertexCount; i++) {
