@@ -126,7 +126,7 @@ public class QABudgetConstrainedLmaxOptimizationModeling extends BudgetConstrain
         int maxL = super.calculateMaxL(modelPlainOldData.tempControllerXSpinVariables);
         double summationOfLMax = super.calculateDistanceToNearestControllerEnergy(modelPlainOldData.tempControllerXSpinVariables);
 
-        int reliabilityEnergy = Utils.getReliabilityEnergy(
+        double reliabilityEnergy = Utils.getReliabilityEnergy(
                 modelPlainOldData.graph,
                 modelPlainOldData.controllerY,
                 modelPlainOldData.candidateControllers, modelPlainOldData.tempControllerXSpinVariables,

@@ -85,21 +85,16 @@ public class Cost {
         if (Parameters.Common.MODEL_NO == ModelNoEnum.COST_OPTIMIZATION) {
             return Parameters.Common.PENALTY_COEFFICIENT * (reliabilityCost + loadBalancingCost) + budgetCostEnergy;
         } else if (Parameters.Common.MODEL_NO == ModelNoEnum.BUDGET_CONSTRAINED_LMAX_OPTIMIZATION) {
-            double lMaxCost = Utils.getMaxLCost((int) getlMaxCost());
-            double distanceToNearestControllerEnergy = Utils.getSummationOfMaxLCost((int) summationOfLMaxCost);
+            double distanceToNearestControllerEnergy = summationOfLMaxCost * 100000;
             return Parameters.Common.PENALTY_COEFFICIENT * (reliabilityCost + loadBalancingCost) + lMaxCost + distanceToNearestControllerEnergy;
         } else if (Parameters.Common.MODEL_NO == ModelNoEnum.BUDGET_CONSTRAINED_CONTROLLER_OVERHEAD) {
-            // LMax scaled cost
-            double lMaxCost = Utils.getMaxLCost((int) getlMaxCost());
-
             // Summation of LMax scaled cost
-            double distanceToNearestControllerEnergy = Utils.getSummationOfMaxLCost((int) summationOfLMaxCost);
+            double distanceToNearestControllerEnergy = summationOfLMaxCost * 100000; //Utils.getSummationOfMaxLCost((int) summationOfLMaxCost);
 
             // Synchronization scaled cost
-            double controllerSynchronizationOverheadEnergy = Utils.getControllerSynchronizationOverheadEnergy(synchronizationCost);
+            double controllerSynchronizationOverheadEnergy = synchronizationCost * 100000; //Utils.getControllerSynchronizationOverheadEnergy(synchronizationCost);
 
             return Parameters.Common.PENALTY_COEFFICIENT * (reliabilityCost + loadBalancingCost) +
-                    lMaxCost +
                     Parameters.SynchronizationOverheadModel.LMAX_COEFFICIENT * distanceToNearestControllerEnergy +
                     Parameters.SynchronizationOverheadModel.INTER_CONTROLLER_SYNC_COEFFICIENT * controllerSynchronizationOverheadEnergy;
         } else {

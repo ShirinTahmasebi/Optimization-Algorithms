@@ -29,7 +29,7 @@ public class CuckooBudgetConstrainedLmaxOptimizationModeling extends BudgetConst
 
         boolean[] controllerXSpinVariables = castedCuckooDataAndBehaviours.controllerXSpinVariables;
 
-        int reliabilityEnergy = Utils.getReliabilityEnergy(
+        double reliabilityEnergy = Utils.getReliabilityEnergy(
                 modelPlainOldData.graph,
                 modelPlainOldData.controllerY,
                 modelPlainOldData.candidateControllers, controllerXSpinVariables,

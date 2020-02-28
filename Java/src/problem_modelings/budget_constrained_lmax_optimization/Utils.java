@@ -4,26 +4,25 @@ import main.ModelNoEnum;
 import main.Parameters;
 import main.model.Graph;
 import main.model.Vertex;
-import problem_modelings.budget_constrained_lmax_optimization.model_specifications.BudgetConstrainedLmaxOptimizationModelingAbstract;
 
 import java.util.*;
 
 public interface Utils {
 
-    static int getReliabilityEnergy(
+
+    static double getReliabilityEnergy(
             Graph graph, int[][] controllerY, List<Vertex> candidateControllers,
-            boolean[] tempControllerXSpinVariables, int maxControllerCoverage, int maxL
-    ) {
+            boolean[] tempControllerXSpinVariables, int maxControllerCoverage, int maxL) {
         boolean[][] controllerYSpinVariables = calculateSpinVariableFromControllerY(controllerY, maxL);
-        int sensorNumbers = getSensorsCount(
-                graph,
-                candidateControllers, tempControllerXSpinVariables
-        );
-        return (maxControllerCoverage * sensorNumbers
-                - totalCoverControllersScore(
-                graph, maxControllerCoverage, controllerYSpinVariables,
-                candidateControllers, tempControllerXSpinVariables
-        ));
+        int sensorNumbers = getSensorsCount(graph, candidateControllers, tempControllerXSpinVariables);
+        double currentCoverage = totalCoverControllersScore(graph, maxControllerCoverage, controllerYSpinVariables, candidateControllers, tempControllerXSpinVariables);
+        double bestCaseCoverage = maxControllerCoverage * sensorNumbers;
+
+        // Since the coverage range is from (0, bestCaseCoverage), current coverage is between these two bounds. 
+        // Note: 0 means there is no coverage and bestCaseCoverage occurs when all nodes are covered with ideal number of controllers 
+        // Thus, to score and scale the current coverage from 0 to 1, we should divide how far the current coverage is from the best case to total range 
+        // It means: total scaled cost equals to best (total range) - current / best(total range) 
+        return 1 - (currentCoverage / bestCaseCoverage);
     }
 
     static float getLoadBalancingEnergy(
@@ -158,15 +157,6 @@ public interface Utils {
         return score;
     }
 
-    static double getMaxLCost(int maxL) {
-        if (maxL == Integer.MAX_VALUE) return maxL;
-        return (maxL < 0 ? maxL * -1 : maxL) * BudgetConstrainedLmaxOptimizationModelingAbstract.L_MAX_COEFFICIENT;
-    }
-
-    static double getSummationOfMaxLCost(int summationOfLMax) {
-        return (summationOfLMax < 0 ? summationOfLMax * -1 : summationOfLMax) * Parameters.SynchronizationOverheadModel.SUMMATION_OFL_MAX_BALANCE;
-    }
-
     static double getControllerSynchronizationCost(Graph graph, int[][] controllerY, List<Vertex> candidateControllers, boolean[] tempControllerXSpinVariables, int[][] sensorsLoadToControllers) {
         if (Parameters.Common.MODEL_NO != ModelNoEnum.BUDGET_CONSTRAINED_CONTROLLER_OVERHEAD) {
             return 0.;
@@ -210,9 +200,5 @@ public interface Utils {
         }
 
         return totalControllerSyncDelayOverhead / Collections.max(highestPossibleDelayOverhead);
-    }
-
-    static double getControllerSynchronizationOverheadEnergy(double controllerSynchronizationDelayAndOverheadCost) {
-        return Parameters.SynchronizationOverheadModel.SYNCHRONIZATION_COST_BALANCE * controllerSynchronizationDelayAndOverheadCost;
     }
 }
