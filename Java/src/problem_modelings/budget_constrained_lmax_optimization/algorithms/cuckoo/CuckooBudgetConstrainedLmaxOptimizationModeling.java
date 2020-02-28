@@ -89,8 +89,6 @@ public class CuckooBudgetConstrainedLmaxOptimizationModeling extends BudgetConst
 
         boolean[] tempCandidateController = dataAndBehaviour.controllerXSpinVariables.clone();
         int maxElr = matureCuckoo.getMatureCuckoo().getELR();
-        int candidateElr = random.nextInt(maxElr);
-//        int reverseFromFalseToTrueCount = random.nextInt(Math.min(candidateElr, modelPlainOldData.totalBudget / modelPlainOldData.costController));
         int reverseFromFalseToTrueCount = Math.min(maxElr, tempCandidateController.length);
 
         List<Integer> trueIndices = new ArrayList<>();
