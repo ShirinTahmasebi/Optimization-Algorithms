@@ -3,7 +3,6 @@ package problem_modelings.budget_constrained_lmax_optimization.algorithms;
 import base_algorithms.Cost;
 import base_algorithms.simulated_annealing.SAModelingInterface;
 import base_algorithms.simulated_annealing.SAPlainOldData;
-import javafx.util.Pair;
 import main.Parameters;
 import problem_modelings.budget_constrained_lmax_optimization.Utils;
 import problem_modelings.budget_constrained_lmax_optimization.model_specifications.BudgetConstrainedLmaxOptimizationModelingAbstract;
@@ -40,8 +39,7 @@ public class SABudgetConstrainedLmaxOptimizationModeling extends BudgetConstrain
                 .setKineticEnergy(Integer.MAX_VALUE)
                 .setLmaxCost(Integer.MAX_VALUE)
                 .setSummationOfLMaxCost(Integer.MAX_VALUE)
-                .setSynchronizationOverheadCost(Integer.MAX_VALUE)
-                .setSynchronizationDelayCost(Integer.MAX_VALUE)
+                .setSynchronizationCost(Integer.MAX_VALUE)
                 .setLoadBalancingCost(Integer.MAX_VALUE)
                 .setReliabilityCost(Integer.MAX_VALUE);
     }
@@ -107,7 +105,7 @@ public class SABudgetConstrainedLmaxOptimizationModeling extends BudgetConstrain
                 modelPlainOldData.maxControllerLoad, modelPlainOldData.maxControllerCoverage, maxL
         );
 
-        Pair<Double, Double> controllerSynchronizationDelayAndOverheadCost = Utils.getControllerSynchronizationDelayAndOverheadCost(
+        double controllerSynchronizationCost = Utils.getControllerSynchronizationCost(
                 modelPlainOldData.graph,
                 modelPlainOldData.controllerY,
                 modelPlainOldData.candidateControllers, modelPlainOldData.tempControllerXSpinVariables,
@@ -117,8 +115,7 @@ public class SABudgetConstrainedLmaxOptimizationModeling extends BudgetConstrain
         return new Cost()
                 .setLmaxCost(maxL)
                 .setSummationOfLMaxCost(summationOfLMax)
-                .setSynchronizationDelayCost(controllerSynchronizationDelayAndOverheadCost.getKey())
-                .setSynchronizationOverheadCost(controllerSynchronizationDelayAndOverheadCost.getValue())
+                .setSynchronizationCost(controllerSynchronizationCost)
                 .setLoadBalancingCost(loadBalancingEnergy)
                 .setReliabilityCost(reliabilityEnergy);
     }

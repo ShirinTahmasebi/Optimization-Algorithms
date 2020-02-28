@@ -7,8 +7,7 @@ import problem_modelings.budget_constrained_lmax_optimization.Utils;
 public class Cost {
     private double lMaxCost;
     private double summationOfLMaxCost;
-    private double synchronizationOverheadCost;
-    private double synchronizationDelayCost;
+    private double synchronizationCost;
     private double reliabilityCost;
     private double loadBalancingCost;
     private double kineticEnergy;
@@ -28,13 +27,8 @@ public class Cost {
         return this;
     }
 
-    public Cost setSynchronizationOverheadCost(double synchronizationOverheadCost) {
-        this.synchronizationOverheadCost = synchronizationOverheadCost;
-        return this;
-    }
-
-    public Cost setSynchronizationDelayCost(double synchronizationDelayCost) {
-        this.synchronizationDelayCost = synchronizationDelayCost;
+    public Cost setSynchronizationCost(double synchronizationDelayCost) {
+        this.synchronizationCost = synchronizationDelayCost;
         return this;
     }
 
@@ -66,13 +60,10 @@ public class Cost {
         return loadBalancingCost;
     }
 
-    public double getSynchronizationDelayCost() {
-        return synchronizationDelayCost;
+    public double getSynchronizationCost() {
+        return synchronizationCost;
     }
 
-    public double getSynchronizationOverheadCost() {
-        return synchronizationOverheadCost;
-    }
 
     public double getSummationOfLMaxCost() {
         return summationOfLMaxCost;
@@ -104,12 +95,8 @@ public class Cost {
             // Summation of LMax scaled cost
             double distanceToNearestControllerEnergy = Utils.getSummationOfMaxLCost((int) summationOfLMaxCost);
 
-            // Synchronization Cost - Not scaled
-            double syncCost = (Parameters.SynchronizationOverheadModel.SYNC_DELAY_WEIGHT * synchronizationDelayCost) +
-                    (Parameters.SynchronizationOverheadModel.SYNC_OVERHEAD_WEIGHT * synchronizationOverheadCost);
-
             // Synchronization scaled cost
-            double controllerSynchronizationOverheadEnergy = Utils.getControllerSynchronizationOverheadEnergy(syncCost);
+            double controllerSynchronizationOverheadEnergy = Utils.getControllerSynchronizationOverheadEnergy(synchronizationCost);
 
             return Parameters.Common.PENALTY_COEFFICIENT * (reliabilityCost + loadBalancingCost) +
                     lMaxCost +

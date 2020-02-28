@@ -3,7 +3,6 @@ package problem_modelings.budget_constrained_lmax_optimization.algorithms;
 import base_algorithms.Cost;
 import base_algorithms.quantum_annealing.QAModelingInterface;
 import base_algorithms.quantum_annealing.QAPlainOldData;
-import javafx.util.Pair;
 import main.Parameters;
 import problem_modelings.budget_constrained_lmax_optimization.Utils;
 import problem_modelings.budget_constrained_lmax_optimization.model_specifications.BudgetConstrainedLmaxOptimizationModelingAbstract;
@@ -62,8 +61,7 @@ public class QABudgetConstrainedLmaxOptimizationModeling extends BudgetConstrain
                 .setKineticEnergy(Integer.MAX_VALUE)
                 .setLmaxCost(Integer.MAX_VALUE)
                 .setSummationOfLMaxCost(Integer.MAX_VALUE)
-                .setSynchronizationOverheadCost(Integer.MAX_VALUE)
-                .setSynchronizationDelayCost(Integer.MAX_VALUE)
+                .setSynchronizationCost(Integer.MAX_VALUE)
                 .setLoadBalancingCost(Integer.MAX_VALUE)
                 .setReliabilityCost(Integer.MAX_VALUE);
     }
@@ -142,7 +140,7 @@ public class QABudgetConstrainedLmaxOptimizationModeling extends BudgetConstrain
                 modelPlainOldData.maxControllerLoad, modelPlainOldData.maxControllerCoverage, maxL
         );
 
-        Pair<Double, Double> controllerSynchronizationDelayAndOverheadCost = Utils.getControllerSynchronizationDelayAndOverheadCost(
+        double controllerSynchronizationCost = Utils.getControllerSynchronizationCost(
                 modelPlainOldData.graph,
                 modelPlainOldData.controllerY,
                 modelPlainOldData.candidateControllers, modelPlainOldData.tempControllerXSpinVariables,
@@ -150,14 +148,11 @@ public class QABudgetConstrainedLmaxOptimizationModeling extends BudgetConstrain
         );
 
         double kineticEnergy = getKineticEnergy(currentReplicaNum);
-        // TODO: Uncomment for SA
-//        double kineticEnergy = 0;
 
         return new Cost()
                 .setLmaxCost(maxL)
                 .setSummationOfLMaxCost(summationOfLMax)
-                .setSynchronizationDelayCost(controllerSynchronizationDelayAndOverheadCost.getKey())
-                .setSynchronizationOverheadCost(controllerSynchronizationDelayAndOverheadCost.getValue())
+                .setSynchronizationCost(controllerSynchronizationCost)
                 .setLoadBalancingCost(loadBalancingEnergy)
                 .setReliabilityCost(reliabilityEnergy)
                 .setKineticEnergy(kineticEnergy);

@@ -1,6 +1,5 @@
 package problem_modelings.budget_constrained_lmax_optimization;
 
-import javafx.util.Pair;
 import main.ModelNoEnum;
 import main.Parameters;
 import main.model.Graph;
@@ -168,16 +167,16 @@ public interface Utils {
         return (summationOfLMax < 0 ? summationOfLMax * -1 : summationOfLMax) * Parameters.SynchronizationOverheadModel.SUMMATION_OFL_MAX_BALANCE;
     }
 
-    static Pair<Double, Double> getControllerSynchronizationDelayAndOverheadCost(Graph graph, int[][] controllerY, List<Vertex> candidateControllers, boolean[] tempControllerXSpinVariables, int[][] sensorsLoadToControllers) {
+    static double getControllerSynchronizationCost(Graph graph, int[][] controllerY, List<Vertex> candidateControllers, boolean[] tempControllerXSpinVariables, int[][] sensorsLoadToControllers) {
         if (Parameters.Common.MODEL_NO != ModelNoEnum.BUDGET_CONSTRAINED_CONTROLLER_OVERHEAD) {
-            return new Pair<>(0., 0.);
+            return 0.;
         }
 
-        double controllerSyncDelay = .0;
-        double controllerSyncOverhead = .0;
+        double controllerSyncDelayOverhead = .0;
 
         for (int i = 0; i < tempControllerXSpinVariables.length; i++) {
             if (tempControllerXSpinVariables[i]) {
+                // For each selected controller like controller1
                 Vertex controller1 = candidateControllers.get(i);
                 int vertexIndexById1 = graph.getVertexIndexById(controller1.getId());
                 for (int j = 0; j < tempControllerXSpinVariables.length; j++) {
@@ -185,15 +184,16 @@ public interface Utils {
                         Vertex controller2 = candidateControllers.get(j);
                         int vertexIndexById2 = graph.getVertexIndexById(controller2.getId());
                         if (vertexIndexById1 != vertexIndexById2) {
-                            controllerSyncOverhead += sensorsLoadToControllers[vertexIndexById1][vertexIndexById2];
-                            controllerSyncDelay += controllerY[vertexIndexById1][j];
+                            double controllerSyncOverhead = sensorsLoadToControllers[vertexIndexById1][vertexIndexById2];
+                            double controllerSyncDelay = controllerY[vertexIndexById1][j];
+                            controllerSyncDelayOverhead += controllerSyncDelay * controllerSyncOverhead;
                         }
                     }
                 }
             }
         }
 
-        return new Pair<>(controllerSyncDelay, controllerSyncOverhead);
+        return controllerSyncDelayOverhead;
     }
 
     static double getControllerSynchronizationOverheadEnergy(double controllerSynchronizationDelayAndOverheadCost) {

@@ -76,7 +76,7 @@ public class FactoryClient {
         double salMaxCost = 0;
         double saSummationOfLMaxCost = 0;
         double saSynchronizationOverheadCost = 0;
-        double saSynchronizationDelayCost = 0;
+        double saSynchronizationCost = 0;
         double saReliabilityCost = 0;
         double saLoadBalancingCost = 0;
         double saKineticEnergy = 0;
@@ -88,10 +88,10 @@ public class FactoryClient {
                 graph,
                 candidateControllers,
                 controllerY,
-                main.Parameters.Common.SENSOR_CONTROLLER_MAX_DISTANCE,
-                main.Parameters.Common.MAX_CONTROLLER_COVERAGE,
-                main.Parameters.Common.MAX_CONTROLLER_LOAD,
-                main.Parameters.Common.COST_CONTROLLER,
+                Parameters.Common.SENSOR_CONTROLLER_MAX_DISTANCE,
+                Parameters.Common.MAX_CONTROLLER_COVERAGE,
+                Parameters.Common.MAX_CONTROLLER_LOAD,
+                Parameters.Common.COST_CONTROLLER,
                 (candidateControllers.size() / 3) * Parameters.Common.COST_CONTROLLER,
                 distances,
                 sensorToSensorWorkload
@@ -104,12 +104,12 @@ public class FactoryClient {
 
         // QA algorithm initialization
         QAPlainOldData qaPlainOldData = new QAPlainOldData(
-                main.Parameters.QuantumAnnealing.TROTTER_REPLICAS,
-                main.Parameters.QuantumAnnealing.TEMPERATURE,
-                main.Parameters.QuantumAnnealing.MONTE_CARLO_STEP,
-                main.Parameters.QuantumAnnealing.TUNNELING_FIELD_INITIAL,
-                main.Parameters.QuantumAnnealing.TUNNELING_FIELD_FINAL,
-                main.Parameters.QuantumAnnealing.TUNNELING_FIELD_EVAPORATION
+                Parameters.QuantumAnnealing.TROTTER_REPLICAS,
+                Parameters.QuantumAnnealing.TEMPERATURE,
+                Parameters.QuantumAnnealing.MONTE_CARLO_STEP,
+                Parameters.QuantumAnnealing.TUNNELING_FIELD_INITIAL,
+                Parameters.QuantumAnnealing.TUNNELING_FIELD_FINAL,
+                Parameters.QuantumAnnealing.TUNNELING_FIELD_EVAPORATION
         );
         QAModelingInterface qaModelingInterface = new QABudgetConstrainedLmaxOptimizationModeling(budgetConstrainedLmaxOptimizationModelingPlainOldData, qaPlainOldData);
         QAAlgorithm qaAlgorithm = new QAAlgorithm(qaModelingInterface);
@@ -126,14 +126,13 @@ public class FactoryClient {
 
         // Cuckoo execution
         Date cuckooTimeA = new Date();
-        for (int i = 0; i < main.Parameters.Common.SIMULATION_COUNT; i++) {
+        for (int i = 0; i < Parameters.Common.SIMULATION_COUNT; i++) {
             Cost cuckooCost = cuckooAlgorithm.execute();
 
             cuckooPotentialEnergy += cuckooCost.getPotentialEnergy();
             cuckoolMaxCost += cuckooCost.getlMaxCost();
             cuckooSummationOfLMaxCost += cuckooCost.getSummationOfLMaxCost();
-            cuckooSynchronizationOverheadCost += cuckooCost.getSynchronizationOverheadCost();
-            cuckooSynchronizationDelayCost += cuckooCost.getSynchronizationDelayCost();
+            cuckooSynchronizationDelayCost += cuckooCost.getSynchronizationCost();
             cuckooReliabilityCost += cuckooCost.getReliabilityCost();
             cuckooLoadBalancingCost += cuckooCost.getLoadBalancingCost();
             cuckooKineticEnergy += cuckooCost.getKineticEnergy();
@@ -146,14 +145,13 @@ public class FactoryClient {
 
         // QA execution
         Date quantumTimeA = new Date();
-        for (int i = 0; i < main.Parameters.Common.SIMULATION_COUNT; i++) {
+        for (int i = 0; i < Parameters.Common.SIMULATION_COUNT; i++) {
             Cost qaCost = qaAlgorithm.execute();
 
             qaPotentialEnergy += qaCost.getPotentialEnergy();
             qalMaxCost += qaCost.getlMaxCost();
             qaSummationOfLMaxCost += qaCost.getSummationOfLMaxCost();
-            qaSynchronizationOverheadCost += qaCost.getSynchronizationOverheadCost();
-            qaSynchronizationDelayCost += qaCost.getSynchronizationDelayCost();
+            qaSynchronizationDelayCost += qaCost.getSynchronizationCost();
             qaReliabilityCost += qaCost.getReliabilityCost();
             qaLoadBalancingCost += qaCost.getLoadBalancingCost();
             qaKineticEnergy += qaCost.getKineticEnergy();
@@ -166,14 +164,13 @@ public class FactoryClient {
 
         // SA execution
         Date simulatedTimeA = new Date();
-        for (int i = 0; i < main.Parameters.Common.SIMULATION_COUNT; i++) {
+        for (int i = 0; i < Parameters.Common.SIMULATION_COUNT; i++) {
             Cost saCost = saAlgorithm.execute();
 
             saPotentialEnergy += saCost.getPotentialEnergy();
             salMaxCost += saCost.getlMaxCost();
             saSummationOfLMaxCost += saCost.getSummationOfLMaxCost();
-            saSynchronizationOverheadCost += saCost.getSynchronizationOverheadCost();
-            saSynchronizationDelayCost += saCost.getSynchronizationDelayCost();
+            saSynchronizationCost += saCost.getSynchronizationCost();
             saReliabilityCost += saCost.getReliabilityCost();
             saLoadBalancingCost += saCost.getLoadBalancingCost();
             saKineticEnergy += saCost.getKineticEnergy();
@@ -225,7 +222,7 @@ public class FactoryClient {
         saMap.put(Parameters.ResultInfoConstants.LMAX, salMaxCost);
         saMap.put(Parameters.ResultInfoConstants.SUMMATION_OF_LMAX, saSummationOfLMaxCost);
         saMap.put(Parameters.ResultInfoConstants.SYNC_OVERHEAD_COST, saSynchronizationOverheadCost);
-        saMap.put(Parameters.ResultInfoConstants.SYNC_DELAY_COST, saSynchronizationDelayCost);
+        saMap.put(Parameters.ResultInfoConstants.SYNC_DELAY_COST, saSynchronizationCost);
         saMap.put(Parameters.ResultInfoConstants.RELIABILITY_COST, saReliabilityCost);
         saMap.put(Parameters.ResultInfoConstants.LOAD_BALANCING_COST, saLoadBalancingCost);
         saMap.put(Parameters.ResultInfoConstants.BUDGET_COST_ENERGY, saBudgetCostEnergy);
@@ -366,8 +363,7 @@ public class FactoryClient {
             System.out.println(optimizationAlgorithm.name() + " average kinetic energy is: " + algorithmInfoPair.get(Parameters.ResultInfoConstants.KINETIC_ENERGY) / Parameters.Common.SIMULATION_COUNT);
             System.out.println(optimizationAlgorithm.name() + " average lmax is: " + algorithmInfoPair.get(Parameters.ResultInfoConstants.LMAX) / Parameters.Common.SIMULATION_COUNT);
             System.out.println(optimizationAlgorithm.name() + " average summation of lmax is: " + algorithmInfoPair.get(Parameters.ResultInfoConstants.SUMMATION_OF_LMAX) / Parameters.Common.SIMULATION_COUNT);
-            System.out.println(optimizationAlgorithm.name() + " average sync overhead is: " + algorithmInfoPair.get(Parameters.ResultInfoConstants.SYNC_OVERHEAD_COST) / Parameters.Common.SIMULATION_COUNT);
-            System.out.println(optimizationAlgorithm.name() + " average sync delay is: " + algorithmInfoPair.get(Parameters.ResultInfoConstants.SYNC_DELAY_COST) / Parameters.Common.SIMULATION_COUNT);
+            System.out.println(optimizationAlgorithm.name() + " average sync is: " + algorithmInfoPair.get(Parameters.ResultInfoConstants.SYNC_DELAY_COST) / Parameters.Common.SIMULATION_COUNT);
             System.out.println(optimizationAlgorithm.name() + " average reliability cost is: " + algorithmInfoPair.get(Parameters.ResultInfoConstants.RELIABILITY_COST) / Parameters.Common.SIMULATION_COUNT);
             System.out.println(optimizationAlgorithm.name() + " average load balancing cost is: " + algorithmInfoPair.get(Parameters.ResultInfoConstants.LOAD_BALANCING_COST) / Parameters.Common.SIMULATION_COUNT);
             System.out.println(optimizationAlgorithm.name() + " average budget cost is: " + algorithmInfoPair.get(Parameters.ResultInfoConstants.BUDGET_COST_ENERGY) / Parameters.Common.SIMULATION_COUNT);
@@ -380,8 +376,7 @@ public class FactoryClient {
         System.out.println(optimizationAlgorithm.name() + " Total Cost: " + cost.getPotentialEnergy());
         System.out.println(optimizationAlgorithm.name() + " LMax: " + cost.getlMaxCost());
         System.out.println(optimizationAlgorithm.name() + " Summation of LMax Cost: " + cost.getSummationOfLMaxCost());
-        System.out.println(optimizationAlgorithm.name() + " Sync Overhead Cost: " + cost.getSynchronizationOverheadCost());
-        System.out.println(optimizationAlgorithm.name() + " Sync Delay Cost: " + cost.getSynchronizationDelayCost());
+        System.out.println(optimizationAlgorithm.name() + " Sync Cost: " + cost.getSynchronizationCost());
         System.out.println(optimizationAlgorithm.name() + " Reliability Cost: " + cost.getReliabilityCost());
         System.out.println(optimizationAlgorithm.name() + " Load Cost: " + cost.getLoadBalancingCost());
         System.out.println(optimizationAlgorithm.name() + " Kinetic Cost: " + cost.getKineticEnergy());

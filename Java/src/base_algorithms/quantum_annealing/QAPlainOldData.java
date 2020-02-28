@@ -39,8 +39,7 @@ public class QAPlainOldData {
                 .setKineticEnergy(Integer.MAX_VALUE)
                 .setLmaxCost(Integer.MAX_VALUE)
                 .setSummationOfLMaxCost(Integer.MAX_VALUE)
-                .setSynchronizationOverheadCost(Integer.MAX_VALUE)
-                .setSynchronizationDelayCost(Integer.MAX_VALUE)
+                .setSynchronizationCost(Integer.MAX_VALUE)
                 .setLoadBalancingCost(Integer.MAX_VALUE)
                 .setReliabilityCost(Integer.MAX_VALUE);
     }
