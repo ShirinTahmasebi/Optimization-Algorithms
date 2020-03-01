@@ -10,6 +10,7 @@ import base_algorithms.quantum_annealing.QAPlainOldData;
 import base_algorithms.simulated_annealing.SAAlgorithm;
 import base_algorithms.simulated_annealing.SAModelingInterface;
 import base_algorithms.simulated_annealing.SAPlainOldData;
+import javafx.util.Pair;
 import main.model.Graph;
 import main.model.Vertex;
 import problem_modelings.budget_constrained_lmax_optimization.algorithms.QABudgetConstrainedLmaxOptimizationModeling;
@@ -120,13 +121,17 @@ public class FactoryClient {
             alphaResultsMap.put(alpha, cuckooMap);
         }
 
-        List<Double> lMaxSummationList = alphaResultsMap.entrySet().stream().map(doubleMapEntry -> doubleMapEntry.getValue().get(Parameters.ResultInfoConstants.SUMMATION_OF_LMAX)).collect(Collectors.toList());
         // Draw lMaxSummation graph
-//        LineChartSimple.drawChart(xValues, lMaxSummationList);
+        List<Pair<Double, Double>> lMaxSummationList = alphaResultsMap.entrySet().stream()
+                .map(doubleMapEntry -> new Pair<>(doubleMapEntry.getKey(), doubleMapEntry.getValue().get(Parameters.ResultInfoConstants.SUMMATION_OF_LMAX)))
+                .collect(Collectors.toList());
+        LineChartSimple.drawChart(lMaxSummationList);
 
-        List<Double> syncCostList = alphaResultsMap.entrySet().stream().map(doubleMapEntry -> doubleMapEntry.getValue().get(Parameters.ResultInfoConstants.SYNC_COST)).collect(Collectors.toList());
         // Draw sync cost graph
-//        LineChartSimple.drawChart(xValues, syncCostList);
+        List<Pair<Double, Double>> syncCostList = alphaResultsMap.entrySet().stream()
+                .map(doubleMapEntry -> new Pair<>(doubleMapEntry.getKey(), doubleMapEntry.getValue().get(Parameters.ResultInfoConstants.SYNC_COST)))
+                .collect(Collectors.toList());
+        LineChartSimple.drawChart(syncCostList);
 
         printResultsByAlpha(alphaResultsMap, OptimizationAlgorithmsEnum.CUCKOO);
     }
