@@ -28,10 +28,10 @@ public class LineChartSimple extends JPanel {
     private Color lineColor = new Color(44, 102, 230, 180);
     private Color pointColor = new Color(100, 100, 100, 180);
     private Color gridColor = new Color(200, 200, 200, 200);
-    private List<Double> scores;
+    private List<Double> yValues;
 
-    public LineChartSimple(List<Double> scores) {
-        this.scores = scores;
+    public LineChartSimple(List<Double> yValues) {
+        this.yValues = yValues;
     }
 
     @Override
@@ -40,13 +40,13 @@ public class LineChartSimple extends JPanel {
         Graphics2D g2 = (Graphics2D) g;
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-        double xScale = ((double) getWidth() - (2 * PADDING) - LABEL_PADDING) / (scores.size() - 1);
-        double yScale = ((double) getHeight() - 2 * PADDING - LABEL_PADDING) / (getMaxScore() - getMinScore());
+        double xScale = ((double) getWidth() - (2 * PADDING) - LABEL_PADDING) / (yValues.size() - 1);
+        double yScale = ((double) getHeight() - 2 * PADDING - LABEL_PADDING) / (getMaxYValue() - getMinYValue());
 
         List<Point> graphPoints = new ArrayList<>();
-        for (int i = 0; i < scores.size(); i++) {
+        for (int i = 0; i < yValues.size(); i++) {
             int x1 = (int) (i * xScale + PADDING + LABEL_PADDING);
-            int y1 = (int) ((getMaxScore() - scores.get(i)) * yScale + PADDING);
+            int y1 = (int) ((getMaxYValue() - yValues.get(i)) * yScale + PADDING);
             graphPoints.add(new Point(x1, y1));
         }
 
@@ -60,36 +60,34 @@ public class LineChartSimple extends JPanel {
             int x0 = PADDING + LABEL_PADDING;
             int x1 = POINT_WIDTH + PADDING + LABEL_PADDING;
             int y0 = getHeight() - ((i * (getHeight() - PADDING * 2 - LABEL_PADDING)) / NUMBER_Y_DIVISIONS + PADDING + LABEL_PADDING);
-            int y1 = y0;
-            if (scores.size() > 0) {
+            if (yValues.size() > 0) {
                 g2.setColor(gridColor);
-                g2.drawLine(PADDING + LABEL_PADDING + 1 + POINT_WIDTH, y0, getWidth() - PADDING, y1);
+                g2.drawLine(PADDING + LABEL_PADDING + 1 + POINT_WIDTH, y0, getWidth() - PADDING, y0);
                 g2.setColor(Color.BLACK);
-                String yLabel = ((int) ((getMinScore() + (getMaxScore() - getMinScore()) * ((i * 1.0) / NUMBER_Y_DIVISIONS)) * 100)) / 100.0 + "";
+                String yLabel = ((int) ((getMinYValue() + (getMaxYValue() - getMinYValue()) * ((i * 1.0) / NUMBER_Y_DIVISIONS)) * 100)) / 100.0 + "";
                 FontMetrics metrics = g2.getFontMetrics();
                 int labelWidth = metrics.stringWidth(yLabel);
                 g2.drawString(yLabel, x0 - labelWidth - 5, y0 + (metrics.getHeight() / 2) - 3);
             }
-            g2.drawLine(x0, y0, x1, y1);
+            g2.drawLine(x0, y0, x1, y0);
         }
 
         // and for x axis
-        for (int i = 0; i < scores.size(); i++) {
-            if (scores.size() > 1) {
-                int x0 = i * (getWidth() - PADDING * 2 - LABEL_PADDING) / (scores.size() - 1) + PADDING + LABEL_PADDING;
-                int x1 = x0;
+        for (int i = 0; i < yValues.size(); i++) {
+            if (yValues.size() > 1) {
+                int x0 = i * (getWidth() - PADDING * 2 - LABEL_PADDING) / (yValues.size() - 1) + PADDING + LABEL_PADDING;
                 int y0 = getHeight() - PADDING - LABEL_PADDING;
                 int y1 = y0 - POINT_WIDTH;
-                if ((i % ((int) ((scores.size() / 20.0)) + 1)) == 0) {
+                if ((i % ((int) ((yValues.size() / 20.0)) + 1)) == 0) {
                     g2.setColor(gridColor);
-                    g2.drawLine(x0, getHeight() - PADDING - LABEL_PADDING - 1 - POINT_WIDTH, x1, PADDING);
+                    g2.drawLine(x0, getHeight() - PADDING - LABEL_PADDING - 1 - POINT_WIDTH, x0, PADDING);
                     g2.setColor(Color.BLACK);
                     String xLabel = i + "";
                     FontMetrics metrics = g2.getFontMetrics();
                     int labelWidth = metrics.stringWidth(xLabel);
                     g2.drawString(xLabel, x0 - labelWidth / 2, y0 + metrics.getHeight() + 3);
                 }
-                g2.drawLine(x0, y0, x1, y1);
+                g2.drawLine(x0, y0, x0, y1);
             }
         }
 
@@ -119,51 +117,40 @@ public class LineChartSimple extends JPanel {
         }
     }
 
-    private double getMinScore() {
-        double minScore = Double.MAX_VALUE;
-        for (Double score : scores) {
-            minScore = Math.min(minScore, score);
+    private double getMinYValue() {
+        double minYValue = Double.MAX_VALUE;
+        for (Double value : yValues) {
+            minYValue = Math.min(minYValue, value);
         }
-        return minScore;
+        return minYValue;
     }
 
-    private double getMaxScore() {
-        double maxScore = Double.MIN_VALUE;
-        for (Double score : scores) {
-            maxScore = Math.max(maxScore, score);
+    private double getMaxYValue() {
+        double maxYValue = Double.MIN_VALUE;
+        for (Double value : yValues) {
+            maxYValue = Math.max(maxYValue, value);
         }
-        return maxScore;
+        return maxYValue;
     }
 
-    public void setScores(List<Double> scores) {
-        this.scores = scores;
-        invalidate();
-        this.repaint();
-    }
-
-    public List<Double> getScores() {
-        return scores;
-    }
-
-    public static void drawChart(List<Double> scores) {
-        LineChartSimple mainPanel = new LineChartSimple(scores);
+    public static void drawChart(List<Double> yValues) {
+        LineChartSimple mainPanel = new LineChartSimple(yValues);
         mainPanel.setPreferredSize(new Dimension(DEFAULT_WIDTH, HEIGHT_DEFAULT));
         JFrame frame = new JFrame("LineChartSimple");
+        //noinspection MagicConstant
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.getContentPane().add(mainPanel);
         frame.pack();
         frame.setLocationRelativeTo(null);
 
-        SwingUtilities.invokeLater(() -> {
-            frame.setVisible(true);
-        });
+        SwingUtilities.invokeLater(() -> frame.setVisible(true));
     }
 
     public static void main(String[] args) {
-        List<Double> scores1 = new ArrayList<>();
+        List<Double> yValues = new ArrayList<>();
         for (int i = 0; i < 20; i++) {
-            scores1.add(i * 10.);
+            yValues.add(i * 10.);
         }
-        drawChart(scores1);
+        drawChart(yValues);
     }
 }
