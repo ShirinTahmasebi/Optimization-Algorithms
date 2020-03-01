@@ -1,10 +1,11 @@
 package base_algorithms.quantum_annealing;
 
 import base_algorithms.Cost;
+import main.BaseAlgorithm;
 import main.LineChartEx;
 import main.Parameters;
 
-public class QAAlgorithm {
+public class QAAlgorithm implements BaseAlgorithm {
 
     private QAModelingInterface qaModelingInterface;
     private QAPlainOldData qaPlainOldData;

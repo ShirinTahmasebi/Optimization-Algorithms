@@ -128,7 +128,7 @@ public class LineChartSimple extends JPanel {
         return maxYValue;
     }
 
-    public static void drawChart(List<Pair<Double, Double>> pointsList) {
+    public static void drawChart(String graphName, List<Pair<Double, Double>> pointsList) {
         List<Double> xValues = new ArrayList<>();
         List<Double> yValues = new ArrayList<>();
 
@@ -139,7 +139,7 @@ public class LineChartSimple extends JPanel {
 
         LineChartSimple mainPanel = new LineChartSimple(xValues, yValues);
         mainPanel.setPreferredSize(new Dimension(DEFAULT_WIDTH, HEIGHT_DEFAULT));
-        JFrame frame = new JFrame("LineChartSimple");
+        JFrame frame = new JFrame(graphName);
         //noinspection MagicConstant
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.getContentPane().add(mainPanel);
@@ -157,6 +157,6 @@ public class LineChartSimple extends JPanel {
             pointsList.add(new Pair<>(xValue, yValue));
         }
 
-        drawChart(pointsList);
+        drawChart("Test Graph", pointsList);
     }
 }

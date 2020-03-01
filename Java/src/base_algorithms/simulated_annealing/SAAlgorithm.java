@@ -1,10 +1,11 @@
 package base_algorithms.simulated_annealing;
 
 import base_algorithms.Cost;
+import main.BaseAlgorithm;
 import main.LineChartEx;
 import main.Parameters;
 
-public class SAAlgorithm {
+public class SAAlgorithm implements BaseAlgorithm {
     private SAModelingInterface saModelingInterface;
     private SAPlainOldData saPlainOldData;
     private final LineChartEx lineChartEx;
@@ -43,7 +44,7 @@ public class SAAlgorithm {
                     saModelingInterface.acceptSolution();
                 } else {
                     // Else with given probability decide to accept or not
-                    double baseProb = Math.exp((- saPlainOldData.prevEnergy.getPotentialEnergy() + energy.getPotentialEnergy()) / saPlainOldData.temperature);
+                    double baseProb = Math.exp((-saPlainOldData.prevEnergy.getPotentialEnergy() + energy.getPotentialEnergy()) / saPlainOldData.temperature);
                     if (Parameters.Common.DO_PRINT_STEPS) {
                         System.out.println("BaseProp " + baseProb);
                     }

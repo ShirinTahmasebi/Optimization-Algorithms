@@ -3,22 +3,20 @@ package base_algorithms.Cuckoo;
 import base_algorithms.Cost;
 import base_algorithms.Cuckoo.model.Cuckoo;
 import base_algorithms.Cuckoo.model.CuckooDataAndBehaviour;
-import main.LineChartEx;
+import main.BaseAlgorithm;
 import main.Parameters;
 
 import java.util.Collections;
 import java.util.List;
 
-public class CuckooAlgorithm {
+public class CuckooAlgorithm implements BaseAlgorithm {
 
     private CuckooModelingInterface cuckooModelingInterface;
     private CuckooPlainOldData cuckooPlainOldData;
-    private final LineChartEx lineChartEx;
 
     public CuckooAlgorithm(CuckooModelingInterface cuckooModelingInterface) {
         this.cuckooModelingInterface = cuckooModelingInterface;
         this.cuckooPlainOldData = cuckooModelingInterface.getData();
-        lineChartEx = new LineChartEx();
     }
 
     public Cost execute() throws Exception {
