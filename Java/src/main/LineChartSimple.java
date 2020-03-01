@@ -1,19 +1,11 @@
 package main;
 
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.FontMetrics;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Point;
-import java.awt.RenderingHints;
-import java.awt.Stroke;
+import javafx.util.Pair;
+
+import javax.swing.*;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
 
 public class LineChartSimple extends JPanel {
 
@@ -28,9 +20,12 @@ public class LineChartSimple extends JPanel {
     private Color lineColor = new Color(44, 102, 230, 180);
     private Color pointColor = new Color(100, 100, 100, 180);
     private Color gridColor = new Color(200, 200, 200, 200);
-    private List<Double> yValues;
 
-    public LineChartSimple(List<Double> yValues) {
+    private List<Double> yValues;
+    private List<Double> xValues;
+
+    public LineChartSimple(List<Double> xValues, List<Double> yValues) {
+        this.xValues = xValues;
         this.yValues = yValues;
     }
 
@@ -73,7 +68,7 @@ public class LineChartSimple extends JPanel {
         }
 
         // and for x axis
-        for (int i = 0; i < yValues.size(); i++) {
+        for (int i = 0; i < xValues.size(); i++) {
             if (yValues.size() > 1) {
                 int x0 = i * (getWidth() - PADDING * 2 - LABEL_PADDING) / (yValues.size() - 1) + PADDING + LABEL_PADDING;
                 int y0 = getHeight() - PADDING - LABEL_PADDING;
@@ -82,7 +77,7 @@ public class LineChartSimple extends JPanel {
                     g2.setColor(gridColor);
                     g2.drawLine(x0, getHeight() - PADDING - LABEL_PADDING - 1 - POINT_WIDTH, x0, PADDING);
                     g2.setColor(Color.BLACK);
-                    String xLabel = i + "";
+                    String xLabel = String.format("%.2f", xValues.get(i)) + "";
                     FontMetrics metrics = g2.getFontMetrics();
                     int labelWidth = metrics.stringWidth(xLabel);
                     g2.drawString(xLabel, x0 - labelWidth / 2, y0 + metrics.getHeight() + 3);
@@ -133,8 +128,16 @@ public class LineChartSimple extends JPanel {
         return maxYValue;
     }
 
-    public static void drawChart(List<Double> yValues) {
-        LineChartSimple mainPanel = new LineChartSimple(yValues);
+    public static void drawChart(List<Pair<Double, Double>> pointsList) {
+        List<Double> xValues = new ArrayList<>();
+        List<Double> yValues = new ArrayList<>();
+
+        pointsList.stream().forEach(doubleDoublePair -> {
+            xValues.add(doubleDoublePair.getKey());
+            yValues.add(doubleDoublePair.getValue());
+        });
+
+        LineChartSimple mainPanel = new LineChartSimple(xValues, yValues);
         mainPanel.setPreferredSize(new Dimension(DEFAULT_WIDTH, HEIGHT_DEFAULT));
         JFrame frame = new JFrame("LineChartSimple");
         //noinspection MagicConstant
@@ -147,10 +150,13 @@ public class LineChartSimple extends JPanel {
     }
 
     public static void main(String[] args) {
-        List<Double> yValues = new ArrayList<>();
-        for (int i = 0; i < 20; i++) {
-            yValues.add(i * 10.);
+        List<Pair<Double, Double>> pointsList = new ArrayList<>();
+        for (int i = 1; i < 10; i++) {
+            double xValue = i * 0.1;
+            double yValue = i * 10;
+            pointsList.add(new Pair<>(xValue, yValue));
         }
-        drawChart(yValues);
+
+        drawChart(pointsList);
     }
 }

@@ -122,11 +122,11 @@ public class FactoryClient {
 
         List<Double> lMaxSummationList = alphaResultsMap.entrySet().stream().map(doubleMapEntry -> doubleMapEntry.getValue().get(Parameters.ResultInfoConstants.SUMMATION_OF_LMAX)).collect(Collectors.toList());
         // Draw lMaxSummation graph
-        LineChartSimple.drawChart(lMaxSummationList);
+//        LineChartSimple.drawChart(xValues, lMaxSummationList);
 
         List<Double> syncCostList = alphaResultsMap.entrySet().stream().map(doubleMapEntry -> doubleMapEntry.getValue().get(Parameters.ResultInfoConstants.SYNC_COST)).collect(Collectors.toList());
         // Draw sync cost graph
-        LineChartSimple.drawChart(syncCostList);
+//        LineChartSimple.drawChart(xValues, syncCostList);
 
         printResultsByAlpha(alphaResultsMap, OptimizationAlgorithmsEnum.CUCKOO);
     }
