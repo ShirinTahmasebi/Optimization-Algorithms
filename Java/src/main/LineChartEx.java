@@ -30,7 +30,7 @@ public class LineChartEx extends JFrame {
     private final XYSeries totalSASeries = new XYSeries("SA Potential Energy");
 
     public void addToEnergySeries(int iterationNumber,
-                                  double selectedEnergy, double visitedEnergy, double minEnergy, double minTotalEnergy) {
+                                  double selectedEnergy, double visitedEnergy, double minEnergy) {
         selectedSeries.add(iterationNumber, selectedEnergy);
         visitedSeries.add(iterationNumber, visitedEnergy);
         minimumSeries.add(iterationNumber, minEnergy);
@@ -49,18 +49,15 @@ public class LineChartEx extends JFrame {
     }
 
     public void drawChart() {
-        SwingUtilities.invokeLater(() -> {
-            this.setVisible(true);
-        });
+        SwingUtilities.invokeLater(() -> this.setVisible(true));
     }
 
     public LineChartEx() {
-//        initUI(createTotalEnergyDataset());
         initUI(createComparativePotEnergyDataset());
     }
 
-    private void initUI(XYDataset dataset) {
-        JFreeChart chart = createChart(dataset);
+    private void initUI(XYDataset dataSet) {
+        JFreeChart chart = createChart(dataSet);
         ChartPanel chartPanel = new ChartPanel(chart);
         chartPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
         chartPanel.setBackground(Color.WHITE);
@@ -72,24 +69,14 @@ public class LineChartEx extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
-    private XYDataset createTotalEnergyDataset() {
-        XYSeriesCollection dataset = new XYSeriesCollection();
-
-        dataset.addSeries(selectedSeries);
-        dataset.addSeries(visitedSeries);
-        dataset.addSeries(minimumSeries);
-
-        return dataset;
-    }
-
     private XYDataset createComparativePotEnergyDataset() {
-        XYSeriesCollection dataset = new XYSeriesCollection();
+        XYSeriesCollection dataSet = new XYSeriesCollection();
 
-        dataset.addSeries(totalCuckooSeries);
-        dataset.addSeries(totalQASeries);
-        dataset.addSeries(totalSASeries);
+        dataSet.addSeries(totalCuckooSeries);
+        dataSet.addSeries(totalQASeries);
+        dataSet.addSeries(totalSASeries);
 
-        return dataset;
+        return dataSet;
     }
 
     private JFreeChart createChart(XYDataset dataset) {
@@ -138,15 +125,15 @@ public class LineChartEx extends JFrame {
 
     public static void main(String[] args) {
         LineChartEx chartEx = new LineChartEx();
-        chartEx.addToEnergySeries(1, 1, 1, 1, 1);
-        chartEx.addToEnergySeries(5, 5, 5, 5, 5);
+        chartEx.addToEnergySeries(1, 1, 1, 1);
+        chartEx.addToEnergySeries(5, 5, 5, 5);
         chartEx.drawChart();
 
         LineChartEx chartEx1 = new LineChartEx();
-        chartEx1.addToEnergySeries(1, 1, 1, 1, 1);
-        chartEx1.addToEnergySeries(5, 5, 5, 5, 5);
-        chartEx1.addToEnergySeries(10, 1, 1, 1, 1);
-        chartEx1.addToEnergySeries(11, 0, 0, 0, 0);
+        chartEx1.addToEnergySeries(1, 1, 1, 1);
+        chartEx1.addToEnergySeries(5, 5, 5, 5);
+        chartEx1.addToEnergySeries(10, 1, 1, 1);
+        chartEx1.addToEnergySeries(11, 0, 0, 0);
         chartEx1.drawChart();
     }
 }

@@ -72,8 +72,7 @@ public class QAAlgorithm {
                             counter,
                             qaModelingInterface.calculateEnergyFromCost(qaPlainOldData.prevEnergyPair),
                             energy,
-                            qaModelingInterface.calculateEnergyFromCost(minEnergyPair),
-                            4
+                            qaModelingInterface.calculateEnergyFromCost(minEnergyPair)
                     );
                 } // End of for
             } // End of for

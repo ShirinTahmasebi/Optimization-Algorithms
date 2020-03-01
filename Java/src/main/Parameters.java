@@ -28,8 +28,8 @@ public class Parameters {
     }
 
     public static class SynchronizationOverheadModel {
-        public static final double INTER_CONTROLLER_SYNC_COEFFICIENT = 0.1;                         // alpha
-        public static final double LMAX_COEFFICIENT = 1 - INTER_CONTROLLER_SYNC_COEFFICIENT;        // beta
+        public static double INTER_CONTROLLER_SYNC_COEFFICIENT = 0.1;                         // alpha
+        public static double LMAX_COEFFICIENT = 1 - INTER_CONTROLLER_SYNC_COEFFICIENT;        // beta
     }
 
     public static class Common {
@@ -61,8 +61,7 @@ public class Parameters {
         public static final String KINETIC_ENERGY = "KINETIC_ENERGY";
         public static final String LMAX = "LMAX";
         public static final String SUMMATION_OF_LMAX = "SUMMATION_OF_LMAX";
-        public static final String SYNC_OVERHEAD_COST = "SYNC_OVERHEAD_COST";
-        public static final String SYNC_DELAY_COST = "SYNC_DELAY_COST";
+        public static final String SYNC_COST = "SYNC_COST";
         public static final String RELIABILITY_COST = "RELIABILITY_COST";
         public static final String LOAD_BALANCING_COST = "LOAD_BALANCING_COST";
         public static final String BUDGET_COST_ENERGY = "BUDGET_COST_ENERGY";

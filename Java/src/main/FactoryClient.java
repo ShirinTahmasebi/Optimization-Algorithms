@@ -22,6 +22,7 @@ import problem_modelings.cost_optimization.algorithms.cuckoo.CuckooCostOptimizat
 import problem_modelings.cost_optimization.model_specifications.CostOptimizationModelingPlainOldData;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static main.Utils.readObjectFromFile;
 
@@ -45,8 +46,99 @@ public class FactoryClient {
         } else if (Parameters.Common.MODEL_NO == ModelNoEnum.BUDGET_CONSTRAINED_LMAX_OPTIMIZATION) {
             client.executeAlgorithmsOnBudgetConstrainedModel();
         } else if (Parameters.Common.MODEL_NO == ModelNoEnum.BUDGET_CONSTRAINED_CONTROLLER_OVERHEAD) {
-            client.executeAlgorithmsOnBudgetConstrainedModel();
+            client.executeAlgorithmsOnBudgetConstrainedControllerOverheadModel();
         }
+    }
+
+    private void executeAlgorithmsOnBudgetConstrainedControllerOverheadModel() throws Exception {
+        Map<Double, Map<String, Double>> alphaResultsMap = new HashMap<>();
+
+        for (double alpha = 0; alpha < 1; alpha += 0.1) {
+            Parameters.SynchronizationOverheadModel.INTER_CONTROLLER_SYNC_COEFFICIENT = alpha;
+            Parameters.SynchronizationOverheadModel.LMAX_COEFFICIENT = 1 - alpha;
+
+            double cuckooPotentialEnergy = 0;
+            double cuckoolMaxCost = 0;
+            double cuckooSummationOfLMaxCost = 0;
+            double cuckooSynchronizationCost = 0;
+            double cuckooReliabilityCost = 0;
+            double cuckooLoadBalancingCost = 0;
+            double cuckooKineticEnergy = 0;
+            double cuckooBudgetCostEnergy = 0;
+
+            retrieveVariablesFromFile();
+
+            BudgetConstrainedLmaxOptimizationModelingPlainOldData budgetConstrainedLmaxOptimizationModelingPlainOldData = new BudgetConstrainedLmaxOptimizationModelingPlainOldData(
+                    graph,
+                    candidateControllers,
+                    controllerY,
+                    Parameters.Common.SENSOR_CONTROLLER_MAX_DISTANCE,
+                    Parameters.Common.MAX_CONTROLLER_COVERAGE,
+                    Parameters.Common.MAX_CONTROLLER_LOAD,
+                    Parameters.Common.COST_CONTROLLER,
+                    (candidateControllers.size() / 3) * Parameters.Common.COST_CONTROLLER,
+                    distances,
+                    sensorToSensorWorkload
+            );
+
+            // Cuckoo algorithm initialization
+            CuckooPlainOldData cuckooPlainOldData = new CuckooPlainOldData();
+            CuckooModelingInterface cuckooModelingInterface = new CuckooBudgetConstrainedLmaxOptimizationModeling(budgetConstrainedLmaxOptimizationModelingPlainOldData, cuckooPlainOldData);
+            CuckooAlgorithm cuckooAlgorithm = new CuckooAlgorithm(cuckooModelingInterface);
+
+            // Cuckoo execution
+            Date cuckooTimeA = new Date();
+            for (int i = 0; i < Parameters.Common.SIMULATION_COUNT; i++) {
+                Cost cuckooCost = cuckooAlgorithm.execute();
+
+                cuckooPotentialEnergy += cuckooCost.getPotentialEnergy();
+                cuckoolMaxCost += cuckooCost.getlMaxCost();
+                cuckooSummationOfLMaxCost += cuckooCost.getSummationOfLMaxCost();
+                cuckooSynchronizationCost += cuckooCost.getSynchronizationCost();
+                cuckooReliabilityCost += cuckooCost.getReliabilityCost();
+                cuckooLoadBalancingCost += cuckooCost.getLoadBalancingCost();
+                cuckooKineticEnergy += cuckooCost.getKineticEnergy();
+                cuckooBudgetCostEnergy += cuckooCost.getBudgetCostEnergy();
+
+                printResults(cuckooCost, OptimizationAlgorithmsEnum.CUCKOO);
+            }
+            Date cuckooTimeB = new Date();
+
+
+            Map<String, Double> cuckooMap = new HashMap<>();
+            cuckooMap.put(Parameters.ResultInfoConstants.START_TIME, (double) cuckooTimeA.getTime());
+            cuckooMap.put(Parameters.ResultInfoConstants.END_TIME, (double) cuckooTimeB.getTime());
+            cuckooMap.put(Parameters.ResultInfoConstants.POTENTIAL_ENERGY, cuckooPotentialEnergy);
+            cuckooMap.put(Parameters.ResultInfoConstants.KINETIC_ENERGY, cuckooKineticEnergy);
+            cuckooMap.put(Parameters.ResultInfoConstants.LMAX, cuckoolMaxCost);
+            cuckooMap.put(Parameters.ResultInfoConstants.SUMMATION_OF_LMAX, cuckooSummationOfLMaxCost);
+            cuckooMap.put(Parameters.ResultInfoConstants.SYNC_COST, cuckooSynchronizationCost);
+            cuckooMap.put(Parameters.ResultInfoConstants.RELIABILITY_COST, cuckooReliabilityCost);
+            cuckooMap.put(Parameters.ResultInfoConstants.LOAD_BALANCING_COST, cuckooLoadBalancingCost);
+            cuckooMap.put(Parameters.ResultInfoConstants.BUDGET_COST_ENERGY, cuckooBudgetCostEnergy);
+
+            alphaResultsMap.put(alpha, cuckooMap);
+        }
+
+        List<Double> lMaxSummationList = alphaResultsMap.entrySet().stream().map(doubleMapEntry -> doubleMapEntry.getValue().get(Parameters.ResultInfoConstants.SUMMATION_OF_LMAX)).collect(Collectors.toList());
+        // Draw lMaxSummation graph
+        LineChartSimple.drawChart(lMaxSummationList);
+
+        List<Double> syncCostList = alphaResultsMap.entrySet().stream().map(doubleMapEntry -> doubleMapEntry.getValue().get(Parameters.ResultInfoConstants.SYNC_COST)).collect(Collectors.toList());
+        // Draw sync cost graph
+        LineChartSimple.drawChart(syncCostList);
+
+        printResultsByAlpha(alphaResultsMap, OptimizationAlgorithmsEnum.CUCKOO);
+    }
+
+    private void printResultsByAlpha(Map<Double, Map<String, Double>> alphaResultsMap, OptimizationAlgorithmsEnum algorithmsEnum) {
+        System.out.println("Results for " + algorithmsEnum.name());
+        alphaResultsMap.entrySet().stream().forEach(doubleMapEntry -> {
+            System.out.println("Alpha: " + doubleMapEntry.getKey());
+            System.out.println("Sync cost: " + doubleMapEntry.getValue().get(Parameters.ResultInfoConstants.SYNC_COST));
+            System.out.println("Summation of Lmax: " + doubleMapEntry.getValue().get(Parameters.ResultInfoConstants.SUMMATION_OF_LMAX));
+            System.out.println("------------------------------------------");
+        });
     }
 
     private void executeAlgorithmsOnBudgetConstrainedModel() throws Exception {
@@ -55,7 +147,6 @@ public class FactoryClient {
         double cuckooPotentialEnergy = 0;
         double cuckoolMaxCost = 0;
         double cuckooSummationOfLMaxCost = 0;
-        double cuckooSynchronizationOverheadCost = 0;
         double cuckooSynchronizationDelayCost = 0;
         double cuckooReliabilityCost = 0;
         double cuckooLoadBalancingCost = 0;
@@ -65,7 +156,6 @@ public class FactoryClient {
         double qaPotentialEnergy = 0;
         double qalMaxCost = 0;
         double qaSummationOfLMaxCost = 0;
-        double qaSynchronizationOverheadCost = 0;
         double qaSynchronizationDelayCost = 0;
         double qaReliabilityCost = 0;
         double qaLoadBalancingCost = 0;
@@ -75,7 +165,6 @@ public class FactoryClient {
         double saPotentialEnergy = 0;
         double salMaxCost = 0;
         double saSummationOfLMaxCost = 0;
-        double saSynchronizationOverheadCost = 0;
         double saSynchronizationCost = 0;
         double saReliabilityCost = 0;
         double saLoadBalancingCost = 0;
@@ -191,8 +280,7 @@ public class FactoryClient {
         cuckooMap.put(Parameters.ResultInfoConstants.KINETIC_ENERGY, cuckooKineticEnergy);
         cuckooMap.put(Parameters.ResultInfoConstants.LMAX, cuckoolMaxCost);
         cuckooMap.put(Parameters.ResultInfoConstants.SUMMATION_OF_LMAX, cuckooSummationOfLMaxCost);
-        cuckooMap.put(Parameters.ResultInfoConstants.SYNC_OVERHEAD_COST, cuckooSynchronizationOverheadCost);
-        cuckooMap.put(Parameters.ResultInfoConstants.SYNC_DELAY_COST, cuckooSynchronizationDelayCost);
+        cuckooMap.put(Parameters.ResultInfoConstants.SYNC_COST, cuckooSynchronizationDelayCost);
         cuckooMap.put(Parameters.ResultInfoConstants.RELIABILITY_COST, cuckooReliabilityCost);
         cuckooMap.put(Parameters.ResultInfoConstants.LOAD_BALANCING_COST, cuckooLoadBalancingCost);
         cuckooMap.put(Parameters.ResultInfoConstants.BUDGET_COST_ENERGY, cuckooBudgetCostEnergy);
@@ -206,8 +294,7 @@ public class FactoryClient {
         qaMap.put(Parameters.ResultInfoConstants.KINETIC_ENERGY, qaKineticEnergy);
         qaMap.put(Parameters.ResultInfoConstants.LMAX, qalMaxCost);
         qaMap.put(Parameters.ResultInfoConstants.SUMMATION_OF_LMAX, qaSummationOfLMaxCost);
-        qaMap.put(Parameters.ResultInfoConstants.SYNC_OVERHEAD_COST, qaSynchronizationOverheadCost);
-        qaMap.put(Parameters.ResultInfoConstants.SYNC_DELAY_COST, qaSynchronizationDelayCost);
+        qaMap.put(Parameters.ResultInfoConstants.SYNC_COST, qaSynchronizationDelayCost);
         qaMap.put(Parameters.ResultInfoConstants.RELIABILITY_COST, qaReliabilityCost);
         qaMap.put(Parameters.ResultInfoConstants.LOAD_BALANCING_COST, qaLoadBalancingCost);
         qaMap.put(Parameters.ResultInfoConstants.BUDGET_COST_ENERGY, qaBudgetCostEnergy);
@@ -221,15 +308,15 @@ public class FactoryClient {
         saMap.put(Parameters.ResultInfoConstants.KINETIC_ENERGY, saKineticEnergy);
         saMap.put(Parameters.ResultInfoConstants.LMAX, salMaxCost);
         saMap.put(Parameters.ResultInfoConstants.SUMMATION_OF_LMAX, saSummationOfLMaxCost);
-        saMap.put(Parameters.ResultInfoConstants.SYNC_OVERHEAD_COST, saSynchronizationOverheadCost);
-        saMap.put(Parameters.ResultInfoConstants.SYNC_DELAY_COST, saSynchronizationCost);
+        saMap.put(Parameters.ResultInfoConstants.SYNC_COST, saSynchronizationCost);
         saMap.put(Parameters.ResultInfoConstants.RELIABILITY_COST, saReliabilityCost);
         saMap.put(Parameters.ResultInfoConstants.LOAD_BALANCING_COST, saLoadBalancingCost);
         saMap.put(Parameters.ResultInfoConstants.BUDGET_COST_ENERGY, saBudgetCostEnergy);
 
         algorithmResultsMap.put(OptimizationAlgorithmsEnum.SIMULATED_ANNEALING.name(), saMap);
 
-        printResultsSummary(chartEx, algorithmResultsMap);
+        printResultsSummary(algorithmResultsMap);
+        chartEx.drawChart();
     }
 
     @SuppressWarnings("unused")
@@ -351,8 +438,7 @@ public class FactoryClient {
         }
     }
 
-    private void printResultsSummary(LineChartEx chartEx, Map<String, Map<String, Double>> algorithmResultInfo) {
-        chartEx.drawChart();
+    private void printResultsSummary(Map<String, Map<String, Double>> algorithmResultInfo) {
         System.out.println();
 
         List<OptimizationAlgorithmsEnum> optimizationAlgorithmsEnums = Arrays.asList(OptimizationAlgorithmsEnum.values());
@@ -363,7 +449,7 @@ public class FactoryClient {
             System.out.println(optimizationAlgorithm.name() + " average kinetic energy is: " + algorithmInfoPair.get(Parameters.ResultInfoConstants.KINETIC_ENERGY) / Parameters.Common.SIMULATION_COUNT);
             System.out.println(optimizationAlgorithm.name() + " average lmax is: " + algorithmInfoPair.get(Parameters.ResultInfoConstants.LMAX) / Parameters.Common.SIMULATION_COUNT);
             System.out.println(optimizationAlgorithm.name() + " average summation of lmax is: " + algorithmInfoPair.get(Parameters.ResultInfoConstants.SUMMATION_OF_LMAX) / Parameters.Common.SIMULATION_COUNT);
-            System.out.println(optimizationAlgorithm.name() + " average sync is: " + algorithmInfoPair.get(Parameters.ResultInfoConstants.SYNC_DELAY_COST) / Parameters.Common.SIMULATION_COUNT);
+            System.out.println(optimizationAlgorithm.name() + " average sync is: " + algorithmInfoPair.get(Parameters.ResultInfoConstants.SYNC_COST) / Parameters.Common.SIMULATION_COUNT);
             System.out.println(optimizationAlgorithm.name() + " average reliability cost is: " + algorithmInfoPair.get(Parameters.ResultInfoConstants.RELIABILITY_COST) / Parameters.Common.SIMULATION_COUNT);
             System.out.println(optimizationAlgorithm.name() + " average load balancing cost is: " + algorithmInfoPair.get(Parameters.ResultInfoConstants.LOAD_BALANCING_COST) / Parameters.Common.SIMULATION_COUNT);
             System.out.println(optimizationAlgorithm.name() + " average budget cost is: " + algorithmInfoPair.get(Parameters.ResultInfoConstants.BUDGET_COST_ENERGY) / Parameters.Common.SIMULATION_COUNT);

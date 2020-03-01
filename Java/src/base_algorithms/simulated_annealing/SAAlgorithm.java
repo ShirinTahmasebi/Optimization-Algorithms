@@ -57,8 +57,7 @@ public class SAAlgorithm {
                         counter,
                         saPlainOldData.prevEnergy.getPotentialEnergy(),
                         energy.getPotentialEnergy(),
-                        minEnergy,
-                        4
+                        minEnergy
                 );
             } // End of for
             // Update temperature
