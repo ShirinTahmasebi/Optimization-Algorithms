@@ -17,16 +17,17 @@ import javax.swing.SwingUtilities;
 
 public class LineChartSimple extends JPanel {
 
-    private int width = 800;
-    private int heigth = 400;
-    private int padding = 25;
-    private int labelPadding = 25;
+    private final static int DEFAULT_WIDTH = 800;
+    private final static int HEIGHT_DEFAULT = 400;
+    private final static int PADDING = 25;
+    private final static int LABEL_PADDING = 25;
+    private final static int NUMBER_Y_DIVISIONS = 10;
+    private static final Stroke GRAPH_STROKE = new BasicStroke(2f);
+
+    private final static int POINT_WIDTH = 4;
     private Color lineColor = new Color(44, 102, 230, 180);
     private Color pointColor = new Color(100, 100, 100, 180);
     private Color gridColor = new Color(200, 200, 200, 200);
-    private static final Stroke GRAPH_STROKE = new BasicStroke(2f);
-    private int pointWidth = 4;
-    private int numberYDivisions = 10;
     private List<Double> scores;
 
     public LineChartSimple(List<Double> scores) {
@@ -39,32 +40,32 @@ public class LineChartSimple extends JPanel {
         Graphics2D g2 = (Graphics2D) g;
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-        double xScale = ((double) getWidth() - (2 * padding) - labelPadding) / (scores.size() - 1);
-        double yScale = ((double) getHeight() - 2 * padding - labelPadding) / (getMaxScore() - getMinScore());
+        double xScale = ((double) getWidth() - (2 * PADDING) - LABEL_PADDING) / (scores.size() - 1);
+        double yScale = ((double) getHeight() - 2 * PADDING - LABEL_PADDING) / (getMaxScore() - getMinScore());
 
         List<Point> graphPoints = new ArrayList<>();
         for (int i = 0; i < scores.size(); i++) {
-            int x1 = (int) (i * xScale + padding + labelPadding);
-            int y1 = (int) ((getMaxScore() - scores.get(i)) * yScale + padding);
+            int x1 = (int) (i * xScale + PADDING + LABEL_PADDING);
+            int y1 = (int) ((getMaxScore() - scores.get(i)) * yScale + PADDING);
             graphPoints.add(new Point(x1, y1));
         }
 
         // draw white background
         g2.setColor(Color.WHITE);
-        g2.fillRect(padding + labelPadding, padding, getWidth() - (2 * padding) - labelPadding, getHeight() - 2 * padding - labelPadding);
+        g2.fillRect(PADDING + LABEL_PADDING, PADDING, getWidth() - (2 * PADDING) - LABEL_PADDING, getHeight() - 2 * PADDING - LABEL_PADDING);
         g2.setColor(Color.BLACK);
 
         // create hatch marks and grid lines for y axis.
-        for (int i = 0; i < numberYDivisions + 1; i++) {
-            int x0 = padding + labelPadding;
-            int x1 = pointWidth + padding + labelPadding;
-            int y0 = getHeight() - ((i * (getHeight() - padding * 2 - labelPadding)) / numberYDivisions + padding + labelPadding);
+        for (int i = 0; i < NUMBER_Y_DIVISIONS + 1; i++) {
+            int x0 = PADDING + LABEL_PADDING;
+            int x1 = POINT_WIDTH + PADDING + LABEL_PADDING;
+            int y0 = getHeight() - ((i * (getHeight() - PADDING * 2 - LABEL_PADDING)) / NUMBER_Y_DIVISIONS + PADDING + LABEL_PADDING);
             int y1 = y0;
             if (scores.size() > 0) {
                 g2.setColor(gridColor);
-                g2.drawLine(padding + labelPadding + 1 + pointWidth, y0, getWidth() - padding, y1);
+                g2.drawLine(PADDING + LABEL_PADDING + 1 + POINT_WIDTH, y0, getWidth() - PADDING, y1);
                 g2.setColor(Color.BLACK);
-                String yLabel = ((int) ((getMinScore() + (getMaxScore() - getMinScore()) * ((i * 1.0) / numberYDivisions)) * 100)) / 100.0 + "";
+                String yLabel = ((int) ((getMinScore() + (getMaxScore() - getMinScore()) * ((i * 1.0) / NUMBER_Y_DIVISIONS)) * 100)) / 100.0 + "";
                 FontMetrics metrics = g2.getFontMetrics();
                 int labelWidth = metrics.stringWidth(yLabel);
                 g2.drawString(yLabel, x0 - labelWidth - 5, y0 + (metrics.getHeight() / 2) - 3);
@@ -75,13 +76,13 @@ public class LineChartSimple extends JPanel {
         // and for x axis
         for (int i = 0; i < scores.size(); i++) {
             if (scores.size() > 1) {
-                int x0 = i * (getWidth() - padding * 2 - labelPadding) / (scores.size() - 1) + padding + labelPadding;
+                int x0 = i * (getWidth() - PADDING * 2 - LABEL_PADDING) / (scores.size() - 1) + PADDING + LABEL_PADDING;
                 int x1 = x0;
-                int y0 = getHeight() - padding - labelPadding;
-                int y1 = y0 - pointWidth;
+                int y0 = getHeight() - PADDING - LABEL_PADDING;
+                int y1 = y0 - POINT_WIDTH;
                 if ((i % ((int) ((scores.size() / 20.0)) + 1)) == 0) {
                     g2.setColor(gridColor);
-                    g2.drawLine(x0, getHeight() - padding - labelPadding - 1 - pointWidth, x1, padding);
+                    g2.drawLine(x0, getHeight() - PADDING - LABEL_PADDING - 1 - POINT_WIDTH, x1, PADDING);
                     g2.setColor(Color.BLACK);
                     String xLabel = i + "";
                     FontMetrics metrics = g2.getFontMetrics();
@@ -93,8 +94,8 @@ public class LineChartSimple extends JPanel {
         }
 
         // create x and y axes 
-        g2.drawLine(padding + labelPadding, getHeight() - padding - labelPadding, padding + labelPadding, padding);
-        g2.drawLine(padding + labelPadding, getHeight() - padding - labelPadding, getWidth() - padding, getHeight() - padding - labelPadding);
+        g2.drawLine(PADDING + LABEL_PADDING, getHeight() - PADDING - LABEL_PADDING, PADDING + LABEL_PADDING, PADDING);
+        g2.drawLine(PADDING + LABEL_PADDING, getHeight() - PADDING - LABEL_PADDING, getWidth() - PADDING, getHeight() - PADDING - LABEL_PADDING);
 
         Stroke oldStroke = g2.getStroke();
         g2.setColor(lineColor);
@@ -109,11 +110,11 @@ public class LineChartSimple extends JPanel {
 
         g2.setStroke(oldStroke);
         g2.setColor(pointColor);
-        for (int i = 0; i < graphPoints.size(); i++) {
-            int x = graphPoints.get(i).x - pointWidth / 2;
-            int y = graphPoints.get(i).y - pointWidth / 2;
-            int ovalW = pointWidth;
-            int ovalH = pointWidth;
+        for (Point graphPoint : graphPoints) {
+            int x = graphPoint.x - POINT_WIDTH / 2;
+            int y = graphPoint.y - POINT_WIDTH / 2;
+            int ovalW = POINT_WIDTH;
+            int ovalH = POINT_WIDTH;
             g2.fillOval(x, y, ovalW, ovalH);
         }
     }
@@ -146,7 +147,7 @@ public class LineChartSimple extends JPanel {
 
     public static void drawChart(List<Double> scores) {
         LineChartSimple mainPanel = new LineChartSimple(scores);
-        mainPanel.setPreferredSize(new Dimension(800, 600));
+        mainPanel.setPreferredSize(new Dimension(DEFAULT_WIDTH, HEIGHT_DEFAULT));
         JFrame frame = new JFrame("LineChartSimple");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.getContentPane().add(mainPanel);
